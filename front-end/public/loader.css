@@ -1,0 +1,67 @@
+.outer {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    /*whatever width you want*/
+}
+
+/*******************************************/
+.container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.ball{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    float: left;
+    margin-left: 20px;
+    animation: move1 1.2s linear infinite;
+}
+
+.ball:nth-child(1){
+    background: #011f4b;
+    animation-delay: 0s;
+}
+
+.ball:nth-child(2){
+    background: #03396c;
+    animation-delay: 0.25s;
+}
+
+.ball:nth-child(3){
+    background: #005b96;
+    animation-delay: 0.5s;
+}
+
+.ball:nth-child(4){
+    animation-delay: 0.75s;
+    background: #6497b1;
+}
+
+@keyframes move1{
+    0%{
+        transform: translateY(0px);
+    }
+    50%{
+        transform: translateY(-25px);
+    }
+}

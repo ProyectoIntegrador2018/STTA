@@ -1,0 +1,170 @@
+:root{
+  --shadow: 0 4px 8px 0 rgba(0,0,0,0.12),
+  0 2px 4px 0 rgba(0,0,0,0.08);
+  --primary-color: #000066;
+}
+
+.App {
+  height: 100vh;  
+}
+
+form {
+  padding: 50px !important;
+  align-items: center !important;
+  height: 100%;
+}
+
+.login-form-right {
+  float: right;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.login-image {
+  float:left;
+  height:100%;
+  width: 100%;
+  object-fit:cover;
+}
+
+.login-image-container {
+  height: 100vh;
+}
+
+.logo-image-container {
+  height: 35vh;
+}
+
+.logo-image {
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  padding: 20px;
+}
+
+
+.item-logout{
+  background-color: #d90000;
+  color: white;
+}
+
+.button-danger{
+  border-color: #d90000;
+  background-color: #d90000;
+  color: white;
+}
+.form-row > div > div{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ant-card-wider-padding .ant-card-body{
+  padding: 10px;
+}
+
+
+.item-logout:hover,.item-logout:focus,.item-logout:checked,.item-logout:active{
+  background-color: #be0000 !important;
+  color: white;
+}
+.ant-menu-item-selected.item-logout{
+  background-color: #be0000 !important;
+}
+
+
+.ant-input-affix-wrapper .ant-input-prefix, .ant-input-affix-wrapper .ant-input-suffix {
+  color: rgba(0,0,0,.25);
+}
+.ant-table-thead > tr > th{
+  font-weight: bold;
+}
+.submenu-title-wrapper{
+  color: white !important;
+  text-align: center;
+}
+.exsam-logo::after{
+  font-weight: bold !important;;
+  color: black !important;;
+  content: "ExSaM" !important;
+}
+
+.primaryBackground{
+  background-color: var(--primary-color) !important;
+}
+
+.header-bar{
+    padding-left: 20px !important;
+}
+
+.layout{
+  min-height: 100vh !important;
+}
+
+.logo {
+  height: 48px;
+  margin: 8px 5px 0 0;
+  float: left;
+    margin-bottom: 20px;
+
+}
+
+.logoName{
+  color: white !important;
+}
+
+.footer{
+  text-align: right;
+  color: rgb(128,128,128);
+
+}
+
+.body-app{
+    margin: 10px 25px 10px 25px;
+}
+
+#components-layout-demo-responsive .logo {
+    height: 32px;
+    background: rgba(255,255,255,.2);
+    margin: 16px;
+}
+
+.ant-menu-tec, .ant-layout-sider-zero-width-trigger{
+    background-color: var(--primary-color) !important;
+}
+.ant-menu-tec{
+    border-right: #2a2a2a solid 1px;
+    box-shadow:  var(--shadow);
+}
+.ant-menu-item-selected{
+    background: #000044 !important;
+}
+.form-normal{
+    padding: 0 !important;
+}
+.button-success{
+    border-color: transparent !important;
+    background-color: rgba(37, 170, 37, 0.86) !important;
+    color: white !important;
+}
+
+.button-success:hover,.button-success:focus,.button-success:checked,.button-success:active{
+    border-color: transparent !important;
+    background-color: rgba(25, 99, 25, 0.86) !important;
+    color: white !important;
+}
+
+.restore-title {
+  text-align: center;
+}
+
+.ant-steps-vertical .ant-steps-item-title {
+    line-height: 32px;
+    width: 100%;
+}
+
+.ant-divider-horizontal {
+    margin: 12px 0 !important;
+}
