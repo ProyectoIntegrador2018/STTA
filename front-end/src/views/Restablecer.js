@@ -104,49 +104,49 @@ class Restablecer extends Component {
         }
 
         return (
-        <div className="App">
-            <Row>
-            <Col xs={0} sm={0} md={0} lg={12} xl={14}>
-                <div className="login-image-container">
-                <img className="login-image" src={loginImage} alt={''}/>
-                </div>
-            </Col>
+            <div className="App">
+                <Row>
+                <Col xs={0} sm={0} md={0} lg={12} xl={14}>
+                    <div className="login-image-container">
+                    <img className="login-image" src={loginImage} alt={''}/>
+                    </div>
+                </Col>
 
-            <Col xs={24} sm={24} md={24} lg={12} xl={10}>
-                <Form onSubmit={this.handleSubmit} className="login-form">
-                <div className="logo-image-container">
-                    <img className="logo-image" src={logo} alt={''}/>
-                </div>
-                <Form.Item className="restore-title">
-                    <h2>Restablecer contraseña</h2>
-                </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Por favor ingresa la nueva contraseña' }, ,
-                        {validator: this.validateToNextPassword,}],
-                    })(
-                    <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Nueva contraseña" />
-                    )}
-                </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('passwordVerification', {
-                    rules: [{ required: true, message: 'Por favor ingresa la verificación de la contraseña' }, {
-                        validator: this.compareToFirstPassword,
-                      }],
-                    })(
-                    <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Verificar contraseña" onBlur={this.handleConfirmBlur}/>
-                    )}
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button"
-                            loading={this.state.loading} disabled={this.state.loading}>
-                    Restablecer contraseña
-                    </Button> 
-                </Form.Item>
-                </Form>
-            </Col>
-            </Row>
-        </div>      
+                <Col xs={24} sm={24} md={24} lg={12} xl={10}>
+                    <Form onSubmit={this.handleSubmit} className="login-form">
+                    <div className="logo-image-container">
+                        <img className="logo-image" src={logo} alt={''}/>
+                    </div>
+                    <Form.Item className="restore-title">
+                        <h2>Restablecer contraseña</h2>
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('password', {
+                        rules: [{ required: true, message: 'Por favor ingresa la nueva contraseña' }, ,
+                            {validator: this.validateToNextPassword,}],
+                        })(
+                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Nueva contraseña" />
+                        )}
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('passwordVerification', {
+                        rules: [{ required: true, message: 'Por favor ingresa la verificación de la contraseña' }, {
+                            validator: this.compareToFirstPassword,
+                        }],
+                        })(
+                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Verificar contraseña" onBlur={this.handleConfirmBlur}/>
+                        )}
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" className="login-form-button"
+                                loading={this.state.loading} disabled={this.state.loading}>
+                        Restablecer contraseña
+                        </Button> 
+                    </Form.Item>
+                    </Form>
+                </Col>
+                </Row>
+            </div>           
         );
     }
 }

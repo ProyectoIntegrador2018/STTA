@@ -121,6 +121,9 @@ class Login extends Component {
               <div className="logo-image-container">
                 <img className="logo-image" src={logo} alt={''}/>
               </div>
+              <Form.Item className="restore-title">
+                <h2 className="admin-login-title">Inicio de sesión administrador</h2>
+              </Form.Item>
               <Form.Item>
                 {getFieldDecorator('userName', {
                   rules: [{ required: true, message: 'Por favor ingresa el usuario' }],
