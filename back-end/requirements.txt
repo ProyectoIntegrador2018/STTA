@@ -6,5 +6,3 @@ django-cors-headers
 djangorestframework
 django-filter
 markdown
-channels
-channels_api==0.1.4
