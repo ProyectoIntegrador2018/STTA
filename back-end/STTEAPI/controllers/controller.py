@@ -137,6 +137,18 @@ def login_admin(request):
     return JsonResponse({'token': token.key}, safe=False)
 
 @api_view(["POST"])
+def login_student(request):
+    email = request.POST.get('email','')
+    password = request.POST.get('password','')
+    user = authenticate(username=email, password=password)
+    if user == None:
+        raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
+    if not user.es_alumno:
+        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+    token, _ = Token.objects.get_or_create(user=user)
+    return JsonResponse({'token': token.key}, safe=False)
+
+@api_view(["POST"])
 @permission_classes((IsAuthenticated, ))
 def logout(request):
     request.user.auth_token.delete()
