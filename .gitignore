@@ -114,3 +114,11 @@ local_settings.py
 
 .env
 db.sqlite3
+
+### React dependencies
+
+front-end/node_modules/
+
+### venv backend
+
+back-end/venv/

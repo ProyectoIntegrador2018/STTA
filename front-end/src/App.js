@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Login from './views/Login';
+import LoginUser from './views/Login-User';
 import "antd/dist/antd.css";
 import "ant-design-pro/dist/ant-design-pro.css";
 import './App.css';
@@ -11,8 +12,10 @@ import AppLayout from "./components/AppLayout";
 import Documentos from "./views/Documentos";
 import DocumentosSubir from "./views/DocumentosSubir";
 import Restablecer from './views/Restablecer';
+import Register from './views/Registro';
 import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
+import AppLayoutUser from './components/AppLayoutUser';
 
 class App extends Component {
 
@@ -38,7 +41,7 @@ class App extends Component {
     return (
             <Router className="App" ref={API.bodySiteRef}>
                 <div>
-                    <Route exact path="/" component={this.LoginView} />
+                    <Route exact path="/" component={this.LoginUserView} />
                     <Route exact path="/dashboard" component={this.DashboardView} />
                     <Route exact path="/procesos" component={this.ProcesosView} />
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
@@ -48,6 +51,8 @@ class App extends Component {
                     <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
                     <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
                     <Route exact path="/login" component={this.LoginView} />
+                    <Route exact path="/registro" component={this.RegisterView} />
+                    <Route exact path="/mistramites" component={this.EstudentView} />
                 </div>
             </Router>
     );
@@ -60,6 +65,22 @@ class App extends Component {
     LoginView = () => {
         return (<Login/>);
       };
+
+    LoginUserView = () => {
+        return (<LoginUser/>);
+    }
+
+    RegisterView = () => {
+        return (<Register/>);
+    }
+
+    EstudentView = () => {
+        return (
+            <AppLayoutUser type={"basic"}>
+            
+            </AppLayoutUser>
+        )
+    }
 
     DashboardView = () => {
 

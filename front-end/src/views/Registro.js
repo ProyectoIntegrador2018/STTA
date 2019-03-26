@@ -9,14 +9,13 @@ import logo from '../images/logo.png';
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
 
-class Restablecer extends Component {
+class Registro extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             uid: props.uid,
-            token: props.token,
             confirmDirty: false,
             loading: false,
             warning: false,
@@ -28,32 +27,6 @@ class Restablecer extends Component {
         this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
         this.validateToNextPassword = this.validateToNextPassword.bind(this);
     }
-
-    componentDidMount(){
-        this.validateToken();
-    }
-
-    validateToken = () =>{
-        this.setState({ loading: true, });
-        API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
-            console.log(response);
-            if(response === 1){
-
-            }else{
-                this.setState({ warning: true });
-                Modal.warning({
-                    title: 'Lo sentimos!',
-                    content: 'El url no existe o ha expirado ',
-                    onOk:() => {API.redirectTo('/login')}
-                });
-            }
-            this.setState({ loading: false, });
-        },(response)=>{
-
-            this.setState({ loading: false, });
-        },false);
-    };
-
 
     handleConfirmBlur = (e) => {
     const value = e.target.value;
@@ -82,9 +55,9 @@ class Restablecer extends Component {
         this.props.form.validateFields((error, values) => {
           if (!error) {
               this.setState({ loading: true, });
-              API.call('reset_password/',{uid: this.state.uid,password:values.password, token: this.state.token},(response)=>{
+              API.call('create_account/',{uid: this.state.uid,password:values.password},(response)=>{
                   if(response === 1){
-                      Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
+                      Notifications.openNotificationWithIcon("success","Tu cuenta ha sido creada con éxito","");
                       API.logout();
                       this.setState({ redirect: true, });
                   }
@@ -118,14 +91,21 @@ class Restablecer extends Component {
                         <img className="logo-image" src={logo} alt={''}/>
                     </div>
                     <Form.Item className="restore-title">
-                        <h2>Restablecer contraseña</h2>
+                        <h2 className="admin-login-title">Registro de nueva cuenta</h2>
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('userName', {
+                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico (A00...)' }],
+                        })(
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico (A0...@itesm.mx)" />
+                        )}
                     </Form.Item>
                     <Form.Item>
                         {getFieldDecorator('password', {
-                        rules: [{ required: true, message: 'Por favor ingresa la nueva contraseña' }, ,
+                        rules: [{ required: true, message: 'Por favor ingresa la contraseña' }, ,
                             {validator: this.validateToNextPassword,}],
                         })(
-                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Nueva contraseña" />
+                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
                         )}
                     </Form.Item>
                     <Form.Item>
@@ -140,16 +120,16 @@ class Restablecer extends Component {
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button"
                                 loading={this.state.loading} disabled={this.state.loading}>
-                        Restablecer contraseña
+                            Crear cuenta
                         </Button> 
                     </Form.Item>
                     </Form>
                 </Col>
                 </Row>
-            </div>           
+            </div> 
         );
     }
 }
 
-const WrappedNormalLoginForm = Form.create({ name: 'restablecer' })(Restablecer);
-export default WrappedNormalLoginForm;
+const WrappedNormalRegisterForm = Form.create({ name: 'restablecer' })(Registro);
+export default WrappedNormalRegisterForm;

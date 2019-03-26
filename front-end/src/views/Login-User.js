@@ -40,7 +40,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
   );
   
 
-class Login extends Component {
+class LoginUser extends Component {
 
   constructor(props) {
     super(props);
@@ -121,9 +121,6 @@ class Login extends Component {
               <div className="logo-image-container">
                 <img className="logo-image" src={logo} alt={''}/>
               </div>
-              <Form.Item className="restore-title">
-                <h2 className="admin-login-title">Inicio de sesión administrador</h2>
-              </Form.Item>
               <Form.Item>
                 {getFieldDecorator('userName', {
                   rules: [{ required: true, message: 'Por favor ingresa el usuario' }],
@@ -145,6 +142,8 @@ class Login extends Component {
                 })(
                   <Checkbox>Recuérdame</Checkbox>
                 )}
+                <a className="login-form-right" onClick={this.showModal}>Registrarme</a>
+                <br></br>
                 <a className="login-form-right" onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
                 <br></br>
                 <Button type="primary" htmlType="submit" className="login-form-button"
@@ -168,5 +167,5 @@ class Login extends Component {
 }
 
 
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Login);
-export default WrappedNormalLoginForm;
+const WrappedNormalLoginUserForm = Form.create({ name: 'normal_login' })(LoginUser);
+export default WrappedNormalLoginUserForm;
