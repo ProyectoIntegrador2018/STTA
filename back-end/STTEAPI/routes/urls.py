@@ -23,6 +23,8 @@ from django.conf.urls import url, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login-admin/', controller.login_admin),
+    path('login-estudiante/', controller.login_student),
+    path('registro-estudiante/', controller.registro_Alumnos),
     path('procesos/', controller.procesos),
     path('documentos/', controller.documentos),
     path('pasos-procesos/', controller.pasos_procesos),

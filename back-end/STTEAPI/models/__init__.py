@@ -18,7 +18,7 @@ class MyUserManager(BaseUserManager):
         return pac
 
     def create_alumno(self, email, password, **alumno):
-        user = self.model(email=email, is_staff=True, is_superuser=True, es_doctor=True)
+        user = self.model(email=email, is_staff=True, is_superuser=True, es_alumno=True)
         user.set_password(password)
         user.save(using=self._db)
         doc = Alumno.objects.create(usuario=user)

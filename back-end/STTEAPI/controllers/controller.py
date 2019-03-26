@@ -99,6 +99,15 @@ def pasos_procesos(request):
     return JsonResponse(pasos, safe=False)
 
 @api_view(["POST"])
+def registro_Alumnos(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='email', required=True)
+    args.check_parameter(key='password', required=True)
+    args = args.__dict__()
+    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'])
+    return JsonResponse(1, safe=False)
+
+@api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def documentos(request):
     docs = Documento.objects.select_related('admin__usuario').values('id','nombre', 'fecha', 'contenido_subido',
@@ -132,6 +141,18 @@ def login_admin(request):
     if user == None:
         raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
     if not user.es_admin:
+        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+    token, _ = Token.objects.get_or_create(user=user)
+    return JsonResponse({'token': token.key}, safe=False)
+
+@api_view(["POST"])
+def login_student(request):
+    email = request.POST.get('email','')
+    password = request.POST.get('password','')
+    user = authenticate(username=email, password=password)
+    if user == None:
+        raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
+    if not user.es_alumno:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
     return JsonResponse({'token': token.key}, safe=False)
