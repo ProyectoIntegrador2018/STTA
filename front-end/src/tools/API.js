@@ -44,7 +44,7 @@ export default class API {
         }else{
             //API.bodySiteRef.current.history.push(to);
             //document.getElementById("site_loader").hidden = false;
-            window.location.assign("/login")
+            window.location.href = "/login";
         }
     }
 

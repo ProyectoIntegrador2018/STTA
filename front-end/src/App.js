@@ -31,7 +31,6 @@ class App extends Component {
 
     componentDidMount(){
         document.getElementById("site_loader").remove();
-
     }
 
 

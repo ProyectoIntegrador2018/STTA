@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'corsheaders',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'channels',
+    'channels_api'
 ]
 
 MIDDLEWARE = [
