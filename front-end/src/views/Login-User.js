@@ -143,7 +143,7 @@ class LoginUser extends Component {
                 })(
                   <Checkbox>Recuérdame</Checkbox>
                 )}
-                <Link to={"/registro"}><Icon type="pie-chart" />
+                <Link to={"/registro"}>
                   <span className="login-form-right">Registrarme</span>
                 </Link>
                 <br></br>
