@@ -185,3 +185,4 @@ def validate_password_token(request):
         raise APIExceptions.InvalidUIdToken
     else:
         return JsonResponse(1, safe=False)
+

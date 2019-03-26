@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path
 from STTEAPI.controllers import controller
 from django.contrib import admin
-
+from django.conf.urls import url, include
 
 #admin.site.register(Usuario, UserAdmin)
 #admin.site.unregister(Group)
@@ -34,5 +34,7 @@ urlpatterns = [
     path('request_restore/',controller.request_restore),
     path('reset_password/',controller.reset_password),
     path('validate_password_token/', controller.validate_password_token),
+
+    url(r'^channels-api/', include('channels_api.urls'))
 ]
 
