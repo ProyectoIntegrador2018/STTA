@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5916c54-5243-4592-9426-9db4db439a7b" name="Default" comment="Servicios para crear procesos nuevos">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/STTEAPI/routes/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/STTEAPI/routes/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front-end/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../front-end/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../front-end/package-lock.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -335,12 +334,12 @@
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="1" sideWeight="0.49702382" weight="0.3289689" />
       <window_info anchor="bottom" id="Database Changes" order="2" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Python Console" order="3" weight="0.32969698" />
-      <window_info anchor="bottom" id="Terminal" order="4" sideWeight="0.49107143" weight="0.32569557" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.5119048" side_tool="true" visible="true" weight="0.40261865" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="3" sideWeight="0.4985119" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="Terminal" order="4" sideWeight="0.48958334" weight="0.32569557" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.5014881" side_tool="true" visible="true" weight="0.3289689" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="8" sideWeight="0.48809522" visible="true" weight="0.40261865" />
+      <window_info anchor="bottom" id="Run" order="8" sideWeight="0.48660713" weight="0.40261865" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
