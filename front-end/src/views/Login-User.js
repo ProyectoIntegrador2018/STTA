@@ -8,6 +8,7 @@ import loginImage from '../images/stte.png';
 import logo from '../images/logo.png';
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
+import { Link } from 'react-router-dom'
 
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
     class extends React.Component {
@@ -142,7 +143,9 @@ class LoginUser extends Component {
                 })(
                   <Checkbox>Recuérdame</Checkbox>
                 )}
-                <a className="login-form-right" onClick={this.showModal}>Registrarme</a>
+                <Link to={"/registro"}>
+                  <span className="login-form-right">Registrarme</span>
+                </Link>
                 <br></br>
                 <a className="login-form-right" onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
                 <br></br>
