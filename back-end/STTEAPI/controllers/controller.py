@@ -99,6 +99,15 @@ def pasos_procesos(request):
     return JsonResponse(pasos, safe=False)
 
 @api_view(["POST"])
+def registro_Alumnos(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='email', required=True)
+    args.check_parameter(key='password', required=True)
+    args = args.__dict__()
+    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'])
+    return JsonResponse(1, safe=False)
+
+@api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def documentos(request):
     docs = Documento.objects.select_related('admin__usuario').values('id','nombre', 'fecha', 'contenido_subido',
