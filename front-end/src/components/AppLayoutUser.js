@@ -35,7 +35,7 @@ export default class AppLayoutUser extends Component {
 
                     <Menu  theme="dark" className={'ant-menu-tec'} mode="inline" defaultSelectedKeys={[this.props.view || 0]}>
                         <Menu.Item key="0">
-                            <Link to={"/mistramites"}><Icon type="pie-chart" />
+                            <Link to={"/tramite"}><Icon type="profile" />
                                 <span className="nav-text">Mis trámites</span></Link>
                         </Menu.Item>
                         <Menu.Item key="1">

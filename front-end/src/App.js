@@ -16,6 +16,9 @@ import Register from './views/Registro';
 import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
 import AppLayoutUser from './components/AppLayoutUser';
+import Tramite from './views/Tramite';
+import Administradores from './views/Administradores';
+import Alumnos from './views/Alumnos';
 
 class App extends Component {
 
@@ -46,12 +49,13 @@ class App extends Component {
                     <Route exact path="/procesos" component={this.ProcesosView} />
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
+                    <Route exact path="/alumnos" component={this.AlumnosView} />
                     <Route exact path="/documentos" component={this.DocumentosView} />
                     <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
                     <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
-                    <Route exact path="/mistramites" component={this.EstudentView} />
+                    <Route exact path="/tramite" component={this.EstudentView} />
                 </div>
             </Router>
     );
@@ -76,7 +80,7 @@ class App extends Component {
     EstudentView = () => {
         return (
             <AppLayoutUser type={"basic"}>
-            
+                <Tramite/>
             </AppLayoutUser>
         )
     }
@@ -93,11 +97,18 @@ class App extends Component {
     AdministradoresView = () => {
         return (
             <AppLayout view={"1"} type={"basic"}>
-
+                <Administradores/>
             </AppLayout>
         );
     };
 
+    AlumnosView = () => {
+        return (
+            <AppLayout type={"basic"}>
+                <Alumnos/>
+            </AppLayout>
+        );
+    };
 
     EstudiantesView = () => {
         return (

@@ -65,7 +65,7 @@ class Proceso(models.Model):
         managed = False
         db_table = 'Proceso'
 
-
+#                                                           #
 class Tramitealumno(models.Model):
     id = models.IntegerField(primary_key=True)
 

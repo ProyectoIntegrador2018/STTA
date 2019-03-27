@@ -38,9 +38,11 @@ urlpatterns = [
     path('reset_password/',controller.reset_password),
     path('validate_password_token/', controller.validate_password_token),
     path('return_admins/',controller.return_admin_list),
+    path('return_student_list/',controller.return_student_list),
     path('get_alumno/<id_alumno>/', controller.return_student),
     path('eliminar_alumnos/', controller.eliminar_alumnos),
-    path('eliminar_administradores/', controller.eliminar_administradores)
+    path('eliminar_administradores/', controller.eliminar_administradores),
+    path('agregar_administrador/',controller.registro_administradores)
 
 ]
 

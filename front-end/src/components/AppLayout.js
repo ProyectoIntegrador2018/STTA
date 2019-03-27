@@ -44,8 +44,8 @@ export default class AppLayout extends Component {
                                 <span className="nav-text">Administradores</span></Link>
                         </Menu.Item>
                         <Menu.Item key="2">
-                            <Link to={"/estudiantes"}><Icon type="team" />
-                                <span className="nav-text">Estudiantes</span></Link>
+                            <Link to={"/alumnos"}><Icon type="team" />
+                                <span className="nav-text">Alumnos</span></Link>
                         </Menu.Item>
                         <Menu.Item  key="3">
                             <Link to={"/procesos"}><Icon type="cluster" />
