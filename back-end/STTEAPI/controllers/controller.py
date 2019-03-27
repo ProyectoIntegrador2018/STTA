@@ -99,6 +99,8 @@ def pasos_procesos(request):
     pasos = [dict(p) for p in pasos]
     return JsonResponse(pasos, safe=False)
 
+#                                                           #Entrada: email, password, nombre, apellido; Salida: none.
+#                                                           #Metodo para guardar en la base de datos la información del alumno cuando se va a registrar.
 @api_view(["POST"])
 def registro_Alumnos(request):
     args = PostParametersList(request)
@@ -194,7 +196,8 @@ def reset_password(request):
     check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
 
     if check:
-        return JsonResponse(1, safe=False)
+        user = PasswordToken.validate_token(args['uid'], args['token'])
+        return JsonResponse(1 if user.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
