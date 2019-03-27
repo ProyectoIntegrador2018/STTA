@@ -68,6 +68,7 @@ class Proceso(models.Model):
 
 class Tramitealumno(models.Model):
     id = models.IntegerField(primary_key=True)
+
     proceso = models.ForeignKey(Proceso, models.DO_NOTHING, db_column='proceso')
     alumno = models.ForeignKey(Alumno, models.DO_NOTHING, db_column='alumno')
     paso_actual = models.ForeignKey(Paso, models.DO_NOTHING, db_column='paso_actual')

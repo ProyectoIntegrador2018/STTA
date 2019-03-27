@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 
 from django.core import serializers
@@ -236,3 +237,39 @@ def return_student(request,id_alumno):
     stu = Alumno.objects.filter(id=id_alumno)
     stu = serializers.serialize('json',stu)
     return HttpResponse(stu, content_type='application/json')
+
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra de 1 a N alumnos
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_alumnos(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='alumno', required=True, is_json=True)
+    print(args['alumno'])
+    for a in args['alumno']:
+        try:
+            doc = Alumno.objects.get(id=a['id'])
+            doc.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+
+    return JsonResponse(1, safe=False)
+
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra de 1 a N administradores
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_administradores(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='admin', required=True, is_json=True)
+    print(args['admin'])
+    for a in args['admin']:
+        try:
+            doc = Administrador.objects.get(id=a['id'])
+            doc.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+
+    return JsonResponse(1, safe=False)
