@@ -1,8 +1,9 @@
 import json
 
+from django.core import serializers
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db import transaction,IntegrityError
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, urlencode
@@ -225,3 +226,12 @@ def return_student_list(request):
     stu = Alumno.objects.select_related('usuario').values('id','nombre','apellido','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
     stu = [dict(adm) for adm in stu]
     return JsonResponse(stu, safe=False)
+
+#                                                           #Entrada: numero de id de alumno ; Salida: todos sus datos
+#                                                           #Se usa filter para recuperar el alumno, entonces se serializa el contenido y se regresa en formato json, se envía mediante HTTPResponse
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def return_student(request,id_alumno):
+    stu = Alumno.objects.filter(id=id_alumno)
+    stu = serializers.serialize('json',stu)
+    return HttpResponse(stu, content_type='application/json')
