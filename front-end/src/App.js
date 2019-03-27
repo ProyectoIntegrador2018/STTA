@@ -45,7 +45,6 @@ class App extends Component {
                     <Route exact path="/dashboard" component={this.DashboardView} />
                     <Route exact path="/procesos" component={this.ProcesosView} />
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
-                    <Route exact path="/estudiantes" component={this.EstudiantesView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
                     <Route exact path="/documentos" component={this.DocumentosView} />
                     <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />

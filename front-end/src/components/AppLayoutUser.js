@@ -42,7 +42,7 @@ export default class AppLayoutUser extends Component {
                             <Link to={"/historial"}><Icon type="user" />
                                 <span className="nav-text">Trámites pasados</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="3" onClick={(e) => {API.logout();}}>
+                        <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
                             <Icon type="logout" />
                             <span>Salir</span>
                         </Menu.Item>
