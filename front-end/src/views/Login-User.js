@@ -50,8 +50,8 @@ class LoginUser extends Component {
 
   state = {
     visible: false,
-      loading: false,
-      rememberMe: true
+    loading: false,
+    rememberMe: true
   };
 
   showModal = () => {
