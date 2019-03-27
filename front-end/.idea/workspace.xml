@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="814ce5f3-aefb-4d1c-9ee3-0e744c648217" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/../back-end/STTEAPI/controllers/controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/STTEAPI/controllers/controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../back-end/STTEAPI/routes/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/STTEAPI/routes/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -276,7 +278,7 @@
       <workItem from="1552375800817" duration="710000" />
       <workItem from="1552424101238" duration="38693000" />
       <workItem from="1552540574173" duration="304000" />
-      <workItem from="1553632946966" duration="7660000" />
+      <workItem from="1553632946966" duration="8270000" />
     </task>
     <task id="LOCAL-00001" summary="tools folder added">
       <created>1551200208941</created>
@@ -303,7 +305,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="110251000" />
+    <option name="totallyTimeSpent" value="110861000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
