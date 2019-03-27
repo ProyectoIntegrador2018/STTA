@@ -276,7 +276,7 @@
       <workItem from="1552375800817" duration="710000" />
       <workItem from="1552424101238" duration="38693000" />
       <workItem from="1552540574173" duration="304000" />
-      <workItem from="1553632946966" duration="7061000" />
+      <workItem from="1553632946966" duration="7660000" />
     </task>
     <task id="LOCAL-00001" summary="tools folder added">
       <created>1551200208941</created>
@@ -303,7 +303,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109652000" />
+    <option name="totallyTimeSpent" value="110251000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />

@@ -207,7 +207,8 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
-@api_view(["GET"]) #entrada: nada, salida: una lista con todos los admins con su informacion de usuario
+#                                                           #Entrada: nada; Salida: una lista con todos los admins con su informacion de usuario
+@api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_admin_list(request):
     admins = Administrador.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
