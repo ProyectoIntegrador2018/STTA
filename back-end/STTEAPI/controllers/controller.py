@@ -207,3 +207,8 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
+@api_view(["GET"])
+def obtener_info_alumnos(request):
+    infoa = Alumno.objects.select_related('usuario').values('id','nombre','apellido','usuario__email', 'usuario_id')
+    infoa = [dict(p) for p in infoa]
+    return JsonResponse(infoa, safe=False)
