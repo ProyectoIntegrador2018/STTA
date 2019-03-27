@@ -276,3 +276,16 @@ def eliminar_administradores(request):
             raise APIExceptions.PermissionDenied
 
     return JsonResponse(1, safe=False)
+
+#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
+#                                                           #Registra un administrador
+@api_view(["POST"])
+#permission_classes((IsAuthenticated, EsAdmin))
+def registro_administradores(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='email', required=True)
+    args.check_parameter(key='password', required=True)
+    args.check_parameter(key='nombre', required=True)
+    args = args.__dict__()
+    user  = Usuario.objects.create_admin(email=args['email'], password=args['password'], nombre=args['nombre'])
+    return JsonResponse(1, safe=False)

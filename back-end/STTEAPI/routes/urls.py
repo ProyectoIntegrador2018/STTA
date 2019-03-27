@@ -40,7 +40,8 @@ urlpatterns = [
     path('return_admins/',controller.return_admin_list),
     path('get_alumno/<id_alumno>/', controller.return_student),
     path('eliminar_alumnos/', controller.eliminar_alumnos),
-    path('eliminar_administradores/', controller.eliminar_administradores)
+    path('eliminar_administradores/', controller.eliminar_administradores),
+    path('agregar_administrador/',controller.registro_administradores)
 
 ]
 
