@@ -217,7 +217,7 @@ def return_admin_list(request):
     return JsonResponse(admins, safe=False)
 
 
-#                                                                                                                
+#                                                           #Entrada: nada; Salida: lista con toda la informacion de usuario de de los alumnos
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):

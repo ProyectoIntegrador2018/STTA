@@ -92,16 +92,22 @@ class Login extends Component {
           this.setState({ loading: true });
           let params = { email:values.userName, password:values.password, remember:values.remember ? 1:0};
           console.log(params);
-        API.call('login-admin/',params,(response) => {
+        API.restCall({
+          service:'login-admin/',
+          method: "post",
+          params: params,
+          success:(response) => {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
             API.redirectTo("/dashboard");
-        },(response) => {this.setState({ loading: false });},false);
-
-      }
+          },
+          error:(response) => {this.setState({ loading: false });},
+          wToken: false
+        });
+      };
     });
-  };
+  }
 
   render() {
 
