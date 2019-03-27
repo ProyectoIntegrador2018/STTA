@@ -207,3 +207,19 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: nada; Salida: una lista con todos los admins con su informacion de usuario
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def return_admin_list(request):
+    admins = Administrador.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    admins = [dict(adm) for adm in admins]
+    return JsonResponse(admins, safe=False)
+
+
+#                                                           #Entrada: nada; Salida: lista con toda la informacion de usuario de de los alumnos
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def return_student_list(request):
+    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    stu = [dict(adm) for adm in stu]
+    return JsonResponse(stu, safe=False)
