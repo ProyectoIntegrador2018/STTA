@@ -215,6 +215,7 @@ def validate_password_token(request):
         return JsonResponse(1, safe=False)
 
 #                                                           #Entrada: nada; Salida: una lista con todos los admins con su informacion de usuario
+#                                                           #Regresa la lista entera de administradores
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_admin_list(request):
@@ -224,7 +225,7 @@ def return_admin_list(request):
 
 
 #                                                           #Entrada: nada; Salida: lista con toda la informacion de usuario de de los alumnos
-#                                                           #Se recuperan los datos de todos los administradores y se envían en formato json
+#                                                           #Se recuperan los datos de todos los alumnos y se envían en formato json
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
@@ -280,7 +281,7 @@ def eliminar_administradores(request):
 #                                                           #Entrada: Parametro de lista POST ; Salida: Nada
 #                                                           #Registra un administrador
 @api_view(["POST"])
-#permission_classes((IsAuthenticated, EsAdmin))
+@permission_classes((IsAuthenticated, EsAdmin))
 def registro_administradores(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
