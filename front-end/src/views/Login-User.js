@@ -97,7 +97,7 @@ class LoginUser extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
-            API.redirectTo("/mistramites");
+            API.redirectTo("/tramite");
         },(response) => {this.setState({ loading: false });},false);
 
       }

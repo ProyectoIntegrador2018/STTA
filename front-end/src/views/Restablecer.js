@@ -86,8 +86,13 @@ class Restablecer extends Component {
                   if(response === 1){
                       Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
                       API.logout();
-                      this.setState({ redirect: true, });
+                      API.redirectTo("/login")
                   }
+                  else{
+                    Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
+                    API.logout();
+                    API.redirectTo("/")
+                }
                   this.setState({ loading: false, });
 
               },(response)=>{this.setState({ loading: false, });},false);

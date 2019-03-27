@@ -1,5 +1,6 @@
 # coding=utf-8
 import json
+import re
 
 from django.core import serializers
 
@@ -22,6 +23,7 @@ from STTEAPI.settings.password_token import PasswordToken
 from django.db.models import Count, F
 from django.core.mail import send_mail
 
+EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
@@ -110,8 +112,11 @@ def registro_Alumnos(request):
     args.check_parameter(key='nombre', required=True)
     args.check_parameter(key='apellido', required=True)
     args = args.__dict__()
+    if not re.match(EMAIL_REGEX, args['email']):
+        raise exceptions.PermissionDenied(detail="Email invalido")
     user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
     return JsonResponse(1, safe=False)
+
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
