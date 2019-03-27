@@ -100,7 +100,7 @@ class Login extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
-            API.redirectTo("/mistramites");
+            API.redirectTo("/dashboard");
           },
           error:(response) => {this.setState({ loading: false });},
           wToken: false
