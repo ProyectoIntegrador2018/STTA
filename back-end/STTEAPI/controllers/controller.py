@@ -194,7 +194,8 @@ def reset_password(request):
     check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
 
     if check:
-        return JsonResponse(1, safe=False)
+        user = PasswordToken.validate_token(args['uid'], args['token'])
+        return JsonResponse(1 if user.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
