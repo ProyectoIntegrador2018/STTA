@@ -30,7 +30,7 @@ urlpatterns = [
     path('pasos-procesos/', controller.pasos_procesos),
     path('subir-documento/', controller.subir_documento),
     path('logout/', controller.logout),
-    path('mostrar_alumnos/', controller.obtener_info_alumnos),
+    path('mostrar_alumnos/', controller.return_student_list),
     path('agregar-proceso/',controller.agregar_proceso),
     path('borrar-procesos/',controller.borrar_procesos),
     path('eliminar-documentos/',controller.eliminar_documentos),

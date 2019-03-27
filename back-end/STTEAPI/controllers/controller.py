@@ -216,3 +216,9 @@ def return_admin_list(request):
 
 
 
+@api_view(["GET"]) #entrada: nada, salida: una lista con todos los admins con su informacion de usuario
+#@permission_classes((IsAuthenticated, EsAdmin))
+def return_student_list(request):
+    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    stu = [dict(adm) for adm in stu]
+    return JsonResponse(stu, safe=False)
