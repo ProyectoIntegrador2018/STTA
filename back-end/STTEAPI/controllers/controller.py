@@ -285,8 +285,22 @@ def eliminar_administradores(request):
 def registro_administradores(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
-    args.check_parameter(key='password', required=True)
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
-    user  = Usuario.objects.create_admin(email=args['email'], password=args['password'], nombre=args['nombre'])
+    user  = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
     return JsonResponse(1, safe=False)
+
+#                                                           #Entrada: nada; Salida: lista con toda la informacion de tramites de alumnos
+#                                                           #Se recuperan los datos ddel tramite y se envían en formato json
+#@api_view(["GET"])
+#@permission_classes((IsAuthenticated, EsAdmin))
+#def return_datos_tramite(request):
+#    tra = Tramitealumno.objects.select_related('proceso').select_related('alumno').select_related('paso_actual').values('id',
+#                                                                                                                       'nombre',
+#                                                                                                                        'apellido',
+#                                                                                                                       'usuario__id',
+#                                                                                                                        email=F('usuario__email'),
+#                                                                                                                        last_login=F('usuario__last_login'),
+#                                                                                                                       )
+#    tra = [dict(t) for t in tra]
+#    return JsonResponse(tra, safe=False)
