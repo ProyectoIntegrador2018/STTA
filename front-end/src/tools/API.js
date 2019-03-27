@@ -112,4 +112,19 @@ export default class API {
             API.redirectTo('/login');
         }
     }
+
+    static logoutUser() {
+        if (localStorage.getItem('token')!= null){
+            API.call("logout/",{}, (response)=>{
+                console.log(response);
+                Notifications.openNotificationWithIcon('success',"Sesión cerrada con éxito","");
+            });
+            localStorage.removeItem('token');
+            API.redirectTo('/');
+        }else{
+            localStorage.removeItem('token');
+            //API.cookies.remove('token');
+            API.redirectTo('/');
+        }
+    }
 }

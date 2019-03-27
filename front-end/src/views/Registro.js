@@ -15,7 +15,6 @@ class Registro extends Component {
         super(props);
 
         this.state = {
-            uid: props.uid,
             confirmDirty: false,
             loading: false,
             warning: false,
@@ -55,11 +54,10 @@ class Registro extends Component {
         this.props.form.validateFields((error, values) => {
           if (!error) {
               this.setState({ loading: true, });
-              API.call('create_account/',{uid: this.state.uid,password:values.password},(response)=>{
+              API.call('registro-estudiante/',{nombre: values.name, apellido: values.lastName, email: values.userName, password:values.password},(response)=>{
                   if(response === 1){
                       Notifications.openNotificationWithIcon("success","Tu cuenta ha sido creada con éxito","");
-                      API.logout();
-                      this.setState({ redirect: true, });
+                      API.redirectTo('/')
                   }
                   this.setState({ loading: false, });
 
@@ -72,9 +70,6 @@ class Registro extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        if (this.state.redirect){
-            return (<Redirect to={'/login'}/>);
-        }
 
         return (
             <div className="App">
@@ -92,6 +87,20 @@ class Registro extends Component {
                     </div>
                     <Form.Item className="restore-title">
                         <h2 className="admin-login-title">Registro de nueva cuenta</h2>
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('name', {
+                        rules: [{ required: true, message: 'Por favor ingresa tu nombre' }],
+                        })(
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Nombre" />
+                        )}
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('lastName', {
+                        rules: [{ required: true, message: 'Por favor ingresa tus apellidos' }],
+                        })(
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Apellidos" />
+                        )}
                     </Form.Item>
                     <Form.Item>
                         {getFieldDecorator('userName', {
