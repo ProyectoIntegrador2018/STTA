@@ -213,3 +213,6 @@ def return_admin_list(request):
     admins = Administrador.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
     admins = [dict(adm) for adm in admins]
     return JsonResponse(admins, safe=False)
+
+
+
