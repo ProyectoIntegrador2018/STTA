@@ -38,6 +38,5 @@ urlpatterns = [
     path('reset_password/',controller.reset_password),
     path('validate_password_token/', controller.validate_password_token),
 
-    url(r'^channels-api/', include('channels_api.urls'))
 ]
 
