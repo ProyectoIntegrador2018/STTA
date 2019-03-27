@@ -103,8 +103,10 @@ def registro_Alumnos(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
     args.check_parameter(key='password', required=True)
+    args.check_parameter(key='nombre', required=True)
+    args.check_parameter(key='apellido', required=True)
     args = args.__dict__()
-    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'])
+    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
     return JsonResponse(1, safe=False)
 
 @api_view(["POST"])
@@ -218,8 +220,8 @@ def return_admin_list(request):
 
 #                                                           #Entrada: nada; Salida: lista con toda la informacion de usuario de de los alumnos
 @api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAdmin))
+#@permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
-    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    stu = Alumno.objects.select_related('usuario').values('id','nombre','apellido','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
     stu = [dict(adm) for adm in stu]
     return JsonResponse(stu, safe=False)
