@@ -37,6 +37,47 @@ export default class API {
         });
     }
 
+    static restCall(options){
+        let op = {
+            method: "get",
+            sevice: "",
+            params: {}, 
+            success: (function(response){}),
+            error: (function(response){}), 
+            wToken: true
+        }
+        for (var key in options){
+            op[key] = options[key];
+        }
+  
+        let  client = new FetchHttpClient('http://127.0.0.1:8000/');
+        client.addMiddleware(form());
+        client.addMiddleware(json());
+        if(op.wToken){
+            client.addMiddleware(header({'Authorization': 'Token ' + localStorage.getItem('token')}));
+        }
+        client[op.method](op.service, {form: op.params}).then(response => {
+            console.log(op.method)
+            if (response.status === 200) {
+                console.log(response.jsonData);
+                return op.success(response.jsonData);
+            }else if (response.status === 500)  {
+                console.log(response);
+                Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
+                return op.error(response);
+            }else{
+                console.log(response);
+                if (response.jsonData){
+                    Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,response.jsonData.detail);
+                    //API.redirectTo('/login');
+                }else{
+                    Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
+                }
+                return op.error(response);
+            }
+        });
+    }
+
     static redirectTo(to){
         if (API.bodySiteRef != null && API.bodySiteRef.current != null){
             console.log(API.bodySiteRef);
