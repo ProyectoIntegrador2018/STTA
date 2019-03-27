@@ -99,6 +99,8 @@ def pasos_procesos(request):
     pasos = [dict(p) for p in pasos]
     return JsonResponse(pasos, safe=False)
 
+#                                                           #Entrada: email, password, nombre, apellido; Salida: none.
+#                                                           #Metodo para guardar en la base de datos la información del alumno cuando se va a registrar.
 @api_view(["POST"])
 def registro_Alumnos(request):
     args = PostParametersList(request)
