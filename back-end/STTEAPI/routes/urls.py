@@ -36,6 +36,7 @@ urlpatterns = [
     path('request_restore/',controller.request_restore),
     path('reset_password/',controller.reset_password),
     path('validate_password_token/', controller.validate_password_token),
+    path('return_admins/',controller.return_admin_list)
 
 ]
 
