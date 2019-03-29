@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 import json
 import re
 
@@ -131,6 +132,7 @@ def documentos(request):
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
 def subir_documento(request):
     args = PostParametersList(request)
     args.check_parameter(key='filename', required=True)
@@ -139,7 +141,22 @@ def subir_documento(request):
     doc = Documento.objects.create(nombre=args['filename'],contenido_subido=args['content'],admin=admin,
                                    proceso_id=args['proceso'])
 
+    contenido = json.loads(args['content'])
+    for c in contenido['data']:
+        fecha_1 = datetime.strptime(c['fecha_apertura'], '%m/%d/%y %H:%M')
+        fecha_2 = datetime.strptime(c['fecha_ultima'], '%m/%d/%y %H:%M')
+        p_ok = -1
+        p = 1
+        while (('paso_' + str(p)) in c ):
+            if c['paso_' + str(p)] == 'ok':
+                p_ok = p
+            p = p + 1
+        paso = None
+        if p_ok != -1:
+            paso = Paso.objects.filter(proceso_id=args['proceso'], numero=p_ok).first()
 
+        tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
+                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso)
 
     return JsonResponse(doc.id, safe=False)
 
@@ -283,6 +300,22 @@ def eliminar_administradores(request):
 
     return JsonResponse(1, safe=False)
 
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_tramites(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='tramites', required=True, is_json=True)
+    print(args['tramites'])
+    for a in args['tramites']:
+        try:
+            doc = Tramitealumno.objects.get(id=a['id'])
+            doc.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+
+    return JsonResponse(1, safe=False)
+
 #                                                           #Entrada: Parametro de lista POST ; Salida: Nada
 #                                                           #Registra un administrador
 @api_view(["POST"])
@@ -297,15 +330,31 @@ def registro_administradores(request):
 
 #                                                           #Entrada: nada; Salida: lista con toda la informacion de tramites de alumnos
 #                                                           #Se recuperan los datos ddel tramite y se envían en formato json
-#@api_view(["GET"])
+@api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
-#def return_datos_tramite(request):
-#    tra = Tramitealumno.objects.select_related('proceso').select_related('alumno').select_related('paso_actual').values('id',
-#                                                                                                                       'nombre',
-#                                                                                                                        'apellido',
-#                                                                                                                       'usuario__id',
-#                                                                                                                        email=F('usuario__email'),
-#                                                                                                                        last_login=F('usuario__last_login'),
-#                                                                                                                       )
-#    tra = [dict(t) for t in tra]
-#    return JsonResponse(tra, safe=False)
+def return_datos_tramite(request):
+    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'paso_actual',
+                                                                                          'fecha_ultima_actualizacion')
+    tra = [dict(t) for t in tra]
+    return JsonResponse(tra, safe=False)
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAlumno))
+def get_datos_tramite_alumno(request):
+    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
+                                                                 'proceso__nombre', 'proceso_id',
+                                                                 'fecha_inicio', 'paso_actual',
+                                                                 'fecha_ultima_actualizacion').filter(
+                                                                 matricula=request.user.email[:9])
+    tra = [dict(t) for t in tra]
+    return JsonResponse(tra, safe=False)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAlumno))
+def get_pasos_tramites(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='id', required=True)
+    args = args.__dict__()
+    tra = Paso.objects.filter(proceso_id=args['id']).order_by('numero').values()
+    tra = [dict(t) for t in tra]
+    return JsonResponse(tra, safe=False)

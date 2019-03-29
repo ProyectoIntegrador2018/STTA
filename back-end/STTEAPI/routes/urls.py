@@ -41,8 +41,12 @@ urlpatterns = [
     path('return_student_list/',controller.return_student_list),
     path('get_alumno/<id_alumno>/', controller.return_student),
     path('eliminar_alumnos/', controller.eliminar_alumnos),
+    path('eliminar_tramites/', controller.eliminar_tramites),
     path('eliminar_administradores/', controller.eliminar_administradores),
-    path('agregar_administrador/',controller.registro_administradores)
+    path('agregar_administrador/',controller.registro_administradores),
+    path('get_tramites/',controller.return_datos_tramite),
+    path('get_datos_tramite_alumno/',controller.get_datos_tramite_alumno),
+    path('get_pasos_tramites/',controller.get_pasos_tramites)
 
 ]
 
