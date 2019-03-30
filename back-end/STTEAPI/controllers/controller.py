@@ -201,9 +201,12 @@ def request_restore(request):
     try:
         send_mail(
             'Restablece tu contraseña',
-            '<a href="http://127.0.0.1:3000/restaurar/' + str(url_data.uid) + '/' + url_data.token + '">Click aqui</a>',
             'STTE ITESM',
+            "",
             [args['email']],
+            html_message='<a href="http://127.0.0.1:3000/restaurar/' + str(url_data.uid) + '/' + url_data.token + '">Haz click aquí para restablecer tu contraseña</a>',
+
+            
             fail_silently=False, )
     except:
         raise APIExceptions.SendMailError
@@ -220,7 +223,7 @@ def reset_password(request):
 
     if check:
         user = PasswordToken.validate_token(args['uid'], args['token'])
-        return JsonResponse(1 if user.es_admin else 2, safe=False)
+        return JsonResponse(1 if user and user.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
