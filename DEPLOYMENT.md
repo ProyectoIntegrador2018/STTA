@@ -1,6 +1,24 @@
 # Despliegue del proyecto
 
+El proyecto será desplegado en un servidor EC2 de ASW, con Apache. Los pasos para el despliegue son los siguientes.
+
+## Conexión al AWS
+
+1. Open an SSH client. (find out how to connect using PuTTY)
+2. Locate your private key file (tramitesescolares_ubuntu.pem). The wizard automatically detects the key you used to launch the instance.
+3. Your key must not be publicly viewable for SSH to work. Use this command if needed:
+  chmod 400 tramitesescolares_ubuntu.pem
+4. Connect to your instance using its Public DNS:
+  ec2-18-191-151-193.us-east-2.compute.amazonaws.com
+
+```
+$ ssh -i "tramitesescolares_ubuntu.pem" ubuntu@ec2-18-191-151-193.us-east-2.compute.amazonaws.com
+```
+
 ### 1. Clonar los repositorios
+
+Clonar o descargar los proyectos en el servidor de desarrollo. 
+
 Backend
 ```
 $ git clone https://github.com/ProyectoIntegrador2018/stte-backend.git
@@ -15,34 +33,11 @@ $ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
 
 ### Instalar librerias  
 
-Ya instalado si se está usando Python 2 >=2.7.9 o Python 3 >=3.4
-* Flask
-```
-$ pip install -U Flask
-```
-* flask-cors
-```
-$ pip install -U flask-cors
-```
-* PyMySQL
-```
-$ pip install -U PyMySQL
-```
-* status
-```
-$ pip install -U status
-```
-### Ejecutar
+Ya instalado Python 3 >=3.4
 
-Dentro del folder del proyecto ejecutar:
+Instalar las librerias del proyecto que se encuentran en requieremnts.txt
 ```
-$ python -m flask run
-```
-
-### Detener el proyecto
-Para detener el servidor simplemente oprime estas teclas:
-```
-$ CTRL+C
+$ pip install -r requirements.tx
 ```
 
 ## Frontend
@@ -61,21 +56,44 @@ Las librerias que se instalan son:
 * react-router-dom
 * universal-cookie
 
-### Ejecutar
+### Construir
 
-Dentro del folder del proyecto ejecutar:
-```
-$ npm run start
-```
-
-### Detener el proyecto
-Para detener el proyecto simplemente oprime estas teclas:
-```
-$ CTRL+C
-```
-
-### Construir el proyecto
-Dentro del folder del proyecto ejecutar:
+Dentro del folder del proyecto ejecutar el compando de cosntruccion:
 ```
 $ npm run build
+```
+
+Mover el proyecto al folder www con el script
+```
+$ npm run move
+```
+
+En apache
+
+```
+$ cd /etc/apache2/sites-available
+```
+
+* Crear archivo conf en /etc/apache2/sites-available
+```
+<VirtualHost *:80>
+  ServerName [sitio]
+  ServerAdmin you@yourDomain
+  DocumentRoot /var/www/[folder destino]
+
+  # Serve static files like the minified javascript from npm run-script build
+  Alias /static /var/www/[folder destino]/static
+  <Directory /var/www/[folder destino]/static>
+    Require all granted
+  </Directory>
+</VirtualHost>
+```
+
+* Habilitar sitio
+```
+a2ensite [nombre del archivo conf]
+```
+* Resetear apache
+```
+systemctl restart apache2
 ```
