@@ -19,6 +19,7 @@ import AppLayoutUser from './components/AppLayoutUser';
 import Tramite from './views/Tramite';
 import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
+import TramitesAdmin from "./views/TramitesAdmin";
 
 class App extends Component {
 
@@ -50,6 +51,7 @@ class App extends Component {
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
                     <Route exact path="/alumnos" component={this.AlumnosView} />
+                    <Route exact path="/tramites" component={this.TramitesView} />
                     <Route exact path="/documentos" component={this.DocumentosView} />
                     <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
                     <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
@@ -147,6 +149,14 @@ class App extends Component {
         return (
             <AppLayout view={"3"} type={"basic"}>
                 <ProcesoNuevo/>
+            </AppLayout>
+        );
+    };
+
+    TramitesView = () => {
+        return (
+            <AppLayout view={"5"} type={"basic"}>
+                <TramitesAdmin/>
             </AppLayout>
         );
     };

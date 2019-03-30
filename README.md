@@ -49,7 +49,7 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 * Ant Desing
 
 ### Librerias Back End:
-* Flask(Framework de Python)
+* Django(Framework de Python)
 
 ### Persistencia de datos:
 * MySQL

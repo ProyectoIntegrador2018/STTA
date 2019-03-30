@@ -88,6 +88,8 @@ class Registro extends Component {
                     <Form.Item className="restore-title">
                         <h2 className="admin-login-title">Registro de nueva cuenta</h2>
                     </Form.Item>
+                        <Row gutter={8}>
+                            <Col span={12}>
                     <Form.Item>
                         {getFieldDecorator('name', {
                         rules: [{ required: true, message: 'Por favor ingresa tu nombre' }],
@@ -95,6 +97,8 @@ class Registro extends Component {
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Nombre" />
                         )}
                     </Form.Item>
+                            </Col>
+                            <Col span={12}>
                     <Form.Item>
                         {getFieldDecorator('lastName', {
                         rules: [{ required: true, message: 'Por favor ingresa tus apellidos' }],
@@ -102,6 +106,8 @@ class Registro extends Component {
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Apellidos" />
                         )}
                     </Form.Item>
+                            </Col>
+                        </Row>
                     <Form.Item>
                         {getFieldDecorator('userName', {
                         rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico (A00...)' }],
@@ -109,6 +115,8 @@ class Registro extends Component {
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico (A0...@itesm.mx)" />
                         )}
                     </Form.Item>
+                        <Row gutter={8}>
+                            <Col span={12}>
                     <Form.Item>
                         {getFieldDecorator('password', {
                         rules: [{ required: true, message: 'Por favor ingresa la contraseña' }, ,
@@ -117,6 +125,8 @@ class Registro extends Component {
                         <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
                         )}
                     </Form.Item>
+                            </Col>
+                            <Col span={12}>
                     <Form.Item>
                         {getFieldDecorator('passwordVerification', {
                         rules: [{ required: true, message: 'Por favor ingresa la verificación de la contraseña' }, {
@@ -126,6 +136,8 @@ class Registro extends Component {
                         <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Verificar contraseña" onBlur={this.handleConfirmBlur}/>
                         )}
                     </Form.Item>
+                            </Col>
+                        </Row>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button"
                                 loading={this.state.loading} disabled={this.state.loading}>

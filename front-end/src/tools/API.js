@@ -40,8 +40,8 @@ export default class API {
     static restCall(options){
         let op = {
             method: "get",
-            sevice: "",
-            params: {}, 
+            service: "",
+            params: "",
             success: (function(response){}),
             error: (function(response){}), 
             wToken: true

@@ -72,7 +72,10 @@ class Tramitealumno(models.Model):
     proceso = models.ForeignKey(Proceso, models.DO_NOTHING, db_column='proceso')
     alumno = models.ForeignKey(Alumno, models.DO_NOTHING, db_column='alumno')
     paso_actual = models.ForeignKey(Paso, models.DO_NOTHING, db_column='paso_actual')
-
+    matricula = models.CharField(max_length=10, blank=True, null=True)
+    numero_ticket = models.IntegerField(null=False, unique=True)
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_ultima_actualizacion = models.DateTimeField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'TramiteAlumno'
