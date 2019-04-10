@@ -206,3 +206,7 @@ form {
 .rcw-client{
     background-color: rgba(45, 109, 255, 0.51) !important;
 }
+
+.ant-empty{
+  margin-top: 100px !important;
+}
