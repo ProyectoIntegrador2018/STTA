@@ -87,12 +87,12 @@ class Restablecer extends Component {
                     method: "post",
                     params: {uid: this.state.uid,password:values.password, token: this.state.token},
                     success:(response) => {
-                        Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
+                        Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
                         API.logout();
                         API.redirectTo("/")
                     },
                     error:(response) => {
-                        Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
+                        Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
                         API.logout();
                         API.redirectTo("/")
                     },
