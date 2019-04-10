@@ -81,22 +81,24 @@ class Restablecer extends Component {
         e.preventDefault();
         this.props.form.validateFields((error, values) => {
           if (!error) {
-              this.setState({ loading: true, });
-              API.call('reset_password/',{uid: this.state.uid,password:values.password, token: this.state.token},(response)=>{
-                  if(response === 1){
-                      Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
-                      API.logout();
-                      API.redirectTo("/login")
-                  }
-                  else{
-                    Notifications.openNotificationWithIcon("success","Tu contrasena se restablecio con exito","");
-                    API.logout();
-                    API.redirectTo("/")
-                }
-                  this.setState({ loading: false, });
-
-              },(response)=>{this.setState({ loading: false, });},false);
-          }
+                this.setState({ loading: true, });
+                API.restCall({
+                    service:'reset_password/',
+                    method: "post",
+                    params: {uid: this.state.uid,password:values.password, token: this.state.token},
+                    success:(response) => {
+                        Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
+                        API.logout();
+                        API.redirectTo("/")
+                    },
+                    error:(response) => {
+                        Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
+                        API.logout();
+                        API.redirectTo("/")
+                    },
+                    wToken: false
+                });
+            }
         });
       };
 
