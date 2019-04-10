@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment'
 import {
     Icon, Upload, Form, Divider,Button, Input, Steps, Select,Switch, Row, Col, Modal, Spin, Statistic
 } from 'antd';
@@ -77,15 +78,16 @@ export default class Tramite extends Component {
                     <Col span={12}>
                         <Row gutter={8} style={{textAlign:'center'}}>
                             <Col span={12}>
-                                <Statistic title="Fecha de inicio" value={this.state.fecha1} prefix={<Icon type="calendar" />} />
+                                <Statistic title="Fecha de inicio" value={moment.utc(this.state.fecha1).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />} />
                             </Col>
                             <Col span={12}>
-                                <Statistic title="Fecha de ultima actualizacion" value={this.state.fecha2} prefix={<Icon type="calendar" />}/>
+                                <Statistic title="Fecha de ultima actualizacion" value={moment.utc(this.state.fecha2).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />}/>
                             </Col>
                         </Row>
                     </Col>
                 </Row>
-            </div></Spin>
+            </div>
+            </Spin>
         );
     }
 }

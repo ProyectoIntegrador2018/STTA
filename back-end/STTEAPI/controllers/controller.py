@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, urle
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+
 from STTEAPI.models import *
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
@@ -103,8 +104,9 @@ def pasos_procesos(request):
     pasos = [dict(p) for p in pasos]
     return JsonResponse(pasos, safe=False)
 
-#                                                           #Entrada: email, password, nombre, apellido; Salida: none.
-#                                                           #Metodo para guardar en la base de datos la información del alumno cuando se va a registrar.
+#                                                           # Entrada: email, password, nombre, apellido; Salida: none.
+#                                                           # Metodo para guardar en la base de datos la información del
+#                                                           # alumno cuando se va a registrar.
 @api_view(["POST"])
 def registro_Alumnos(request):
     args = PostParametersList(request)
@@ -239,8 +241,9 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: nada; Salida: una lista con todos los admins con su informacion de usuario
-#                                                           #Regresa la lista entera de administradores
+#                                                           # Entrada: nada; Salida: una lista con todos los admins con
+#                                                           # su informacion de usuario
+#                                                           # Regresa la lista entera de administradores
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_admin_list(request):
@@ -249,8 +252,10 @@ def return_admin_list(request):
     return JsonResponse(admins, safe=False)
 
 
-#                                                           #Entrada: nada; Salida: lista con toda la informacion de usuario de de los alumnos
-#                                                           #Se recuperan los datos de todos los alumnos y se envían en formato json
+#                                                           # Entrada: nada; Salida: lista con toda la informacion de
+#                                                           # usuario de de los alumnos
+#                                                           # Se recuperan los datos de todos los alumnos y se envían en
+#                                                           # formato json
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
@@ -258,8 +263,10 @@ def return_student_list(request):
     stu = [dict(adm) for adm in stu]
     return JsonResponse(stu, safe=False)
 
-#                                                           #Entrada: numero de id de alumno ; Salida: todos sus datos
-#                                                           #Se usa filter para recuperar el alumno, entonces se serializa el contenido y se regresa en formato json, se envía mediante HTTPResponse
+#                                                           # Entrada: numero de id de alumno ; Salida: todos sus datos
+#                                                           # Se usa filter para recuperar el alumno, entonces se
+#                                                           # serializa el contenido y se regresa en formato json, se
+#                                                           # envía mediante HTTPResponse
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student(request,id_alumno):
@@ -331,8 +338,10 @@ def registro_administradores(request):
     user  = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: nada; Salida: lista con toda la informacion de tramites de alumnos
-#                                                           #Se recuperan los datos ddel tramite y se envían en formato json
+#                                                           # Entrada: nada; Salida: lista con toda la informacion de
+#                                                           # tramites de alumnos
+#                                                           # Se recuperan los datos del tramite y se envían en formato
+#                                                           # json
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_datos_tramite(request):

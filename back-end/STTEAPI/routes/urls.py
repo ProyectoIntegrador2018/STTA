@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.urls import path
 from STTEAPI.controllers import controller
 from django.contrib import admin
@@ -20,6 +21,7 @@ from django.conf.urls import url, include
 
 #admin.site.register(Usuario, UserAdmin)
 #admin.site.unregister(Group)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login-admin/', controller.login_admin),
@@ -46,7 +48,7 @@ urlpatterns = [
     path('agregar_administrador/',controller.registro_administradores),
     path('get_tramites/',controller.return_datos_tramite),
     path('get_datos_tramite_alumno/',controller.get_datos_tramite_alumno),
-    path('get_pasos_tramites/',controller.get_pasos_tramites)
+    path('get_pasos_tramites/',controller.get_pasos_tramites),
 
 ]
 

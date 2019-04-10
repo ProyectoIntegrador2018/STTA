@@ -24,6 +24,7 @@ class PasswordToken:
 
         gen = PasswordResetTokenGenerator()
         token = gen.make_token(user)
+        print(user.id)
         uid = urlsafe_base64_encode(force_bytes(user.id)).decode()
         return URLData(token=token, uid=uid)
 

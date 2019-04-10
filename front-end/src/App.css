@@ -174,3 +174,35 @@ form {
   color: #0F3AA4;
   font-size: 1.6em;
 }
+
+.rcw-conversation-container .rcw-header {
+    background-color: var(--primary-color) !important;
+    color: #03396c !important;
+    border-radius: 5px 5px 0 0 !important;
+    padding: 0 !important;
+}
+.rcw-title{
+    color: #f1fcf4;
+}
+
+.rcw-sender{
+    border-radius: 0 0 5px 5px !important;
+    padding: 10px !important;
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+}
+
+.rcw-launcher{
+    background-color: var(--primary-color) !important;
+}
+.rcw-client, .rcw-response{
+    border-radius: 5px !important;
+    padding: 3px !important;
+    padding-left:  10px !important;
+    padding-right:  10px !important;
+    max-width: 315px !important;
+}
+
+.rcw-client{
+    background-color: rgba(45, 109, 255, 0.51) !important;
+}
