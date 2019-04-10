@@ -20,6 +20,8 @@ import Tramite from './views/Tramite';
 import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
 import TramitesAdmin from "./views/TramitesAdmin";
+import ChatView from "./components/ChatView";
+import MensajeriaView from "./views/MensajeriaView";
 
 class App extends Component {
 
@@ -58,6 +60,8 @@ class App extends Component {
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
                     <Route exact path="/tramite" component={this.EstudentView} />
+                    <Route exact path="/chat" component={this.ChatV} />
+                    <Route exact path="/mensajeria" component={this.Mensajeria} />
                 </div>
             </Router>
     );
@@ -160,6 +164,8 @@ class App extends Component {
             </AppLayout>
         );
     };
+
+
 }
 
 
