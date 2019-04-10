@@ -17,6 +17,7 @@ import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
 import AppLayoutUser from './components/AppLayoutUser';
 import Tramite from './views/Tramite';
+import Estudiante from './views/Estudiante';
 import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
 import TramitesAdmin from "./views/TramitesAdmin";
@@ -59,7 +60,7 @@ class App extends Component {
                     <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
-                    <Route exact path="/tramite" component={this.EstudentView} />
+                    <Route exact path="/tramite" component={this.StudentView} />
                     <Route exact path="/chat" component={this.ChatV} />
                     <Route exact path="/mensajeria" component={this.Mensajeria} />
                 </div>
@@ -83,10 +84,10 @@ class App extends Component {
         return (<Register/>);
     }
 
-    EstudentView = () => {
+    StudentView = () => {
         return (
             <AppLayoutUser type={"basic"}>
-                <Tramite/>
+                <Estudiante/>
             </AppLayoutUser>
         )
     }
