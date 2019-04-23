@@ -212,7 +212,7 @@ form {
 }
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 500px) {
     .graficas {
         width: 100%;
     }
@@ -221,8 +221,8 @@ form {
 .column {
     float: left;
     width: 50%;
-    padding: 20px;
-    height: 580px; /* Should be removed. Only for demonstration */
+    padding: 10px;
+    height: 600px; /* Should be removed. Only for demonstration */
 }
 
 /* Clear floats after the columns */
@@ -231,7 +231,7 @@ form {
     display: table;
     clear: both;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 500px) {
     .column {
         width: 100%;
     }
