@@ -5,7 +5,6 @@ import LoginUser from './views/Login-User';
 import "antd/dist/antd.css";
 import "ant-design-pro/dist/ant-design-pro.css";
 import './App.css';
-import axios from 'axios'
 
 import { BrowserRouter as Router, Route,Redirect } from 'react-router-dom'
 import Procesos from "./views/Procesos";
@@ -18,11 +17,12 @@ import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
 import AppLayoutUser from './components/AppLayoutUser';
 import Tramite from './views/Tramite';
+import Estudiante from './views/Estudiante';
 import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
 import TramitesAdmin from "./views/TramitesAdmin";
 import ChatView from "./components/ChatView";
-import MensajeriaView from "./views/MensajeriaView";
+import DashboardView from "./views/DashboardView";
 
 class App extends Component {
 
@@ -49,7 +49,7 @@ class App extends Component {
             <Router className="App" ref={API.bodySiteRef}>
                 <div>
                     <Route exact path="/" component={this.LoginUserView} />
-                    <Route exact path="/dashboard" component={this.DashboardView} />
+                    <Route exact path="/dashboard" component={this.DashboardViewc} />
                     <Route exact path="/procesos" component={this.ProcesosView} />
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
@@ -60,7 +60,7 @@ class App extends Component {
                     <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
-                    <Route exact path="/tramite" component={this.EstudentView} />
+                    <Route exact path="/tramite" component={this.StudentView} />
                     <Route exact path="/chat" component={this.ChatV} />
                     <Route exact path="/mensajeria" component={this.Mensajeria} />
                 </div>
@@ -84,18 +84,19 @@ class App extends Component {
         return (<Register/>);
     }
 
-    EstudentView = () => {
+    StudentView = () => {
         return (
             <AppLayoutUser type={"basic"}>
-                <Tramite/>
+                <Estudiante/>
             </AppLayoutUser>
         )
     }
 
-    DashboardView = () => {
+    DashboardViewc = () => {
 
         return (
             <AppLayout view={"0"} type={"basic"}>
+                <DashboardView/>
             </AppLayout>
         );
     };
@@ -164,7 +165,6 @@ class App extends Component {
             </AppLayout>
         );
     };
-
 
 
 }

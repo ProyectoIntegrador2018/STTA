@@ -207,8 +207,32 @@ form {
     background-color: rgba(45, 109, 255, 0.51) !important;
 }
 
-.lform{
-    padding: 0 !important;
-    padding-left: 30px !important;
-    padding-right: 30px !important;
+.ant-empty{
+  margin-top: 100px !important;
+}
+
+
+@media screen and (max-width: 600px) {
+    .graficas {
+        width: 100%;
+    }
+}
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 20px;
+    height: 580px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+@media screen and (max-width: 600px) {
+    .column {
+        width: 100%;
+    }
 }
