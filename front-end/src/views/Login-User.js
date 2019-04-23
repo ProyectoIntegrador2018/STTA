@@ -61,6 +61,12 @@ class LoginUser extends Component {
   handleCancel = () => {
     this.setState({ visible: false });
   };
+  handleChangeCheck = (e) => {
+    this.setState({
+      rememberMe: e.target.checked,
+    });
+  }
+
 
   handleCreate = () => {
     const form = this.formRef.props.form;
@@ -119,11 +125,17 @@ class LoginUser extends Component {
             </div>
           </Col>
 
+
           <Col xs={24} sm={24} md={24} lg={12} xl={10}>
             <Form onSubmit={this.handleSubmit} className="login-form">
+
               <div className="logo-image-container">
                 <img className="logo-image" src={logo} alt={''}/>
               </div>
+              <Form.Item className="restore-title">
+                <h2 className="admin-login-title">Sistema para Consulta de Estatus de Trámites Escolares</h2>
+              </Form.Item>
+
               <Form.Item>
                 {getFieldDecorator('userName', {
                   rules: [{ required: true, message: 'Por favor ingresa el usuario' }],
@@ -138,19 +150,13 @@ class LoginUser extends Component {
                   <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
                 )}
               </Form.Item>
+
               <Form.Item>
-                {getFieldDecorator('remember', {
-                  valuePropName: 'checked',
-                  initialValue: true,
-                })(
-                  <Checkbox>Recuérdame</Checkbox>
-                )}
-                <Link to={"/registro"}>
-                  <span className="login-form-right">Registrarme</span>
+                <Link to={"/registro"} >
+                  <span style={{float:'left'}} className="login-form-right">Registrarme</span>
                 </Link>
-                <br></br>
-                <a className="login-form-right" onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
-                <br></br>
+                <a className="login-form-right" style={{float:'right'}} onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
+
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
                   Accesar

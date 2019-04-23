@@ -339,7 +339,7 @@ def registro_administradores(request):
     args.check_parameter(key='email', required=True)
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
-    user  = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
+    user  = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
     return JsonResponse(1, safe=False)
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de

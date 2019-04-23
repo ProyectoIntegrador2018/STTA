@@ -22,7 +22,7 @@ import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
 import TramitesAdmin from "./views/TramitesAdmin";
 import ChatView from "./components/ChatView";
-import MensajeriaView from "./views/MensajeriaView";
+import DashboardView from "./views/DashboardView";
 
 class App extends Component {
 
@@ -49,7 +49,7 @@ class App extends Component {
             <Router className="App" ref={API.bodySiteRef}>
                 <div>
                     <Route exact path="/" component={this.LoginUserView} />
-                    <Route exact path="/dashboard" component={this.DashboardView} />
+                    <Route exact path="/dashboard" component={this.DashboardViewc} />
                     <Route exact path="/procesos" component={this.ProcesosView} />
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
@@ -92,11 +92,11 @@ class App extends Component {
         )
     }
 
-    DashboardView = () => {
+    DashboardViewc = () => {
 
         return (
             <AppLayout view={"0"} type={"basic"}>
-
+                <DashboardView/>
             </AppLayout>
         );
     };

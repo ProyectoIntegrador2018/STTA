@@ -210,3 +210,29 @@ form {
 .ant-empty{
   margin-top: 100px !important;
 }
+
+
+@media screen and (max-width: 500px) {
+    .graficas {
+        width: 100%;
+    }
+}
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 600px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+@media screen and (max-width: 500px) {
+    .column {
+        width: 100%;
+    }
+}

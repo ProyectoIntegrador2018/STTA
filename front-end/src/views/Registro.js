@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import '../App.css';
 import {
-    Form, Icon, Input, Button, Row, Col,Modal
-  } from 'antd';
+    Form, Icon, Input, Button, Row, Col, Modal, Checkbox
+} from 'antd';
 import {Redirect} from 'react-router-dom';
 import loginImage from '../images/stte.png';
 import logo from '../images/logo.png';
@@ -72,7 +72,7 @@ class Registro extends Component {
 
 
         return (
-            <div className="App">
+            <div >
                 <Row>
                 <Col xs={0} sm={0} md={0} lg={12} xl={14}>
                     <div className="login-image-container">
@@ -81,7 +81,7 @@ class Registro extends Component {
                 </Col>
 
                 <Col xs={24} sm={24} md={24} lg={12} xl={10}>
-                    <Form onSubmit={this.handleSubmit} className="login-form">
+                    <Form onSubmit={this.handleSubmit} className="login-form lform">
                     <div className="logo-image-container">
                         <img className="logo-image" src={logo} alt={''}/>
                     </div>
@@ -138,6 +138,19 @@ class Registro extends Component {
                     </Form.Item>
                             </Col>
                         </Row>
+                        <Form.Item>
+                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de Privacida y Términos y Condiciones</a>
+                            {getFieldDecorator('remember', {
+                                valuePropName: 'checked',
+                                initialValue: false,
+                                rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{
+                                    validator: (rule, value, cb)=>{value === true ? cb() : cb(true)},
+                                    message: 'Para continuar tienes que aceptar términos y condiciones'}]
+                            })(
+                                <Checkbox checked={this.state.rememberMe}
+                                          onChange={this.handleChangeCheck}>He leído y acepto el Aviso de Privacida y Términos y Condiciones</Checkbox>
+                            )}
+                        </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button"
                                 loading={this.state.loading} disabled={this.state.loading}>
