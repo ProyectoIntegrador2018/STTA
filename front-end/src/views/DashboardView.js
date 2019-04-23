@@ -117,7 +117,7 @@ class DashboardView extends Component {
                     </div>
                     <div className="column" style={{height: '400px'}} >
                         <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
-                            <h1 style={{ color: 'white' }}>Total de usuarios </h1>
+                            <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
                             <p style={{ color: 'white', fontSize:130}}> 2500</p>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ class DashboardView extends Component {
                             )}
                             data={salesPieData}
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
-                            height={294}
+                            height={220}
                         />
                     </div>
                     <div className="column">
