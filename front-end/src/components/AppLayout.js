@@ -68,7 +68,7 @@ export default class AppLayout extends Component {
                 </Sider>
 
                 <Layout>
-                    <Header className={'primaryBackground header-bar'}><h2 className={'logoName'} >Sistema de Trazabilidad de Tramites Academicos</h2></Header>
+                    <Header className={'primaryBackground header-bar'}><h2 className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</h2></Header>
                     <Content style={{ margin: '24px 16px 0' }}>
                         <div style={{ padding: 24, background: '#fff', minHeight: 360}}>
                             <Content style={{ padding: '0', height:'100%' }}>
@@ -77,7 +77,7 @@ export default class AppLayout extends Component {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        STTA ITESM - Sistema de Trazabilidad de Tramites Academicos ITESM ©2019
+                        Sistema para Consulta de Estatus de Trámites Escolares ITESM ©2019
                     </Footer>
                 </Layout>
             </Layout>

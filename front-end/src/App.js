@@ -5,6 +5,7 @@ import LoginUser from './views/Login-User';
 import "antd/dist/antd.css";
 import "ant-design-pro/dist/ant-design-pro.css";
 import './App.css';
+import axios from 'axios'
 
 import { BrowserRouter as Router, Route,Redirect } from 'react-router-dom'
 import Procesos from "./views/Procesos";
@@ -95,7 +96,6 @@ class App extends Component {
 
         return (
             <AppLayout view={"0"} type={"basic"}>
-
             </AppLayout>
         );
     };
@@ -164,6 +164,7 @@ class App extends Component {
             </AppLayout>
         );
     };
+
 
 
 }
