@@ -361,6 +361,8 @@ def dictfetchall(cursor):
               for row in cursor.fetchall()]
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
+
+#Función que regresa un json con la información de los trámites de un alumno
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()

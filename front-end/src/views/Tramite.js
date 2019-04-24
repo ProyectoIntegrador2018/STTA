@@ -22,7 +22,8 @@ export default class Tramite extends Component {
             proceso:"",
             ticket:"",
             fecha1:"",
-            fecha2:""
+            fecha2:"",
+            status:"",
         }
     }
 
@@ -61,7 +62,7 @@ export default class Tramite extends Component {
             success:(response) => {
                 this.getPasos(response[0].proceso_id)
                 this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion });
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion, status:response[0].status });
             },
             error:(response) => {
                 this.setState({loading:false});
@@ -74,6 +75,11 @@ export default class Tramite extends Component {
             <Spin spinning={this.state.loading}><div>
                 <h1>{"Mi trámite"}</h1>
                 <Divider/>
+                <Row gutter={8}>
+                    <Col span={12}>
+                        <Statistic title="Estatus" groupSeparator={""} value={this.state.status} />
+                    </Col>
+                </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
                 <Steps labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
                     {
