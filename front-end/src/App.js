@@ -54,6 +54,7 @@ class App extends Component {
                     <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
                     <Route exact path="/administradores" component={this.AdministradoresView} />
                     <Route exact path="/alumnos" component={this.AlumnosView} />
+                    <Route exact path="/alumnos/tramite/:id" component={this.AlumnosTramiteView} />
                     <Route exact path="/tramites" component={this.TramitesView} />
                     <Route exact path="/documentos" component={this.DocumentosView} />
                     <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
@@ -61,8 +62,7 @@ class App extends Component {
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
                     <Route exact path="/tramite" component={this.StudentView} />
-                    <Route exact path="/chat" component={this.ChatV} />
-                    <Route exact path="/mensajeria" component={this.Mensajeria} />
+
                 </div>
             </Router>
     );
@@ -108,7 +108,13 @@ class App extends Component {
             </AppLayout>
         );
     };
-
+    AlumnosTramiteView = ({match}) => {
+        return (
+            <AppLayoutUser type={"basic"}>
+                <Tramite id={match.params.id}/>
+            </AppLayoutUser>
+        );
+    }
     AlumnosView = () => {
         return (
             <AppLayout type={"basic"}>
