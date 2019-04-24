@@ -45,7 +45,7 @@ export default class Tramite extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.restCall({
+       /* API.restCall({
             service:'get_datos_tramite_alumno/',
             success:(response) => {
                 this.getPasos(response[0].proceso_id)
@@ -55,7 +55,7 @@ export default class Tramite extends Component {
             error:(response) => {
                 this.setState({loading:false});
             }
-        })
+        })*/
     };
 
     render() {
