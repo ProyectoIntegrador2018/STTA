@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Collapse } from 'antd';
 import Charts from 'ant-design-pro/lib/Charts';
-import { Pie, yuan } from 'ant-design-pro/lib/Charts';
+import { Pie} from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
@@ -130,17 +130,17 @@ class DashboardView extends Component {
                         <Pie
                             hasLegend
                             title="Trámites académicos"
-                            subTitle="Trámites académicos "
+                            subTitle="Total"
                             total={() => (
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: yuan(salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                        __html: (salesPieData.reduce((pre, now) => now.y + pre, 0))
                                     }}
                                 />
                             )}
                             data={salesPieData}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
-                            height={220}
+                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
+                            height={294}
                         />
                     </div>
                     <div className="column">
@@ -155,16 +155,16 @@ class DashboardView extends Component {
                         <Pie
                             hasLegend
                             title="Transferencias como destino Monterrey"
-                            subTitle="Transferencias como destino Monterrey"
+                            subTitle="Total"
                             total={() => (
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: yuan(salesPieData2.reduce((pre, now) => now.y + pre, 0))
+                                        __html: (salesPieData2.reduce((pre, now) => now.y + pre, 0))
                                     }}
                                 />
                             )}
                             data={salesPieData2}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
+                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
                     </Panel>
@@ -173,16 +173,16 @@ class DashboardView extends Component {
                         <Pie
                             hasLegend
                             title="Transferencias a otros campus"
-                            subTitle="Transferencias a otros campus"
+                            subTitle="Total"
                             total={() => (
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: yuan(salesPieData3.reduce((pre, now) => now.y + pre, 0))
+                                        __html: (salesPieData3.reduce((pre, now) => now.y + pre, 0))
                                     }}
                                 />
                             )}
                             data={salesPieData3}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
+                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
                     </Panel>
@@ -191,16 +191,16 @@ class DashboardView extends Component {
                         <Pie
                             hasLegend
                             title="Baja de materias"
-                            subTitle="Baja de materias"
+                            subTitle="Total"
                             total={() => (
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: yuan(salesPieData4.reduce((pre, now) => now.y + pre, 0))
+                                        __html: (salesPieData4.reduce((pre, now) => now.y + pre, 0))
                                     }}
                                 />
                             )}
                             data={salesPieData4}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
+                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
 

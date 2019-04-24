@@ -49,6 +49,7 @@ urlpatterns = [
     path('get_tramites/',controller.return_datos_tramite),
     path('get_datos_tramite_alumno/',controller.get_datos_tramite_alumno),
     path('get_pasos_tramites/',controller.get_pasos_tramites),
+    path('get_tramites_alumno/<matricula>', controller.return_tramite_alumnos),
 
 ]
 
