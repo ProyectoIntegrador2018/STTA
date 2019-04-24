@@ -387,6 +387,20 @@ def return_tramite_alumnos_status(request):
     return JsonResponse(tra, safe=False)
 
 @api_view(["GET"])
+#@permission_classes((IsAuthenticated, EsAdmin))
+def return_tramite_alumnos_status_week(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   ' Paso p on ta.proceso=p.proceso ' +
+                   ' where week(now()) - 1 = week(fecha_ultima_actualizacion) ' +
+                   ' group by numero_ticket')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+@api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno))
 def get_datos_tramite_alumno(request,id):
 
