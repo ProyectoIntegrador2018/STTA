@@ -339,14 +339,14 @@ def registro_administradores(request):
     args.check_parameter(key='email', required=True)
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
-    user  = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
+    user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
     return JsonResponse(1, safe=False)
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de
 #                                                           # tramites de alumnos
 #                                                           # Se recuperan los datos del tramite y se envían en formato
 #                                                           # json
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_datos_tramite(request):
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'paso_actual',
@@ -354,9 +354,28 @@ def return_datos_tramite(request):
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
+
+def dictfetchall(cursor):
+    desc = cursor.description
+    return [dict(zip([col[0] for col in desc], row))
+              for row in cursor.fetchall()]
+@api_view(["GET"])
+#@permission_classes((IsAuthenticated, EsAdmin))
+def return_tramite_alumnos(request,matricula):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT p.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+                   'matricula, encuesta, count(p.id) as pasos FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   ' Paso p on ta.proceso=p.proceso ' +
+                   'where matricula =' + "'" + matricula + "'" +
+                   ' group by numero_ticket')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno))
 def get_datos_tramite_alumno(request):
+
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
                                                                  'proceso__nombre', 'proceso_id',
                                                                  'fecha_inicio', 'paso_actual',
