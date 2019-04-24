@@ -28,7 +28,7 @@ export default class AppLayoutUser extends Component {
     Despliega = (props) => {
         console.log(props.id);
         API.redirectTo('/alumnos/tramite/'+props.id)
-    }
+    };
 
 
 
@@ -72,7 +72,7 @@ export default class AppLayoutUser extends Component {
 
                             <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                                 {
-                                    this.state.data2.map((objectToMap,index) =>{
+                                    this.state.data1.map((objectToMap,index) =>{
                                         return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                                 }
                             </SubMenu>
@@ -80,7 +80,7 @@ export default class AppLayoutUser extends Component {
 
                         <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" /><span>Trámites Concluidos</span></span>}>
                             {
-                                this.state.data1.map((objectToMap,index) =>{
+                                this.state.data2.map((objectToMap,index) =>{
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
@@ -95,7 +95,11 @@ export default class AppLayoutUser extends Component {
                 </Sider>
 
                 <Layout>
-                    <Header className={'primaryBackground header-bar'}><h2 className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</h2></Header>
+                    <Header className={'primaryBackground header-bar'}>
+                        <span className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</span>
+                        <span className={'logoName'} style={{float:'right'}} ><Icon type={'user'}/> {localStorage.getItem("matricula").toLocaleUpperCase() + " | " + localStorage.getItem("nombre")}</span>
+                    </Header>
+
                     <Content style={{ margin: '24px 16px 0' }}>
                         <div style={{ padding: 24, background: '#fff', minHeight: 360}}>
                             <Content style={{ padding: '0', height:'100%' }}>

@@ -47,7 +47,8 @@ export default class Tramite extends Component {
             params:{id:id},
             method:'post',
             success:(response) => {
-                this.setState({ pasos: response, loading:false});
+                this.setState({ pasos: response, loading:false, status:this.state.step==response.length ?
+                        "TERMINADO" : this.state.step == 0 ? "INICIADO":"ENPROCESO" });
             },
             error:(response) => {
                 this.setState({loading:false});
@@ -58,12 +59,13 @@ export default class Tramite extends Component {
     refreshData = () => {
         this.setState({loading:true});
         API.restCall({
-            service:'get_datos_tramite_alumno/' + this.state.id,
+            service:'get_datos_tramite_alumno/' + this.props.id ,
             success:(response) => {
-                this.getPasos(response[0].proceso_id)
+
                 this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion, status:response[0].status });
-            },
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion});
+                this.getPasos(response[0].proceso_id)
+                },
             error:(response) => {
                 this.setState({loading:false});
             }
@@ -75,7 +77,11 @@ export default class Tramite extends Component {
             <Spin spinning={this.state.loading}><div>
                 <h1>{"Mi trámite"}</h1>
                 <Divider/>
-                <Row gutter={8}>
+
+                <Row style={{float:'right'}} gutter={8}>
+                    <Col span={12}>
+                        <Statistic title="Dias transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} />
+                    </Col>
                     <Col span={12}>
                         <Statistic title="Estatus" groupSeparator={""} value={this.state.status} />
                     </Col>
@@ -88,6 +94,10 @@ export default class Tramite extends Component {
                         })
                     }
                 </Steps>
+
+                {this.state.step==this.state.pasos.length ?  <Row style={{textAlign:'center', }} gutter={8}>
+                        <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9  "}>Evalúa los trámites escolares</a></h2>
+                </Row> : <div></div>}
                 <Row gutter={8}>
                     <Col span={12}>
                         <Statistic title="Ticket" groupSeparator={""} value={this.state.ticket} prefix={'#'} />
