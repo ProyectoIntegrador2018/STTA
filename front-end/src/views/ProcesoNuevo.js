@@ -51,7 +51,6 @@ export default class ProcesoNuevo extends Component {
             pasos:this.state.pasos
         };
 
-        console.log(params);
 
         Modal.confirm({
             title: 'Estos son los datos a subir:',
@@ -110,8 +109,7 @@ export default class ProcesoNuevo extends Component {
     updateData = (result) => {
         const data = result.data;
         // Here this is available and we can call this.setState (since it's binded in the constructor)
-        console.log(data);// or shorter ES syntax: this.setState({ data });
-        console.log(data[0]);
+        // or shorter ES syntax: this.setState({ data });
         let columns = [];
         for (let i = 0; i < data[0].length; i++) {
             columns.push({

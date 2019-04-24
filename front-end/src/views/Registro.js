@@ -82,8 +82,8 @@ class Registro extends Component {
 
                 <Col xs={24} sm={24} md={24} lg={12} xl={10}>
                     <Form onSubmit={this.handleSubmit} className="login-form lform">
-                    <div className="logo-image-container">
-                        <img className="logo-image" src={logo} alt={''}/>
+                    <div className="logo-image-container-registro">
+                        <img className="logo-image-registro" src={logo} alt={''}/>
                     </div>
                     <Form.Item className="restore-title">
                         <h2 className="admin-login-title">Registro de nueva cuenta</h2>
@@ -139,7 +139,7 @@ class Registro extends Component {
                             </Col>
                         </Row>
                         <Form.Item>
-                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de Privacida y Términos y Condiciones</a>
+                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de Privacidad</a>
                             {getFieldDecorator('remember', {
                                 valuePropName: 'checked',
                                 initialValue: false,
@@ -148,7 +148,7 @@ class Registro extends Component {
                                     message: 'Para continuar tienes que aceptar términos y condiciones'}]
                             })(
                                 <Checkbox checked={this.state.rememberMe}
-                                          onChange={this.handleChangeCheck}>He leído y acepto el Aviso de Privacida y Términos y Condiciones</Checkbox>
+                                          onChange={this.handleChangeCheck}>He leído y acepto el Aviso de Privacidad</Checkbox>
                             )}
                         </Form.Item>
                     <Form.Item>

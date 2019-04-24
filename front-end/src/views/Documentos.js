@@ -44,7 +44,6 @@ export default class Documentos extends Component {
 
     showContent = (record) => {
         let data = JSON.parse(record.contenido_subido);
-        console.log(data);
         this.setState({cols:data.cols, data2:data.data, visible:true,record:record});
     };
 

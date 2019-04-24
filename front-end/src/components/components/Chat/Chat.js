@@ -27,7 +27,7 @@ export default class Chat extends Component {
           callback();
           return;
         } else {
-          console.log("wait for connection...")
+          console.log("Wait for connection...")
           component.waitForSocketConnection(callback);
         }
     }, 100); // wait 100 milisecond for the connection...

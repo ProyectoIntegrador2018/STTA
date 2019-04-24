@@ -36,7 +36,6 @@ class Restablecer extends Component {
     validateToken = () =>{
         this.setState({ loading: true, });
         API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
-            console.log(response);
             if(response === 1){
 
             }else{

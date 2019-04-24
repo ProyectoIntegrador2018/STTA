@@ -21,14 +21,23 @@ export default class AppLayoutUser extends Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-        }
+            data : []}
+
+    }
+
+    Despliega = (props) => {
+        console.log(props.id);
+        API.redirectTo('alumno/tramite/'+props.id)
     }
 
     componentWillMount() {
-        API.call('documentos/',[],(response) => {
+        API.restCall({
+            service: 'get_tramites_alumno/' + localStorage.getItem('matricula'),
+            method:'get',
+            success:(response) => {
 
             this.setState({data: response, loading:false});
-        });
+        }});
     }
 
     Basic = () => {
@@ -52,8 +61,8 @@ export default class AppLayoutUser extends Component {
 
                             <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                                 {
-                                    datos.map((objectToMap,index) =>{
-                                        return (<Menu.Item>{objectToMap.ticket}</Menu.Item>)})
+                                    this.state.data.map((objectToMap,index) =>{
+                                        return (<Menu.Item onClick={this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                                 }
                             </SubMenu>
 
