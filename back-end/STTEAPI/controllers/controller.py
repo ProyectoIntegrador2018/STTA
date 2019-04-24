@@ -382,6 +382,7 @@ def return_tramite_alumnos_status(request):
                    "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
                    'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
+                   'where year(now()) = year(fecha_ultima_actualizacion) and  month(now()) = month(fecha_ultima_actualizacion) ' +
                    ' group by numero_ticket')
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)

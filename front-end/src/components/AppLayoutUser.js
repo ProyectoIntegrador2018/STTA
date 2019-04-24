@@ -21,22 +21,33 @@ export default class AppLayoutUser extends Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-            data : []}
+            data1 : [], data2 : []}
 
     }
 
     Despliega = (props) => {
         console.log(props.id);
-        API.redirectTo('alumnos/tramite/'+props.id)
+        API.redirectTo('/alumnos/tramite/'+props.id)
     }
+
+
 
     componentWillMount() {
         API.restCall({
             service: 'get_tramites_alumno/' + localStorage.getItem('matricula'),
             method:'get',
             success:(response) => {
-
-            this.setState({data: response, loading:false});
+                let data1 = [];
+                let data2 = [];
+                response.map((item) => {
+                        if(item.pasos == item.paso_actual){
+                            data2.push(item);
+                        }else{
+                            data1.push(item);
+                        }
+                    }
+                )
+            this.setState({data1: data1, data2 : data2, loading:false});
         }});
     }
 
@@ -61,15 +72,17 @@ export default class AppLayoutUser extends Component {
 
                             <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                                 {
-                                    this.state.data.map((objectToMap,index) =>{
+                                    this.state.data2.map((objectToMap,index) =>{
                                         return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                                 }
                             </SubMenu>
 
 
                         <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" /><span>Trámites Concluidos</span></span>}>
-                            <Menu.Item key="11">Option 11</Menu.Item>
-                            <Menu.Item key="12">Option 12</Menu.Item>
+                            {
+                                this.state.data1.map((objectToMap,index) =>{
+                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                            }
                         </SubMenu>
 
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>

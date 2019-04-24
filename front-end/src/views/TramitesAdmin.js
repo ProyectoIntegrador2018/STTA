@@ -50,22 +50,22 @@ export default class TramitesAdmin extends Component {
     render() {
         return (
             <div>
-                <h1><Icon type="solution" /> Tramites</h1>
+                <h1><Icon type="solution" /> Trámites</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
                            deleteFunc={this.deleteFiles} rowSelection={true}
                 columns={[{
-                    title: 'Matricula',
+                    title: 'Matrícula',
                     key: 'matricula',
 
                 }, {
-                    title: '# de ticket',
+                    title: '# De ticket',
                     key: 'numero_ticket',
 
                 }, {
-                    title: 'Fecha inicio',
+                    title: 'Fecha de inicio',
                     key: 'fecha_inicio',
                 }, {
-                    title: 'Fecha última actualización',
+                    title: 'Fecha de última actualización',
                     key: 'fecha_ultima_actualizacion',
                 },{
                     title: 'Paso actual',

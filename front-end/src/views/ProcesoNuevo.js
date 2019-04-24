@@ -157,7 +157,7 @@ export default class ProcesoNuevo extends Component {
         return (
             <div>
                 <h2>Proceso nuevo</h2>
-                <Form.Item label="Nombre del procesos: ">
+                <Form.Item label="Nombre del proceso: ">
                     <Input type={'text'} onChange={(e) => this.handleSelect('nombre',e.target.value)}/>
                 </Form.Item>
                 <Upload.Dragger

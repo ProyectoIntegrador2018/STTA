@@ -25,6 +25,16 @@ export default class Tramite extends Component {
             fecha2:""
         }
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        // only update chart if the data has changed
+        if (prevProps.id !== this.props.id ) {
+            this.setState({id:this.props.id})
+            this.refreshData();
+        }
+
+    }
+
     componentWillMount() {
         this.refreshData();
     }
