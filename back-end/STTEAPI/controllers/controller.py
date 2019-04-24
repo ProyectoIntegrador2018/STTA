@@ -374,13 +374,13 @@ def return_tramite_alumnos(request,matricula):
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno))
-def get_datos_tramite_alumno(request):
+def get_datos_tramite_alumno(request,id):
 
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
                                                                  'proceso__nombre', 'proceso_id',
                                                                  'fecha_inicio', 'paso_actual',
                                                                  'fecha_ultima_actualizacion').filter(
-                                                                 matricula=request.user.email[:9])
+                                                                 id=id)
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
