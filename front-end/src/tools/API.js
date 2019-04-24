@@ -7,61 +7,36 @@ export default class API {
     static bodySiteRef = null;
     static cookies = new Cookies();
 
-    static call(options){
-        // Default options
-        let op = {
-            url:"http://vitau-api.us-west-2.elasticbeanstalk.com",
-            //url:"http://localhost:8000",
-            method: "get",
-            service: "",
-            params: "",
-            tokenType: "Bearer",
-            success: (function(response){}),
-            error: (function(response){}),
-            credentials: true,
-            contentType: "form",
-            multipart:false
-        };
-
-        // Replacing default options
-        for (let key in options){
-            op[key] = options[key];
-        }
-
-        // Creating a new client
-        let client = new FetchHttpClient(op.url);
-
-        // Content-Type: application/json
+    static call(service, params={}, responseFunc=(function(response){}),errorFunc=(function(response){}), wToken=true) {
+        let  client = new FetchHttpClient('http://127.0.0.1:8000/');
         client.addMiddleware(form());
         client.addMiddleware(json());
-        if(op.credentials){
-            client.addMiddleware(header({'Authorization': op.tokenType + " " + localStorage.getItem('token')}));
-        }
-        let params = {};
-        if (op.multipart){
-            let formData = new FormData();
 
-            for (var k in op.params){
-                if (op.params.hasOwnProperty(k)) {
-                    formData.append(k, op.params[k])
-                }
-            }
-            params['body'] = formData;
-        }else{
-            params[op.contentType] = op.params;
+        if(wToken){
+            client.addMiddleware(header({'Authorization': 'Token ' + localStorage.getItem('token')}));
         }
-        //Performing the request
-        client[op.method](op.service, params).then(response => {
-            console.log(op.method)
-            if (response.status < 300) {
+
+        client.post(service, {form: params }).then(response => {
+            if (response.status === 200) {
                 console.log(response.jsonData);
-                return op.success(response.jsonData);
-            }else {
+                return responseFunc(response.jsonData);
+            }else if (response.status === 500)  {
                 console.log(response);
-                return op.error(response);
+                Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
+                return errorFunc(response);
+            }else{
+                console.log(response);
+                if (response.jsonData){
+                    Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,response.jsonData.detail);
+                    //API.redirectTo('/login');
+                }else{
+                    Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
+                }
+                return errorFunc(response);
             }
         });
     }
+
 
     static restCall(options){
         let op = {
