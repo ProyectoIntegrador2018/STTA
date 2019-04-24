@@ -38,8 +38,6 @@ export default class Documentos extends Component {
     }
     uploadData = () => {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
-        console.log(this.state.fileName);
-        console.log(csv);
 
         API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
             Notifications.openNotificationWithIcon("success","Información cargada exitosamente!","")
@@ -62,7 +60,7 @@ export default class Documentos extends Component {
     updateData = (result) => {
         const data = result.data;
         // Here this is available and we can call this.setState (since it's binded in the constructor)
-        console.log(data);// or shorter ES syntax: this.setState({ data });
+        // or shorter ES syntax: this.setState({ data });
 
         if (this.state.columns && this.state.columns.length > 0){
             let dataT = [];
@@ -73,7 +71,6 @@ export default class Documentos extends Component {
                 });
                 dataT.push(row);
             });
-            console.log(dataT);
             this.setState({dataTable: dataT});
         }
     };

@@ -34,11 +34,6 @@ class App extends Component {
         API.bodySiteRef = React.createRef();
     }
 
-    componentWillMount(){
-        console.log("A");
-
-    }
-
     componentDidMount(){
         document.getElementById("site_loader").remove();
     }
