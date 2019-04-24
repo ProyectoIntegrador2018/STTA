@@ -7,6 +7,13 @@ import { Link } from 'react-router-dom'
 import API from "../tools/API";
 
 const { Header, Content, Footer, Sider } = Layout;
+const SubMenu = Menu.SubMenu;
+const datos = [{nombre:"Trámite ámite", id:"5", actual:true, ticket:"0002326562"},
+       {nombre:"Proceso eso", id:"6", actual:false, ticket:"000254552"},
+       {nombre:"Proceso proc", id:"7", actual:true, ticket:"021144852"},
+       {nombre:"Trámite tram", id:"8", actual:true, ticket:"52944120"}];
+
+
 
 export default class AppLayoutUser extends Component {
 
@@ -14,7 +21,23 @@ export default class AppLayoutUser extends Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-        }
+            data : []}
+
+    }
+
+    Despliega = (props) => {
+        console.log(props.id);
+        API.redirectTo('alumno/tramite/'+props.id)
+    }
+
+    componentWillMount() {
+        API.restCall({
+            service: 'get_tramites_alumno/' + localStorage.getItem('matricula'),
+            method:'get',
+            success:(response) => {
+
+            this.setState({data: response, loading:false});
+        }});
     }
 
     Basic = () => {
@@ -34,18 +57,26 @@ export default class AppLayoutUser extends Component {
                     <div className="logo"><img alt="ExSaM" className={'logo'} src={tec}/></div>
 
                     <Menu  theme="dark" className={'ant-menu-tec'} mode="inline" defaultSelectedKeys={[this.props.view || 0]}>
-                        <Menu.Item key="0">
-                            <Link to={"/tramite"}><Icon type="profile" />
-                                <span className="nav-text">Mis trámites</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="1">
-                            <Link to={"/historial"}><Icon type="user" />
-                                <span className="nav-text">Trámites pasados</span></Link>
-                        </Menu.Item>
+
+
+                            <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
+                                {
+                                    this.state.data.map((objectToMap,index) =>{
+                                        return (<Menu.Item onClick={this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                                }
+                            </SubMenu>
+
+
+                        <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" /><span>Trámites Concluidos</span></span>}>
+                            <Menu.Item key="11">Option 11</Menu.Item>
+                            <Menu.Item key="12">Option 12</Menu.Item>
+                        </SubMenu>
+
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
                             <Icon type="logout" />
                             <span>Salir</span>
                         </Menu.Item>
+
                     </Menu>
 
                 </Sider>
