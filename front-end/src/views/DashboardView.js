@@ -13,10 +13,6 @@ function callback(key) {
     console.log(key);
 }
 
-//Botón mensual
-function onChange(checked) {
-    console.log(`switch to ${checked}`);
-}
 
 // Estado de trámites academicos    QUITAR
 const salesPieData = [
@@ -129,11 +125,12 @@ class DashboardView extends Component {
 
         return (
             <div className="graficas">
-                {/* RENGLON 0 BEGIN */}
+                {/* Gráficas que muestran el número de trámites terminados por semana y mes */}
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
                         <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
                             <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
+                            {/* Se hace llamado a la función trámites mes que actualiza el número de trámites concluidos por mes */}
                             <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
                         </div>
                     </div>
