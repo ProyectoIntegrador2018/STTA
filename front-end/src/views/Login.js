@@ -91,7 +91,6 @@ class Login extends Component {
       if (!error) {
           this.setState({ loading: true });
           let params = { email:values.userName, password:values.password, remember:values.remember ? 1:0};
-          console.log(params);
         API.restCall({
           service:'login-admin/',
           method: "post",
