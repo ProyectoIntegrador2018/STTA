@@ -361,11 +361,14 @@ def dictfetchall(cursor):
               for row in cursor.fetchall()]
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
+
+#Función que regresa un json con la información de los trámites de un alumno
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
     cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   'matricula, encuesta, count(p.id) as pasos FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
                    'where matricula =' + "'" + matricula + "'" +
                    ' group by numero_ticket')

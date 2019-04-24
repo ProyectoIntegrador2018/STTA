@@ -98,14 +98,30 @@ const salesPieData4 = [
 ];
 
 
+
 class DashboardView extends Component {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            tramitesMes : 0
+        }
+    }
 
     componentWillMount() {
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                    console.log(response)           
+                let tramitesMes = 0;
+
+                for (let i in response) {
+                    if (response[i].status == "TERMINADO") {
+                        tramitesMes += 1;
+                    }
+                }   
+                this.setState({tramitesMes:tramitesMes});    
         }});
     }
 
@@ -118,7 +134,7 @@ class DashboardView extends Component {
                     <div className="column"  style={{height: '400px'}} >
                         <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
                             <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                            <p style={{ color: 'white', fontSize:130}}> 180 </p>
+                            <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
                         </div>
                     </div>
                     <div className="column" style={{height: '400px'}} >
