@@ -27,7 +27,7 @@ export default class AppLayoutUser extends Component {
 
     Despliega = (props) => {
         console.log(props.id);
-        API.redirectTo('alumno/tramite/'+props.id)
+        API.redirectTo('alumnos/tramite/'+props.id)
     }
 
     componentWillMount() {
@@ -62,7 +62,7 @@ export default class AppLayoutUser extends Component {
                             <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                                 {
                                     this.state.data.map((objectToMap,index) =>{
-                                        return (<Menu.Item onClick={this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                                        return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                                 }
                             </SubMenu>
 

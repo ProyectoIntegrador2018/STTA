@@ -186,7 +186,7 @@ def login_student(request):
     if not user.es_alumno:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
-    return JsonResponse({'token': token.key}, safe=False)
+    return JsonResponse({'token': token.key, 'matricula':user.email}, safe=False)
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, ))
@@ -364,7 +364,7 @@ def dictfetchall(cursor):
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
-    cursor.execute('SELECT p.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
                    'matricula, encuesta, count(p.id) as pasos FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
                    'where matricula =' + "'" + matricula + "'" +
