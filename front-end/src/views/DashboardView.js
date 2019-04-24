@@ -104,9 +104,6 @@ class DashboardView extends Component {
 
         return (
             <div className="graficas">
-                <div align="right">
-                    <p> Mensual  <Switch defaultChecked onChange={onChange} /> </p>
-                </div>
                 {/* RENGLON 0 BEGIN */}
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
