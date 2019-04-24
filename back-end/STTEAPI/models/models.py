@@ -76,6 +76,7 @@ class Tramitealumno(models.Model):
     numero_ticket = models.IntegerField(null=False, unique=True)
     fecha_inicio = models.DateTimeField(blank=True, null=True)
     fecha_ultima_actualizacion = models.DateTimeField(blank=True, null=True)
+    encuesta  = models.IntegerField(default=0, null=False)
     class Meta:
         managed = False
         db_table = 'TramiteAlumno'
