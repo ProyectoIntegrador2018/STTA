@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment'
 import {
-    Icon, Upload, Form, Divider,Button, Input, Steps, Select,Switch, Row, Col, Modal, Spin, Statistic
+    Icon, Divider, Steps,  Row, Col, Spin, Statistic
 } from 'antd';
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
@@ -11,6 +11,7 @@ export default class Tramite extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id:props.id || -1,
             loading:false,
             columns: [],
             disabled: true,
@@ -46,7 +47,7 @@ export default class Tramite extends Component {
     refreshData = () => {
         this.setState({loading:true});
         API.restCall({
-            service:'get_datos_tramite_alumno/',
+            service:'get_datos_tramite_alumno/' + this.state.id,
             success:(response) => {
                 this.getPasos(response[0].proceso_id)
                 this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,

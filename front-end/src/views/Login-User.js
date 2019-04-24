@@ -104,6 +104,8 @@ class LoginUser extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.setItem('matricula', response.matricula.substr(0,9));
+            console.log(localStorage.getItem('matricula'));
             API.redirectTo("/tramite");
         },(response) => {this.setState({ loading: false });},false);
 
