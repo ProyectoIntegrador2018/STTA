@@ -5,6 +5,7 @@ import { Pie} from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
+import API from "../tools/API";
 
 const Panel = Collapse.Panel;
 
@@ -99,6 +100,14 @@ const salesPieData4 = [
 
 class DashboardView extends Component {
 
+    componentWillMount() {
+        API.restCall({
+            service: 'get_tramite_alumnos_status',
+            method:'get',
+            success:(response) => {
+                    console.log(response)           
+        }});
+    }
 
     render() {
 
