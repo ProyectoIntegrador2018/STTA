@@ -5,6 +5,7 @@ import { Pie} from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
+import API from "../tools/API";
 
 const Panel = Collapse.Panel;
 
@@ -12,10 +13,6 @@ function callback(key) {
     console.log(key);
 }
 
-//Botón mensual
-function onChange(checked) {
-    console.log(`switch to ${checked}`);
-}
 
 // Estado de trámites academicos    QUITAR
 const salesPieData = [
@@ -97,19 +94,44 @@ const salesPieData4 = [
 ];
 
 
+
 class DashboardView extends Component {
 
+    constructor(props){
+        super(props);
+
+        this.state = {
+            tramitesMes : 0
+        }
+    }
+
+    componentWillMount() {
+        API.restCall({
+            service: 'get_tramite_alumnos_status',
+            method:'get',
+            success:(response) => {
+                let tramitesMes = 0;
+
+                for (let i in response) {
+                    if (response[i].status == "TERMINADO") {
+                        tramitesMes += 1;
+                    }
+                }   
+                this.setState({tramitesMes:tramitesMes});    
+        }});
+    }
 
     render() {
 
         return (
             <div className="graficas">
-                {/* RENGLON 0 BEGIN */}
+                {/* Gráficas que muestran el número de trámites terminados por semana y mes */}
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
                         <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
                             <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                            <p style={{ color: 'white', fontSize:130}}> 180 </p>
+                            {/* Se hace llamado a la función trámites mes que actualiza el número de trámites concluidos por mes */}
+                            <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
                         </div>
                     </div>
                     <div className="column" style={{height: '400px'}} >

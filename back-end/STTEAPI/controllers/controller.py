@@ -186,7 +186,8 @@ def login_student(request):
     if not user.es_alumno:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
-    return JsonResponse({'token': token.key, 'matricula':user.email}, safe=False)
+    al = Alumno.objects.get(usuario=user)
+    return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, ))
@@ -209,7 +210,8 @@ def request_restore(request):
                 '../templates/mailTemplate.html',
                 {
                     'user_name': user.nombre,
-                    'subject':  'Restablecer contraseña'
+                    'subject':  'Restablecer contraseña',
+                    'token': url_data.uid + "/"+url_data.token
                 }
             )
         send_mail( 'Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
@@ -361,11 +363,14 @@ def dictfetchall(cursor):
               for row in cursor.fetchall()]
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
+
+#Función que regresa un json con la información de los trámites de un alumno
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
     cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   'matricula, encuesta, count(p.id) as pasos FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
                    'where matricula =' + "'" + matricula + "'" +
                    ' group by numero_ticket')
@@ -382,6 +387,21 @@ def return_tramite_alumnos_status(request):
                    "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
                    'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
+                   'where year(now()) = year(fecha_ultima_actualizacion) and  month(now()) = month(fecha_ultima_actualizacion) ' +
+                   ' group by numero_ticket')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+@api_view(["GET"])
+#@permission_classes((IsAuthenticated, EsAdmin))
+def return_tramite_alumnos_status_week(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   ' Paso p on ta.proceso=p.proceso ' +
+                   ' where week(now()) - 1 = week(fecha_ultima_actualizacion) ' +
                    ' group by numero_ticket')
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
