@@ -13,26 +13,6 @@ function callback(key) {
     console.log(key);
 }
 
-
-// Estado de trámites academicos    QUITAR
-const salesPieData = [
-    {
-        x: 'Baja de materias',
-        y: 4544,
-    },
-    {
-        x: 'InterCampus',
-        y: 3321,
-    },
-    {
-        x: 'Cambio de carrera',
-        y: 3113,
-    },
-    {
-        x: 'Baja temporal',
-        y: 2341,
-    },
-];
 // Estado de Transferencias como destino Monterrey    QUITAR
 const salesPieData2 = [
     {
@@ -105,17 +85,18 @@ class DashboardView extends Component {
             tramitesSemana: 0,
             loadingMonth: false,
             loadingWeek: false,
+            tramitesAcademicos: false,
+            salesPieData:[]
         }
     }
 
     componentWillMount() {
         this.setState({loadingMonth: true});
+        let tramitesMes = 0;
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                let tramitesMes = 0;
-
                 for (let i in response) {
                     if (response[i].status == "TERMINADO") {
                         tramitesMes += 1;
@@ -127,13 +108,60 @@ class DashboardView extends Component {
                 this.setState({loadingMonth: false});
             }
         });
+        this.setState({tramitesAcademicos: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_status',
+            method:'get',
+            success:(response) => {
+                let xy = [  {
+                    x: 'Baja de materias',
+                    y: 0,
+                },
+                {
+                    x: 'InterCampus',
+                    y: 0,
+                },
+                {
+                    x: 'Cambio de carrera',
+                    y: 0,
+                },
+                {
+                    x: 'Baja temporal',
+                    y: 0,
+                },
+                {
+                    x: 'Transferencia',
+                    y: 0,
+                }]
+                for (let i in response) {
+                    if (response[i].nombre == "Intercampus") {
+                        xy[1].y += 1;
+                    }
+                    else if (response[i].nombre == "Baja de materias") {
+                        xy[0].y += 1;
+                    }
+                    else if (response[i].nombre == "Cambio de carrera") {
+                        xy[2].y += 1;
+                    }
+                    else if (response[i].nombre == "Baja temporal") {
+                        xy[3].y += 1;
+                    }
+                    else if (response[i].nombre == "Transferencia") {
+                        xy[4].y += 1;
+                    }
+                }   
+                this.setState({tramitesAcademicos: false, salesPieData:xy});    
+            },
+            error:(response) => {
+                this.setState({tramitesAcademicos: false});
+            }
+        });
         this.setState({loadingWeek: true});
+        let tramitesSemana = 0;
         API.restCall({
             service: 'get_tramite_alumnos_status_week',
             method:'get',
             success:(response) => {
-                let tramitesSemana = 0;
-
                 for (let i in response) {
                     if (response[i].status == "TERMINADO") {
                         tramitesSemana += 1;
@@ -174,19 +202,21 @@ class DashboardView extends Component {
                 {/* RENGLON 1 BEGIN */}
                 <div className="row">
                     <div className="column">
-                        <h1>Trámites academicos </h1>
+                        <h1>Trámites académicos </h1>
                         <Pie className="pie"
                             hasLegend
                             title="Trámites académicos"
                             subTitle="Total"
                             total={() => (
-                                <span className="chart-data"
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
+                                <Spin spinning={this.state.tramitesAcademicos}>
+                                    <span className="chart-data"
+                                        dangerouslySetInnerHTML={{
+                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                        }}
+                                    />
+                                </Spin>
                             )}
-                            data={salesPieData}
+                            data={this.state.salesPieData}
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
