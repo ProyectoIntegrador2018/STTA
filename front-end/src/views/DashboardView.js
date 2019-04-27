@@ -13,22 +13,6 @@ function callback(key) {
     console.log(key);
 }
 
-// Estado de Transferencias como destino Monterrey    QUITAR
-const salesPieData2 = [
-    {
-        x: 'Carta recibida por el alumno',
-        y: 100,
-    },
-    {
-        x: 'Escolar recibe carta',
-        y: 220,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 40,
-    },
-];
-
 // Transferencia otro campus    QUITAR
 const salesPieData3 = [
     {
@@ -89,6 +73,9 @@ class DashboardView extends Component {
             salesPieData:[],
             totalTramites: 0,
             tramitesTerminados: 0,
+            salesPieData2: [],
+            tramiteTransferencia: false,
+            pasosTransferencia: [],
         }
     }
 
@@ -179,6 +166,36 @@ class DashboardView extends Component {
                 this.setState({loadingWeek: false});
             }
         });
+
+        /*this.setState({tramiteTransferencia: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia_pasos',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in response) {
+                    xy[i] = response[i].nombre;
+                }   
+                this.setState({pasosTransferencia: xy});    
+            },
+        });
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in this.state.pasosTransferencia) {
+                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
+                }
+                for (let i in response) {
+                    xy[response[i].paso_actual - 1].y += 1;
+                }
+                this.setState({tramiteTransferencia: false, salesPieData2: xy});      
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });*/
     }
 
     render() {
@@ -241,13 +258,15 @@ class DashboardView extends Component {
                             title="Transferencias como destino Monterrey"
                             subTitle="Total"
                             total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData2.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
+                                <Spin spinning={this.state.tramiteTransferencia}>
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                        }}
+                                    />
+                                </Spin>
                             )}
-                            data={salesPieData2}
+                            data={this.state.salesPieData}
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
