@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Switch, Collapse } from 'antd';
+import { Switch, Collapse, Spin } from 'antd';
 import Charts from 'ant-design-pro/lib/Charts';
-import { Pie} from 'ant-design-pro/lib/Charts';
+import { Pie } from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
@@ -105,11 +105,13 @@ class DashboardView extends Component {
         super(props);
 
         this.state = {
-            tramitesMes : 0
+            tramitesMes : 0,
+            loadingMonth: false,
         }
     }
 
     componentWillMount() {
+        this.setState({loadingMonth: true});
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
@@ -121,8 +123,12 @@ class DashboardView extends Component {
                         tramitesMes += 1;
                     }
                 }   
-                this.setState({tramitesMes:tramitesMes});    
-        }});
+                this.setState({tramitesMes: tramitesMes, loadingMonth: false});    
+            },
+            error:(response) => {
+                this.setState({loadingMonth: false});
+            }
+        });
     }
 
     render() {
@@ -132,10 +138,12 @@ class DashboardView extends Component {
                 {/* RENGLON 0 BEGIN */}
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
-                        <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
-                            <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                            <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
-                        </div>
+                        <Spin spinning={this.state.loadingMonth}>
+                            <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
+                                <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
+                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
+                            </div>
+                        </Spin>
                     </div>
                     <div className="column" style={{height: '400px'}} >
                         <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
