@@ -101,8 +101,10 @@ class DashboardView extends Component {
         super(props);
 
         this.state = {
-            tramitesMes : 0,
+            tramitesMes: 0,
+            tramitesSemana: 0,
             loadingMonth: false,
+            loadingWeek: false,
         }
     }
 
@@ -125,6 +127,24 @@ class DashboardView extends Component {
                 this.setState({loadingMonth: false});
             }
         });
+        this.setState({loadingWeek: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_status_week',
+            method:'get',
+            success:(response) => {
+                let tramitesSemana = 0;
+
+                for (let i in response) {
+                    if (response[i].status == "TERMINADO") {
+                        tramitesSemana += 1;
+                    }
+                }   
+                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});    
+            },
+            error:(response) => {
+                this.setState({loadingWeek: false});
+            }
+        });
     }
 
     render() {
@@ -142,10 +162,12 @@ class DashboardView extends Component {
                         </Spin>
                     </div>
                     <div className="column" style={{height: '400px'}} >
-                        <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
-                            <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
-                            <p style={{ color: 'white', fontSize:130}}> 2500</p>
-                        </div>
+                        <Spin spinning={this.state.loadingWeek}>
+                            <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
+                                <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
+                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesSemana} </p>
+                            </div>
+                        </Spin>
                     </div>
                 </div>
                 {/* RENGLON 0 END */}
