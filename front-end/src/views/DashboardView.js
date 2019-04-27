@@ -86,23 +86,29 @@ class DashboardView extends Component {
             loadingMonth: false,
             loadingWeek: false,
             tramitesAcademicos: false,
-            salesPieData:[]
+            salesPieData:[],
+            totalTramites: 0,
+            tramitesTerminados: 0,
         }
     }
 
     componentWillMount() {
         this.setState({loadingMonth: true});
         let tramitesMes = 0;
+        let totalTramites = 0;
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
                 for (let i in response) {
+                    totalTramites += 1;
                     if (response[i].status == "TERMINADO") {
                         tramitesMes += 1;
                     }
                 }   
-                this.setState({tramitesMes: tramitesMes, loadingMonth: false});    
+                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});  
+                let tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                this.setState({tramitesTerminados: tramitesTerminados});
             },
             error:(response) => {
                 this.setState({loadingMonth: false});
@@ -223,7 +229,7 @@ class DashboardView extends Component {
                     </div>
                     <div className="column">
                         <h1>Trámites completados </h1>
-                        <Pie percent={70} subTitle="Procesos completos" total="70%" height={294} />
+                        <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
                     </div>
                 </div>
                 {/* RENGLON 1 END*/}

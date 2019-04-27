@@ -26,7 +26,6 @@ export default class AppLayoutUser extends Component {
     }
 
     Despliega = (props) => {
-        console.log(props.id);
         API.redirectTo('/alumnos/tramite/'+props.id)
     };
 
