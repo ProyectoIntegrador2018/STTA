@@ -48,7 +48,7 @@ export default class Tramite extends Component {
             method:'post',
             success:(response) => {
                 this.setState({ pasos: response, loading:false, status:this.state.step==response.length ?
-                        "TERMINADO" : this.state.step == 0 ? "INICIADO":"ENPROCESO" });
+                        "Terminado" : this.state.step == 0 ? "Iniciado":"En proceso" });
             },
             error:(response) => {
                 this.setState({loading:false});
@@ -80,7 +80,7 @@ export default class Tramite extends Component {
 
                 <Row style={{float:'right'}} gutter={8}>
                     <Col span={12}>
-                        <Statistic title="Dias transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} />
+                        <Statistic title="Días transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} />
                     </Col>
                     <Col span={12}>
                         <Statistic title="Estatus" groupSeparator={""} value={this.state.status} />
@@ -108,7 +108,7 @@ export default class Tramite extends Component {
                                 <Statistic title="Fecha de inicio" value={moment.utc(this.state.fecha1).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />} />
                             </Col>
                             <Col span={12}>
-                                <Statistic title="Fecha de ultima actualizacion" value={moment.utc(this.state.fecha2).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />}/>
+                                <Statistic title="Fecha de última actualización" value={moment.utc(this.state.fecha2).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />}/>
                             </Col>
                         </Row>
                     </Col>
