@@ -63,37 +63,14 @@ Dentro del folder del proyecto ejecutar el compando de cosntruccion:
 $ npm run build
 ```
 
-Mover el proyecto al folder www con el script
+Subir el documento al servidor de AWS
 ```
-$ npm run move
+$ npm run deploy
 ```
-
-En apache
-
+o
 ```
-$ cd /etc/apache2/sites-available
+$ aws s3 sync build/ s3://www.tramitesescolares.com.mx
 ```
 
-* Crear archivo conf en /etc/apache2/sites-available
-```
-<VirtualHost *:80>
-  ServerName [sitio]
-  ServerAdmin you@yourDomain
-  DocumentRoot /var/www/[folder destino]
 
-  # Serve static files like the minified javascript from npm run-script build
-  Alias /static /var/www/[folder destino]/static
-  <Directory /var/www/[folder destino]/static>
-    Require all granted
-  </Directory>
-</VirtualHost>
-```
 
-* Habilitar sitio
-```
-a2ensite [nombre del archivo conf]
-```
-* Resetear apache
-```
-systemctl restart apache2
-```
