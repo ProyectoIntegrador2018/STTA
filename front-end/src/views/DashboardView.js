@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Switch, Collapse } from 'antd';
+import { Switch, Collapse, Spin } from 'antd';
 import Charts from 'ant-design-pro/lib/Charts';
-import { Pie} from 'ant-design-pro/lib/Charts';
+import { Pie } from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
@@ -12,42 +12,6 @@ const Panel = Collapse.Panel;
 function callback(key) {
     console.log(key);
 }
-
-
-// Estado de trámites academicos    QUITAR
-const salesPieData = [
-    {
-        x: 'Baja de materias',
-        y: 4544,
-    },
-    {
-        x: 'InterCampus',
-        y: 3321,
-    },
-    {
-        x: 'Cambio de carrera',
-        y: 3113,
-    },
-    {
-        x: 'Baja temporal',
-        y: 2341,
-    },
-];
-// Estado de Transferencias como destino Monterrey    QUITAR
-const salesPieData2 = [
-    {
-        x: 'Carta recibida por el alumno',
-        y: 100,
-    },
-    {
-        x: 'Escolar recibe carta',
-        y: 220,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 40,
-    },
-];
 
 // Transferencia otro campus    QUITAR
 const salesPieData3 = [
@@ -101,24 +65,137 @@ class DashboardView extends Component {
         super(props);
 
         this.state = {
-            tramitesMes : 0
+            tramitesMes: 0,
+            tramitesSemana: 0,
+            loadingMonth: false,
+            loadingWeek: false,
+            tramitesAcademicos: false,
+            salesPieData:[],
+            totalTramites: 0,
+            tramitesTerminados: 0,
+            salesPieData2: [],
+            tramiteTransferencia: false,
+            pasosTransferencia: [],
         }
     }
 
     componentWillMount() {
+        this.setState({loadingMonth: true});
+        let tramitesMes = 0;
+        let totalTramites = 0;
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                let tramitesMes = 0;
-
                 for (let i in response) {
+                    totalTramites += 1;
                     if (response[i].status == "TERMINADO") {
                         tramitesMes += 1;
                     }
                 }   
-                this.setState({tramitesMes:tramitesMes});    
-        }});
+                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});  
+                let tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                this.setState({tramitesTerminados: tramitesTerminados});
+            },
+            error:(response) => {
+                this.setState({loadingMonth: false});
+            }
+        });
+        this.setState({tramitesAcademicos: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_status',
+            method:'get',
+            success:(response) => {
+                let xy = [  {
+                    x: 'Baja de materias',
+                    y: 0,
+                },
+                {
+                    x: 'InterCampus',
+                    y: 0,
+                },
+                {
+                    x: 'Cambio de carrera',
+                    y: 0,
+                },
+                {
+                    x: 'Baja temporal',
+                    y: 0,
+                },
+                {
+                    x: 'Transferencia',
+                    y: 0,
+                }]
+                for (let i in response) {
+                    if (response[i].nombre == "Intercampus") {
+                        xy[1].y += 1;
+                    }
+                    else if (response[i].nombre == "Baja de materias") {
+                        xy[0].y += 1;
+                    }
+                    else if (response[i].nombre == "Cambio de carrera") {
+                        xy[2].y += 1;
+                    }
+                    else if (response[i].nombre == "Baja temporal") {
+                        xy[3].y += 1;
+                    }
+                    else if (response[i].nombre == "Transferencia") {
+                        xy[4].y += 1;
+                    }
+                }   
+                this.setState({tramitesAcademicos: false, salesPieData:xy});    
+            },
+            error:(response) => {
+                this.setState({tramitesAcademicos: false});
+            }
+        });
+        this.setState({loadingWeek: true});
+        let tramitesSemana = 0;
+        API.restCall({
+            service: 'get_tramite_alumnos_status_week',
+            method:'get',
+            success:(response) => {
+                for (let i in response) {
+                    if (response[i].status == "TERMINADO") {
+                        tramitesSemana += 1;
+                    }
+                }   
+                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});    
+            },
+            error:(response) => {
+                this.setState({loadingWeek: false});
+            }
+        });
+
+        /*this.setState({tramiteTransferencia: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia_pasos',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in response) {
+                    xy[i] = response[i].nombre;
+                }   
+                this.setState({pasosTransferencia: xy});    
+            },
+        });
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in this.state.pasosTransferencia) {
+                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
+                }
+                for (let i in response) {
+                    xy[response[i].paso_actual - 1].y += 1;
+                }
+                this.setState({tramiteTransferencia: false, salesPieData2: xy});      
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });*/
     }
 
     render() {
@@ -128,43 +205,48 @@ class DashboardView extends Component {
                 {/* Gráficas que muestran el número de trámites terminados por semana y mes */}
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
-                        <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
-                            <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                            {/* Se hace llamado a la función trámites mes que actualiza el número de trámites concluidos por mes */}
-                            <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
-                        </div>
+                        <Spin spinning={this.state.loadingMonth}>
+                            <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
+                                <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
+                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
+                            </div>
+                        </Spin>
                     </div>
                     <div className="column" style={{height: '400px'}} >
-                        <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
-                            <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
-                            <p style={{ color: 'white', fontSize:130}}> 2500</p>
-                        </div>
+                        <Spin spinning={this.state.loadingWeek}>
+                            <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
+                                <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
+                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesSemana} </p>
+                            </div>
+                        </Spin>
                     </div>
                 </div>
                 {/* RENGLON 0 END */}
                 {/* RENGLON 1 BEGIN */}
                 <div className="row">
                     <div className="column">
-                        <h1>Trámites academicos </h1>
+                        <h1>Trámites académicos </h1>
                         <Pie className="pie"
                             hasLegend
                             title="Trámites académicos"
                             subTitle="Total"
                             total={() => (
-                                <span className="chart-data"
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
+                                <Spin spinning={this.state.tramitesAcademicos}>
+                                    <span className="chart-data"
+                                        dangerouslySetInnerHTML={{
+                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                        }}
+                                    />
+                                </Spin>
                             )}
-                            data={salesPieData}
+                            data={this.state.salesPieData}
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
                     </div>
                     <div className="column">
                         <h1>Trámites completados </h1>
-                        <Pie percent={70} subTitle="Procesos completos" total="70%" height={294} />
+                        <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
                     </div>
                 </div>
                 {/* RENGLON 1 END*/}
@@ -176,13 +258,15 @@ class DashboardView extends Component {
                             title="Transferencias como destino Monterrey"
                             subTitle="Total"
                             total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData2.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
+                                <Spin spinning={this.state.tramiteTransferencia}>
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                        }}
+                                    />
+                                </Spin>
                             )}
-                            data={salesPieData2}
+                            data={this.state.salesPieData}
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
