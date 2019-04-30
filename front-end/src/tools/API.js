@@ -8,7 +8,7 @@ export default class API {
     static cookies = new Cookies();
 
     static call(service, params={}, responseFunc=(function(response){}),errorFunc=(function(response){}), wToken=true) {
-        let  client = new FetchHttpClient('http://127.0.0.1:8000/');
+        let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
         client.addMiddleware(form());
         client.addMiddleware(json());
 
@@ -51,7 +51,7 @@ export default class API {
             op[key] = options[key];
         }
 
-        let  client = new FetchHttpClient('http://127.0.0.1:8000/');
+        let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
         client.addMiddleware(form());
         client.addMiddleware(json());
         if(op.wToken){

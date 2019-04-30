@@ -201,20 +201,18 @@ def request_restore(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
     url_data = PasswordToken.request_uid_token(args['email'])
-    user = PasswordToken.validate_token(url_data.uid, url_data.token)
-    user = Alumno.objects.get(usuario=user)
 
     try:
 
         html_message = loader.render_to_string(
                 '../templates/mailTemplate.html',
                 {
-                    'user_name': user.nombre,
+                    'user_name': "",
                     'subject':  'Restablecer contraseña',
                     'token': url_data.uid + "/"+url_data.token
                 }
             )
-        send_mail( 'Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
+        send_mail('Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
 
     except:
         raise APIExceptions.SendMailError
