@@ -375,6 +375,61 @@ def return_tramite_alumnos(request,matricula):
     return JsonResponse(tra, safe=False)
 
 
+
+
+def return_tramite_transferencia(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   ' Paso p on ta.proceso=p.proceso' +
+                   ' WHERE pr.nombre="Transferencia" ' +
+                   ' group by numero_ticket')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+def return_tramite_transferencia_pasos(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT pr.nombre, p.nombre ' +
+                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
+                   ' WHERE pr.nombre="Transferencia" ')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+def return_procesos(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT * ' +
+                   'FROM Proceso pr')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+def return_procesos_pasos(request, proceso):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT pr.nombre, p.nombre ' +
+                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
+                   ' WHERE pr.nombre=' + "'" + proceso + "'")
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+def return_tramite(request, proceso):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
+                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
+                   ' Paso p on ta.proceso=p.proceso' +
+                   ' WHERE pr.nombre=' + "'" + proceso + "'" +
+                   ' group by numero_ticket')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+
+
+
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):

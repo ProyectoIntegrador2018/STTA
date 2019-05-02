@@ -40,7 +40,7 @@ export default class Documentos extends Component {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
 
         API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
-            Notifications.openNotificationWithIcon("success","Información cargada exitosamente!","")
+            Notifications.openNotificationWithIcon("success","¡Información cargada exitosamente!","")
             API.redirectTo('/documentos');
         });
     };
@@ -80,10 +80,10 @@ export default class Documentos extends Component {
             let cols = [];
             this.setState({disabled: false, proceso: this.state.data[value], loadingTable: false});
             cols.push({key:"ticket",title:'# Ticket',llave:this.state.data[value].columna_ticket});
-            cols.push({key:"matricula",title:'Matricula',llave:this.state.data[value].columna_matricula});
+            cols.push({key:"matricula",title:'Matrícula',llave:this.state.data[value].columna_matricula});
 
             cols.push({key:"fecha_apertura",title:'Fecha de apertura',llave:this.state.data[value].columna_fecha_inicio});
-            cols.push({key:"fecha_ultima",title:'Fecha de ultima actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
+            cols.push({key:"fecha_ultima",title:'Fecha de última actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
             this.setState({id_proceso: this.state.data[value].id});
             API.call('pasos-procesos/',{proceso: this.state.data[value].id},(resposne) =>{
                 resposne.map((val) => {

@@ -51,6 +51,11 @@ urlpatterns = [
     path('get_pasos_tramites/',controller.get_pasos_tramites),
     path('get_tramites_alumno/<matricula>', controller.return_tramite_alumnos),
     path('get_tramite_alumnos_status', controller.return_tramite_alumnos_status),
-    path('get_tramite_alumnos_status_week', controller.return_tramite_alumnos_status_week)
+    path('get_tramite_alumnos_status_week', controller.return_tramite_alumnos_status_week),
+    path('get_tramite_alumnos_transferencia', controller.return_tramite_transferencia),
+    path('get_tramite_alumnos_transferencia_pasos', controller.return_tramite_transferencia_pasos),
+    path('get_procesos', controller.return_procesos),
+     path('get_procesos_pasos/<proceso>/', controller.return_procesos_pasos),
+      path('get_tramite/<proceso>/', controller.return_tramite)  
 ]
 

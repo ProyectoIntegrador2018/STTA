@@ -59,7 +59,7 @@ export default class ProcesoNuevo extends Component {
                 <b><label>Columna de la matrícula: </label></b>  {params.matricula.title}<br/>
                 <b><label>Columna del ticket: </label></b>  {params.ticket.title}<br/>
                 <b><label>Columna de fecha de apertura: </label></b>  {params.fecha_apertura.title}<br/>
-                <b><label>Columna de ultima actualización: </label></b>  {params.ultima_actualizacion.title}<br/>
+                <b><label>Columna de última actualización: </label></b>  {params.ultima_actualizacion.title}<br/>
                 <h4><b>Pasos:</b> </h4><br/>
                 <Divider/>
                 {params.pasos.map((p)=><div>
@@ -82,7 +82,7 @@ export default class ProcesoNuevo extends Component {
                 };
                 this.setState({loading:true});
                 API.call('agregar-proceso/',params,(resposne) =>{
-                    Notifications.openNotificationWithIcon("success","Proceso nuevo creado exitosamente!","")
+                    Notifications.openNotificationWithIcon("success","¡Proceso nuevo creado exitosamente!","")
                     API.redirectTo('/procesos');
                     this.setState({loading:false});
                 },(resposne) =>{this.setState({loading:false});});
@@ -165,7 +165,7 @@ export default class ProcesoNuevo extends Component {
                     <p className="ant-upload-drag-icon">
                         <Icon type="upload" />
                     </p>
-                    <p className="ant-upload-text">Haz clic o arrastra un documento en esta área</p>
+                    <p className="ant-upload-text">Haz click o arrastra un documento en esta área</p>
                     <p className="ant-upload-hint">El sistema solo soporta archivos CSV</p>
                 </Upload.Dragger>
 
