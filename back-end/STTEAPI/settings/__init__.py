@@ -24,7 +24,7 @@ SECRET_KEY = '^#%yvtl1b)l$mrw4pp_!jr3*f8@ea71_!vn%*oh18vr3yq%lz('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','stte-api-v.us-east-1.elasticbeanstalk.com','api.tramitesescolares.com.mx']
+ALLOWED_HOSTS = ['localhost','0.0.0.0','stte-api-v.us-east-1.elasticbeanstalk.com','api.tramitesescolares.com.mx']
 
 
 # Application definition

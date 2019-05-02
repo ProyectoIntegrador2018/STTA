@@ -213,7 +213,6 @@ def request_restore(request):
                 }
             )
         send_mail('Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
-
     except:
         raise APIExceptions.SendMailError
 
