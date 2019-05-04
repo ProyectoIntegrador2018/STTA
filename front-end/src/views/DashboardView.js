@@ -235,8 +235,7 @@ class DashboardView extends Component {
                         </Spin>
                     </div>
                 </div>
-                {/* RENGLON 0 END */}
-                {/* RENGLON 1 BEGIN */}
+                {/* Gráfica que muestran el número de todos los trámites academicos que están en el sistema */}
                 <div className="row">
                     <div className="column">
                         <h1>Trámites académicos </h1>
@@ -258,6 +257,7 @@ class DashboardView extends Component {
                             height={294}
                         />
                     </div>
+                    {/* Gráficas que muestran el porcentaje de trámites que se han completado*/}
                     <div className="column">
                         <h1>Trámites completados </h1>
                         <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
