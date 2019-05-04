@@ -93,8 +93,11 @@ class DashboardView extends Component {
                         tramitesMes += 1;
                     }
                 }   
-                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});  
-                let tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
+                let tramitesTerminados = 0;
+                if (this.state.totalTramites != 0) {
+                    tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                }
                 this.setState({tramitesTerminados: tramitesTerminados});
             },
             error:(response) => {
