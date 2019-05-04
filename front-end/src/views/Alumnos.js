@@ -71,7 +71,7 @@ export default class Alumnos extends Component {
                     key: 'email',
 
                 }, {
-                    title: 'Último Login',
+                    title: 'Último login',
                     key: 'last_login',
                 }
                 ]}/>

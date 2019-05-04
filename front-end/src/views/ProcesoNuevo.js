@@ -165,7 +165,7 @@ export default class ProcesoNuevo extends Component {
                     <p className="ant-upload-drag-icon">
                         <Icon type="upload" />
                     </p>
-                    <p className="ant-upload-text">Haz click o arrastra un documento en esta área</p>
+                    <p className="ant-upload-text">Haz clic o arrastra un documento en esta área</p>
                     <p className="ant-upload-hint">El sistema solo soporta archivos CSV</p>
                 </Upload.Dragger>
 
