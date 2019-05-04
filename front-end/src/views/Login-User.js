@@ -26,7 +26,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
             okButtonProps={{ disabled: loading, loading:loading }}
             onOk={onCreate}>
             <Form layout="vertical">
-              <Form.Item label="Correo electrónico" type="email">
+              <Form.Item label="Introduce tu correo electrónico" type="email">
                 {getFieldDecorator('correo', {
                   rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
                 })(
