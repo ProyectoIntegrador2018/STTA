@@ -20,6 +20,7 @@
     "universal-cookie": "^3.0.7"
   },
   "scripts": {
+    "deploy": "aws s3 sync build/ s3://www.tramitesescolares.com.mx",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
