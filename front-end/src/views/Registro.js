@@ -139,16 +139,17 @@ class Registro extends Component {
                             </Col>
                         </Row>
                         <Form.Item>
-                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de Privacidad</a>
+                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de privacidad</a>
                             {getFieldDecorator('remember', {
                                 valuePropName: 'checked',
                                 initialValue: false,
                                 rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{
                                     validator: (rule, value, cb)=>{value === true ? cb() : cb(true)},
                                     message: 'Para continuar tienes que aceptar términos y condiciones'}]
-                            })(
-                                <Checkbox checked={this.state.rememberMe}
-                                          onChange={this.handleChangeCheck}>He leído y acepto el Aviso de Privacidad</Checkbox>
+                            })
+                            (
+                                <Checkbox className="aviso-privacidad" checked={this.state.rememberMe}
+                                          onChange={this.handleChangeCheck}>He leído y acepto el aviso de privacidad</Checkbox>
                             )}
                         </Form.Item>
                     <Form.Item>
