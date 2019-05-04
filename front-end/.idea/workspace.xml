@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="814ce5f3-aefb-4d1c-9ee3-0e744c648217" name="Default" comment="API call changed">
+    <list default="true" id="814ce5f3-aefb-4d1c-9ee3-0e744c648217" name="Default" comment="Update frontend graphs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/DashboardView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/DashboardView.js" afterDir="false" />
     </list>
@@ -19,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/views/DashboardView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="452">
-              <caret line="230" column="86" selection-start-line="230" selection-start-column="86" selection-end-line="230" selection-end-column="86" />
+            <state relative-caret-position="332">
+              <caret line="222" column="86" selection-start-line="222" selection-start-column="86" selection-end-line="222" selection-end-column="86" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -31,8 +31,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/App.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="156" column="23" lean-forward="true" selection-start-line="156" selection-start-column="17" selection-end-line="156" selection-end-column="23" />
+            <state relative-caret-position="45">
+              <caret line="3" column="26" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -277,11 +277,25 @@
       <option name="project" value="LOCAL" />
       <updated>1556139860253</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Change color navy graph">
+      <created>1557002949002</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1557002949002</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update frontend graphs">
+      <created>1557003294575</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1557003294575</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="166397000" />
+    <option name="totallyTimeSpent" value="166946000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -336,7 +350,9 @@
     <MESSAGE value="Chat implementation started" />
     <MESSAGE value="Alumno view" />
     <MESSAGE value="API call changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="API call changed" />
+    <MESSAGE value="Change color navy graph" />
+    <MESSAGE value="Update frontend graphs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update frontend graphs" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/node_modules/ajv/lib/keyword.js" />
@@ -601,15 +617,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="156" column="23" lean-forward="true" selection-start-line="156" selection-start-column="17" selection-end-line="156" selection-end-column="23" />
+        <state relative-caret-position="45">
+          <caret line="3" column="26" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/views/DashboardView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="452">
-          <caret line="230" column="86" selection-start-line="230" selection-start-column="86" selection-end-line="230" selection-end-column="86" />
+        <state relative-caret-position="332">
+          <caret line="222" column="86" selection-start-line="222" selection-start-column="86" selection-end-line="222" selection-end-column="86" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>

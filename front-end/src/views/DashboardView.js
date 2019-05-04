@@ -220,7 +220,7 @@ class DashboardView extends Component {
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
                         <Spin spinning={this.state.loadingMonth}>
-                            <div className="column"  style={{backgroundColor: "#8693AB",width: '545px' ,height: '350px'}} >
+                            <div className="column"  style={{backgroundColor: "#7798AB",width: '545px' ,height: '350px'}} >
                                 <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
                                 <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
                             </div>
