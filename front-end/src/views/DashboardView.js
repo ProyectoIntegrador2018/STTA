@@ -222,7 +222,7 @@ class DashboardView extends Component {
                         <Spin spinning={this.state.loadingMonth}>
                             <div className="column"  style={{backgroundColor: "#7798AB",width: '545px' ,height: '350px'}} >
                                 <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
+                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesMes} </p>
                             </div>
                         </Spin>
                     </div>
@@ -230,7 +230,7 @@ class DashboardView extends Component {
                         <Spin spinning={this.state.loadingWeek}>
                             <div className="column"  style={{backgroundColor: "#828A95",width: '545px' ,height: '350px'}} >
                                 <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
-                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesSemana} </p>
+                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesSemana} </p>
                             </div>
                         </Spin>
                     </div>
