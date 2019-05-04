@@ -196,6 +196,20 @@ class DashboardView extends Component {
                 this.setState({tramiteTransferencia: false});
             }
         });*/
+        API.restCall({
+            service: 'get_procesos',
+            method:'get',
+            success:(response) => {
+                let datos = [];
+                for (let i in response) {
+                    datos[i] = {x: response[i].nombre, y: 0};
+                }
+                this.setState({procesos: datos});      
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });
     }
 
     render() {
@@ -261,7 +275,7 @@ class DashboardView extends Component {
                                 <Spin spinning={this.state.tramiteTransferencia}>
                                     <span
                                         dangerouslySetInnerHTML={{
-                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                            __html: (this.state.salesPieData2.reduce((pre, now) => now.y + pre, 0))
                                         }}
                                     />
                                 </Spin>
