@@ -35,7 +35,7 @@ class ProcesosForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((error, values) => {
             if (!error) {
-                console.log('Valores recibidos ', values);
+                //console.log('Valores recibidos ', values);
             }
         });
     };

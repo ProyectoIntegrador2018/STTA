@@ -71,7 +71,7 @@ export default class ProcesoNuevo extends Component {
                 </div>)}
             </div>,
             onOk: () => {
-                console.log('OK');
+                //console.log('OK');
                 params = {
                     nombre: this.state.nombre,
                     matricula:JSON.stringify(this.getColumnByKey(this.state.matricula)),
@@ -89,7 +89,7 @@ export default class ProcesoNuevo extends Component {
             },
             cancelText:"Cancelar",
             onCancel() {
-                console.log('Cancel');
+                //console.log('Cancel');
             },
         });
     };
