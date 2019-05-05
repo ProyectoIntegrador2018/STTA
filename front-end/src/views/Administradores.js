@@ -32,7 +32,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                     </Form.Item>
                     <Form.Item label="Correo electrónico" type="email">
                         {getFieldDecorator('correo', {
-                        rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
+                        rules: [{ required: true, message: 'Por favor introduce su correo electrónico' }],
                         })(
                         <Input />
                         )}
