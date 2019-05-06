@@ -60,6 +60,12 @@ export default class TramitesAdmin extends Component {
                 }, {
                     title: '# De ticket',
                     key: 'numero_ticket',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <a onClick={() => {localStorage.setItem("matAlumno", record.matricula);
+                            API.redirectTo("/tramite/"+record.id)}}> #{text}</a>
+                        </div>
+                    )
 
                 }, {
                     title: 'Fecha de inicio',

@@ -53,7 +53,9 @@ export default class API {
             op[key] = options[key];
         }
 
-        let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
+        //let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
+        let  client = new FetchHttpClient('http://localhost:8000/');
+
         client.addMiddleware(form());
         client.addMiddleware(json());
         if(op.wToken){

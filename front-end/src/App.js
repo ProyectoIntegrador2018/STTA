@@ -57,6 +57,7 @@ class App extends Component {
                     <Route exact path="/login" component={this.LoginView} />
                     <Route exact path="/registro" component={this.RegisterView} />
                     <Route exact path="/tramite" component={this.StudentView} />
+                    <Route exact path="/tramite/:id" component={this.AlumnosAdminTramiteView} />
 
                 </div>
             </Router>
@@ -108,6 +109,13 @@ class App extends Component {
             <AppLayoutUser type={"basic"}>
                 <Tramite id={match.params.id}/>
             </AppLayoutUser>
+        );
+    }
+    AlumnosAdminTramiteView = ({match}) => {
+        return (
+            <AppLayout type={"basic"}>
+                <Tramite id={match.params.id}/>
+            </AppLayout>
         );
     }
     AlumnosView = () => {

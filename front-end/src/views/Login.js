@@ -100,6 +100,9 @@ class Login extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.setItem('email', response.email);
+            localStorage.setItem('esAdmin', true);
+            localStorage.setItem('nombre', response.nombre);
             API.redirectTo("/dashboard");
           },
           error:(response) => {this.setState({ loading: false });},
