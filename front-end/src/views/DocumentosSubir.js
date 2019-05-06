@@ -38,13 +38,15 @@ export default class Documentos extends Component {
     }
     uploadData = () => {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
-
-        API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
-            Notifications.openNotificationWithIcon("success","¡Información cargada exitosamente!","")
-            API.redirectTo('/documentos');
-        });
+        if(this.state.id_proceso == undefined || this.state.fileName == 0 || this.state.columns.data.length == 0 || this.state.columns.cols == 0) {
+            Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
+        } else {
+            API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
+                Notifications.openNotificationWithIcon("success","¡Información cargada exitosamente!","")
+                API.redirectTo('/documentos');
+            });
+        }
     };
-
 
     parseFile = (file) => {
         this.setState({fileName:file.name});

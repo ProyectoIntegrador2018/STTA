@@ -8,7 +8,9 @@ export default class API {
     static cookies = new Cookies();
 
     static call(service, params={}, responseFunc=(function(response){}),errorFunc=(function(response){}), wToken=true) {
-        let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
+        ///let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
+        let  client = new FetchHttpClient('http://localhost:8000/');
+
         client.addMiddleware(form());
         client.addMiddleware(json());
 
@@ -18,16 +20,16 @@ export default class API {
 
         client.post(service, {form: params }).then(response => {
             if (response.status === 200) {
-                console.log(response.jsonData);
+                //console.log(response.jsonData);
                 return responseFunc(response.jsonData);
             }else if (response.status === 500)  {
-                console.log(response);
+                //console.log(response);
                 Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
                 return errorFunc(response);
             }else{
-                console.log(response);
+                //console.log(response);
                 if (response.jsonData){
-                    Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,response.jsonData.detail);
+                    Notifications.openNotificationWithIcon('error',"",response.jsonData.detail);
                     //API.redirectTo('/login');
                 }else{
                     Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
@@ -58,16 +60,16 @@ export default class API {
             client.addMiddleware(header({'Authorization': 'Token ' + localStorage.getItem('token')}));
         }
         client[op.method](op.service, {form: op.params}).then(response => {
-            console.log(op.method)
+            //console.log(op.method)
             if (response.status === 200) {
-                console.log(response.jsonData);
+                //console.log(response.jsonData);
                 return op.success(response.jsonData);
             }else if (response.status === 500)  {
-                console.log(response);
+                //console.log(response);
                 Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,"");
                 return op.error(response);
             }else{
-                console.log(response);
+                //console.log(response);
                 if (response.jsonData){
                     Notifications.openNotificationWithIcon('error',response.status + ' ' + response.statusText,response.jsonData.detail);
                     //API.redirectTo('/login');
@@ -81,7 +83,7 @@ export default class API {
 
     static redirectTo(to){
         if (API.bodySiteRef != null && API.bodySiteRef.current != null){
-            console.log(API.bodySiteRef);
+            //console.log(API.bodySiteRef);
             API.bodySiteRef.current.history.push(to);
         }else{
             //API.bodySiteRef.current.history.push(to);
@@ -102,7 +104,7 @@ export default class API {
     static logout() {
         if (localStorage.getItem('token')!= null){
             API.call("logout/",{}, (response)=>{
-                console.log(response);
+                //console.log(response);
                 Notifications.openNotificationWithIcon('success',"Sesión cerrada con éxito","");
             });
             localStorage.removeItem('token');
@@ -117,7 +119,7 @@ export default class API {
     static logoutUser() {
         if (localStorage.getItem('token')!= null){
             API.call("logout/",{}, (response)=>{
-                console.log(response);
+                //console.log(response);
                 Notifications.openNotificationWithIcon('success',"Sesión cerrada con éxito","");
             });
             localStorage.removeItem('token');

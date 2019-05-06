@@ -23,11 +23,11 @@ export default class Chat extends Component {
       function () {
         // Check if websocket state is OPEN
         if (WebSocketInstance.state() === 1) {
-          console.log("Connection is made")
+          //console.log("Connection is made")
           callback();
           return;
         } else {
-          console.log("Wait for connection...")
+          //console.log("Wait for connection...")
           component.waitForSocketConnection(callback);
         }
     }, 100); // wait 100 milisecond for the connection...
@@ -47,7 +47,7 @@ export default class Chat extends Component {
   }
 
   handleNewUserMessage = (message) => {
-    console.log(`New message incomig! ${message}`);
+    //console.log(`New message incomig! ${message}`);
     const messageObject = {
       from: this.props.currentUser,
       text: message
@@ -61,7 +61,7 @@ export default class Chat extends Component {
   setMessages(messages) {
     this.setState({ messages: messages.reverse()});
     for (let i = 0; i < this.state.messages.length; i++) {
-      console.log(this.state.messages[i])
+      //console.log(this.state.messages[i])
       if (this.state.messages[i].author != this.props.currentUser){
         addResponseMessage(this.state.messages[i].content);
       }else{

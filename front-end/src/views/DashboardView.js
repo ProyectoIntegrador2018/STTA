@@ -10,7 +10,7 @@ import API from "../tools/API";
 const Panel = Collapse.Panel;
 
 function callback(key) {
-    console.log(key);
+    //console.log(key);
 }
 
 // Transferencia otro campus    QUITAR

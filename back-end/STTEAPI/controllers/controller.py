@@ -118,7 +118,10 @@ def registro_Alumnos(request):
     args = args.__dict__()
     if not re.match(EMAIL_REGEX, args['email']):
         raise exceptions.PermissionDenied(detail="Email invalido")
-    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
+    try:
+        user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
+    except IntegrityError as e:
+        raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
 

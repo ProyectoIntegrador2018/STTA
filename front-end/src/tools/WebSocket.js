@@ -17,7 +17,7 @@ class WebSocketService {
 
     connect() {
         this.socketRef = new WebSocket(API_PATH);
-        console.log(this.socketRef);
+        //console.log(this.socketRef);
         this.socketRef.onopen = () => {
             console.log('WebSocket open');
         };
