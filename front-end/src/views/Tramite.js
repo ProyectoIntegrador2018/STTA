@@ -96,7 +96,7 @@ export default class Tramite extends Component {
                 </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
                 <MediaQuery query="(min-device-width: 1224px)">
-                    <Steps labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
+                    <Steps labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
                         {
                             this.state.pasos.map(value=>{
                                 return (<Steps.Step title={value.nombre_mostrar} />)
@@ -105,7 +105,7 @@ export default class Tramite extends Component {
                     </Steps>
                 </MediaQuery>
                 <MediaQuery query="(max-device-width: 1223px)">
-                    <Steps direction="vertical" labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
+                    <Steps direction="vertical" labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
                         {
                             this.state.pasos.map(value=>{
                                 return (<Steps.Step title={value.nombre_mostrar} />)
