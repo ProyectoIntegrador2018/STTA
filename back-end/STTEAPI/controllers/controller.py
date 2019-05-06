@@ -174,6 +174,8 @@ def login_admin(request):
     if not user.es_admin:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
+    user.last_login = now()
+    user.save()
     return JsonResponse({'token': token.key}, safe=False)
 
 @api_view(["POST"])
@@ -187,6 +189,8 @@ def login_student(request):
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
     al = Alumno.objects.get(usuario=user)
+    user.last_login = now()
+    user.save()
     return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
 
 @api_view(["POST"])
@@ -224,10 +228,12 @@ def reset_password(request):
     args.check_parameter(key='uid', required=True)
     args.check_parameter(key='token', required=True)
     args.check_parameter(key='password', required=True)
+    user = PasswordToken.validate_token(args['uid'], args['token'])
     check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
 
     if check:
-        user = PasswordToken.validate_token(args['uid'], args['token'])
+        user.is_active = True
+        user.save()
         return JsonResponse(1 if user and user.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
@@ -289,6 +295,8 @@ def eliminar_alumnos(request):
     for a in args['alumno']:
         try:
             doc = Alumno.objects.get(id=a['id'])
+            user = Usuario.objects.get(id=doc.usuario_id)
+            user.delete()
             doc.delete()
         except IntegrityError:
             raise APIExceptions.PermissionDenied
@@ -307,9 +315,11 @@ def eliminar_administradores(request):
     for a in args['admin']:
         try:
             doc = Administrador.objects.get(id=a['id'])
+            user = Usuario.objects.get(id=doc.usuario_id)
+            user.delete()
             doc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(detail="No se puede eliminar el usuario. Puede ser que el usuario tengo documentos registrados.")
 
     return JsonResponse(1, safe=False)
 
@@ -339,6 +349,7 @@ def registro_administradores(request):
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
     user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
+
     return JsonResponse(1, safe=False)
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de
