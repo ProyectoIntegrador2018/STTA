@@ -5,7 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
-
+import moment from 'moment';
 
 
 
@@ -64,9 +64,19 @@ export default class TramitesAdmin extends Component {
                 }, {
                     title: 'Fecha de inicio',
                     key: 'fecha_inicio',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    )
                 }, {
                     title: 'Fecha de última actualización',
                     key: 'fecha_ultima_actualizacion',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    )
                 },{
                     title: 'Paso actual',
                     key: 'paso_actual',
