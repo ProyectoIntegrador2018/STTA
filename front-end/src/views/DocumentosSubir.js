@@ -38,7 +38,9 @@ export default class Documentos extends Component {
     }
     uploadData = () => {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
-        if(this.state.id_proceso == undefined || this.state.fileName == 0 || this.state.columns.data.length == 0 || this.state.columns.cols == 0) {
+        if(this.state.id_proceso == undefined  ||   csv == undefined || csv == "" ||
+             this.state.fileName == undefined ||
+            this.state.fileName == "" ) {
             Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
         } else {
             API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
@@ -89,7 +91,7 @@ export default class Documentos extends Component {
             this.setState({id_proceso: this.state.data[value].id});
             API.call('pasos-procesos/',{proceso: this.state.data[value].id},(resposne) =>{
                 resposne.map((val) => {
-                    cols.push({key:"paso_" + val.id, title:val.nombre_mostrar, llave:val.columna_csv});
+                    cols.push({key:"paso_" + val.numero, title:val.nombre_mostrar, llave:val.columna_csv});
                 });
                 this.setState({columns: cols});
 

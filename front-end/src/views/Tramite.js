@@ -24,6 +24,7 @@ export default class Tramite extends Component {
             fecha1:"",
             fecha2:"",
             status:"",
+            n_paso: 1
         }
     }
 
@@ -63,7 +64,8 @@ export default class Tramite extends Component {
             success:(response) => {
 
                 this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion});
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
+                n_paso:response[0].numero_paso_actual });
                 this.getPasos(response[0].proceso_id)
                 },
             error:(response) => {
@@ -92,7 +94,7 @@ export default class Tramite extends Component {
                     </Col>
                 </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
-                <Steps labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
+                <Steps labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
                     {
                         this.state.pasos.map(value=>{
                             return (<Steps.Step title={value.nombre_mostrar} />)

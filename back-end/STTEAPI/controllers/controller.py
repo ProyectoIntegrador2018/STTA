@@ -148,10 +148,11 @@ def subir_documento(request):
                                    proceso_id=args['proceso'])
 
     contenido = json.loads(args['content'])
+    print(contenido['data'])
     for c in contenido['data']:
         fecha_1 = datetime.strptime(c['fecha_apertura'], '%m/%d/%y %H:%M')
         fecha_2 = datetime.strptime(c['fecha_ultima'], '%m/%d/%y %H:%M')
-        p_ok = -1
+        p_ok = 0
         p = 1
         while (('paso_' + str(p)) in c ):
             if c['paso_' + str(p)] == 'ok':
@@ -160,9 +161,20 @@ def subir_documento(request):
         paso = None
         if p_ok != -1:
             paso = Paso.objects.filter(proceso_id=args['proceso'], numero=p_ok).first()
+        else:
+            paso = Paso.objects.filter(proceso_id=args['proceso'], numero=1).first()
 
-        tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
-                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso)
+        num_results = Tramitealumno.objects.filter(numero_ticket=c['ticket']).count()
+        if num_results > 0:
+            tra = Tramitealumno.objects.filter(numero_ticket=c['ticket']).first()
+            tra.fecha_ultima_actualizacion = fecha_2
+            tra.paso_actual = paso
+            tra.numero_paso_actual = p_ok
+            tra.save()
+        else:
+            tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
+                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
+                                               numero_paso_actual=p_ok)
 
     return JsonResponse(doc.id, safe=False)
 
@@ -352,8 +364,10 @@ def registro_administradores(request):
     args.check_parameter(key='email', required=True)
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
-    user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
-
+    try:
+        user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
+    except IntegrityError as e:
+        raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de
@@ -479,7 +493,7 @@ def get_datos_tramite_alumno(request,id):
 
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
                                                                  'proceso__nombre', 'proceso_id',
-                                                                 'fecha_inicio', 'paso_actual',
+                                                                 'fecha_inicio', 'paso_actual', 'numero_paso_actual',
                                                                  'fecha_ultima_actualizacion').filter(
                                                                  id=id)
     tra = [dict(t) for t in tra]
