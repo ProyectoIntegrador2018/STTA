@@ -266,7 +266,7 @@ class DashboardView extends Component {
                         <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
                     </div>
                 </div>
-                {/* RENGLON 1 END*/}
+                {/* RENGLON 1 END
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
                     <Panel header="Estatus Transferencias como destino Monterrey" key="1">
                         <h1>Estatus trámites transferencias como destino Monterrey </h1>
@@ -327,7 +327,7 @@ class DashboardView extends Component {
 
                     </Panel>
                 </Collapse>
-
+*/}
 
 
             </div>
