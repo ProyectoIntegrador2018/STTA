@@ -75,7 +75,12 @@ export default class Tramite extends Component {
     render() {
         return (
             <Spin spinning={this.state.loading}><div>
-                <h1>{"Mi trámite"}</h1>
+                <h2 style={{float:'right'}}>{ localStorage.getItem("esAdmin") ? 
+                    <Statistic title="Matrícula" groupSeparator={""} value={(localStorage.getItem("matAlumno") || " ").toLocaleUpperCase()} />
+                 : "" }</h2>
+
+                <h1>{ localStorage.getItem("esAdmin") ? "Trámite del alumno" : "Mi trámite" }</h1>
+
                 <Divider/>
 
                 <Row style={{float:'right'}} gutter={8}>
@@ -95,7 +100,7 @@ export default class Tramite extends Component {
                     }
                 </Steps>
 
-                {this.state.step==this.state.pasos.length ?  <Row style={{textAlign:'center', }} gutter={8}>
+                {this.state.step==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}>
                         <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9  "}>Evalúa los trámites escolares</a></h2>
                 </Row> : <div></div>}
                 <Row gutter={8}>

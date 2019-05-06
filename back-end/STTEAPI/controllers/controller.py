@@ -177,9 +177,10 @@ def login_admin(request):
     if not user.es_admin:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
+    al = Administrador.objects.get(usuario=user)
     user.last_login = now()
     user.save()
-    return JsonResponse({'token': token.key}, safe=False)
+    return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email }, safe=False)
 
 @api_view(["POST"])
 def login_student(request):
@@ -473,7 +474,7 @@ def return_tramite_alumnos_status_week(request):
     return JsonResponse(tra, safe=False)
 
 @api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAlumno))
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_datos_tramite_alumno(request,id):
 
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
@@ -485,7 +486,7 @@ def get_datos_tramite_alumno(request,id):
     return JsonResponse(tra, safe=False)
 
 @api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAlumno))
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
     args = PostParametersList(request)
     args.check_parameter(key='id', required=True)

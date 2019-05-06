@@ -104,6 +104,7 @@ class LoginUser extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.removeItem('esAdmin');
             localStorage.setItem('matricula', response.matricula.substr(0,9));
             localStorage.setItem('nombre', response.nombre);
             console.log(localStorage.getItem('matricula'));
