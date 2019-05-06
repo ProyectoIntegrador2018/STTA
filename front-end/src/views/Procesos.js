@@ -5,6 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import API from "../tools/API";
 import {Link} from 'react-router-dom'
+import moment from 'moment';
 
 class ProcesosForm extends Component {
 
@@ -62,7 +63,12 @@ class ProcesosForm extends Component {
                            columns={[
                                {title: 'Nombre del proceso',key: 'nombre', },
                                {title: 'Pasos',key: 'pasos',},
-                               {title: 'Fecha de creación',key: 'fecha',}
+                               {title: 'Fecha de creación',key: 'fecha',
+                               render: (text, record) => (
+                                <div style={{textAlign:'center'}}>
+                                    <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                                </div>
+                                ),}
                                ]}/>
 
                 <Modal
