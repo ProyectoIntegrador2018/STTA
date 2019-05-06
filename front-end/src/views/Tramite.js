@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
+import MediaQuery from 'react-responsive';
 
 export default class Tramite extends Component {
 
@@ -94,14 +95,24 @@ export default class Tramite extends Component {
                     </Col>
                 </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
-                <Steps labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
-                    {
-                        this.state.pasos.map(value=>{
-                            return (<Steps.Step title={value.nombre_mostrar} />)
-                        })
-                    }
-                </Steps>
-
+                <MediaQuery query="(min-device-width: 1224px)">
+                    <Steps labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
+                        {
+                            this.state.pasos.map(value=>{
+                                return (<Steps.Step title={value.nombre_mostrar} />)
+                            })
+                        }
+                    </Steps>
+                </MediaQuery>
+                <MediaQuery query="(max-device-width: 1223px)">
+                    <Steps direction="vertical" labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
+                        {
+                            this.state.pasos.map(value=>{
+                                return (<Steps.Step title={value.nombre_mostrar} />)
+                            })
+                        }
+                    </Steps>
+                </MediaQuery>
                 {this.state.step==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}>
                         <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9  "}>Evalúa los trámites escolares</a></h2>
                 </Row> : <div></div>}
