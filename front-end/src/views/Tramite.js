@@ -49,8 +49,8 @@ export default class Tramite extends Component {
             params:{id:id},
             method:'post',
             success:(response) => {
-                this.setState({ pasos: response, loading:false, status:this.state.step==response.length ?
-                        "Terminado" : this.state.step == 0 ? "Iniciado":"En proceso" });
+                this.setState({ pasos: response, loading:false, status:this.state.n_paso==response.length ?
+                        "Terminado" : this.state.n_paso == 0 ? "Iniciado":"En proceso" });
             },
             error:(response) => {
                 this.setState({loading:false});
