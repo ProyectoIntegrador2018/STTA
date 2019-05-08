@@ -33,10 +33,11 @@ class PasswordToken:
         user = PasswordToken.validate_token(uid, token)
         if user is None:
             raise APIExceptions.InvalidToken
+            return None
         else:
             user.set_password(new_password)
             user.save()
-            return True
+            return user
 
     @staticmethod
     def validate_token(uid,token):

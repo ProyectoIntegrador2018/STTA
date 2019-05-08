@@ -113,8 +113,8 @@ export default class Tramite extends Component {
                         }
                     </Steps>
                 </MediaQuery>
-                {this.state.step==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}>
-                        <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9  "}>Evalúa los trámites escolares</a></h2>
+                {this.state.n_paso==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}>
+                        <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9"} target={"_blank"}>Evalúa los trámites escolares</a></h2>
                 </Row> : <div></div>}
                 <Row gutter={8}>
                     <Col span={12}>

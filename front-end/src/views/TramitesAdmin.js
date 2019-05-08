@@ -27,6 +27,7 @@ export default class TramitesAdmin extends Component {
         API.restCall({
             service:'get_tramites/',
             success:(response) => {
+                console.log(response);
                 this.setState({data: response, loading:false});
             },
             error:(response) => {
@@ -85,8 +86,11 @@ export default class TramitesAdmin extends Component {
                     )
                 },{
                     title: 'Paso actual',
-                    key: 'paso_actual',
-                },
+                    key: 'numero_paso_actual',
+                },{
+                    title: 'Paso actual',
+                    key: 'proceso__nombre',
+                }
                 ]}/>
 
                 <Modal

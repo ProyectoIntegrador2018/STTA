@@ -49,7 +49,8 @@ def borrar_procesos(request):
             proc = Proceso.objects.get(id=p['id'])
             proc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(
+                detail="El proceso ("+str(p['id'])+") no se puede eliminar porque hay documentos o trámites ligados a él.")
 
     return JsonResponse(1, safe=False)
 
@@ -148,10 +149,21 @@ def subir_documento(request):
                                    proceso_id=args['proceso'])
 
     contenido = json.loads(args['content'])
+
     print(contenido['data'])
     for c in contenido['data']:
-        fecha_1 = datetime.strptime(c['fecha_apertura'], '%m/%d/%y %H:%M')
-        fecha_2 = datetime.strptime(c['fecha_ultima'], '%m/%d/%y %H:%M')
+        fecha_1 = now()
+        fecha_2 = now()
+        if  c['fecha_apertura'] != None and c['fecha_apertura'] != "":
+            try:
+                fecha_1 = datetime.strptime(c['fecha_apertura'], '%d/%m/%y')
+            except:
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
+        if c['fecha_ultima'] != None and c['fecha_ultima'] != "":
+            try:
+                fecha_2 = datetime.strptime(c['fecha_ultima'], '%d/%m/%y')
+            except:
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
         p_ok = 0
         p = 1
         while (('paso_' + str(p)) in c ):
@@ -244,13 +256,13 @@ def reset_password(request):
     args.check_parameter(key='uid', required=True)
     args.check_parameter(key='token', required=True)
     args.check_parameter(key='password', required=True)
-    user = PasswordToken.validate_token(args['uid'], args['token'])
+
     check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
 
     if check:
-        user.is_active = True
-        user.save()
-        return JsonResponse(1 if user and user.es_admin else 2, safe=False)
+        check.is_active = True
+        check.save()
+        return JsonResponse(1 if check and check.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
@@ -315,7 +327,7 @@ def eliminar_alumnos(request):
             user.delete()
             doc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(detail="No se pudo eliminar el alumno")
 
     return JsonResponse(1, safe=False)
 
@@ -377,7 +389,7 @@ def registro_administradores(request):
 @api_view(["GET", "POST"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_datos_tramite(request):
-    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'paso_actual',
+    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'numero_paso_actual','proceso__nombre',
                                                                                           'fecha_ultima_actualizacion')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
@@ -394,7 +406,7 @@ def dictfetchall(cursor):
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual,numero_paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
                    "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
                    'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
