@@ -1,4 +1,4 @@
-# Sistema de Trazabilidad de Trámites Escolares
+# Sistema de Consulta de Trámites Escolares
 
 <a href="https://codeclimate.com/github/ProyectoIntegrador2018/STTA/maintainability"><img src="https://api.codeclimate.com/v1/badges/c60f047b52fa6baaa7f9/maintainability" /></a>
 
