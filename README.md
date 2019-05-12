@@ -25,8 +25,8 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 
 ## URLs de ambiente
 
-* Production - TBD
-* Development - (https://www.tramitesescolares.com.mx)
+* Production - https://www.tramitesescolares.com.mx
+* Development - [Github](https://github.com/ProyectoIntegrador2018/STTA)
 
 ## Equipo
 
