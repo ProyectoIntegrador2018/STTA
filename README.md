@@ -37,14 +37,14 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 | Laura Jaideny Pérez Gómez | A01271904@itesm.mx | Desarrollador |
 | Erik Eduardo Velasco Gómez | A00510780@itesm.mx | Desarrollador |
 
-## Recursos de gestion
+## Recursos de gestión
 
 * [Github](https://github.com/ProyectoIntegrador2018/stta-frontend)
 * [Backlog](https://github.com/ProyectoIntegrador2018/stta-backend/projects/1)
 * [Documentación](https://drive.google.com/drive/folders/15AvY0wG4RHUDM6egkHuAgLJnr3TcDuRj?usp=sharing)
 
-## Stack Tecnologico
-### Librerias Front End:
+## Stack Tecnológico
+### Librerías Front End:
 * ReactJS
 * Ant Desing
 
@@ -69,7 +69,7 @@ $ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
 
 ## Backend
 
-## Features
+## Caracteristicas
 
 - Django 2.0+
 - Uses [Pipenv](https://github.com/kennethreitz/pipenv) - the officially recommended Python packaging tool from Python.org.
@@ -80,7 +80,7 @@ $ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
 - Procfile for running gunicorn with New Relic's Python agent.
 - PostgreSQL database support with psycopg2.
 
-## How to install
+## Cómo instalar
 
 ```bash
 $ django-admin.py startproject \
@@ -92,7 +92,7 @@ $ mv example.env .env
 $ pipenv install --dev
 ```
 
-## Environment variables
+## Variables del ambiente
 
 These are common between environments. The `ENVIRONMENT` variable loads the correct settings, possible values are: `DEVELOPMENT`, `STAGING`, `PRODUCTION`.
 
@@ -118,14 +118,14 @@ DJANGO_SECURE_PROXY_SSL_HEADER='HTTP_X_FORWARDED_PROTO,https'
 
 ## Frontend
 
-### Instalar librerias  
+### Instalar librerías  
 
 Ya instalado npm
 ```
 $ npm install
 ```
 
-Las librerias que se instalan son:
+Las librerías que se instalan son:
 * ant-desing-pro
 * antd
 * fetch-http-client
