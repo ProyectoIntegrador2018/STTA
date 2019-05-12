@@ -31,25 +31,25 @@ $ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
 
 ## Backend
 
-### Instalar librerias  
+### Instalar librerías  
 
-Ya instalado Python 3 >=3.4
+Ya instalado Python 3 >= 3.4
 
-Instalar las librerias del proyecto que se encuentran en requieremnts.txt
+Instalar las librerías del proyecto que se encuentran en requirements.txt
 ```
 $ pip install -r requirements.tx
 ```
 
 ## Frontend
 
-### Instalar librerias  
+### Instalar librerías  
 
 Ya instalado npm
 ```
 $ npm install
 ```
 
-Las librerias que se instalan son:
+Las librerías que se instalan son:
 * ant-desing-pro
 * antd
 * fetch-http-client
@@ -58,7 +58,7 @@ Las librerias que se instalan son:
 
 ### Construir
 
-Dentro del folder del proyecto ejecutar el compando de cosntruccion:
+Dentro del folder del proyecto ejecutar el compando de construcción:
 ```
 $ npm run build
 ```
