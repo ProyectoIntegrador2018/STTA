@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Collapse, Spin } from 'antd';
+import { Button, Collapse, Spin } from 'antd';
 import { Pie } from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
 import API from "../tools/API";
+import Select from "antd/lib/select";
 
 const Panel = Collapse.Panel;
 
@@ -188,78 +189,19 @@ class DashboardView extends Component {
     render() {
         return (
             <div className="graficas">
-                {/* Gráficas que muestran el número de trámites terminados por semana y mes */}
-                <div className="row">
-                    <div className="column"  style={{height: '400px'}} >
-                        <Spin spinning={this.state.loadingMonth}>
-                            <div className="column"  style={{backgroundColor: "#7798AB",width: '545px' ,height: '350px'}} >
-                                <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesMes} </p>
-                            </div>
-                        </Spin>
-                    </div>
-                    <div className="column" style={{height: '400px'}} >
-                        <Spin spinning={this.state.loadingWeek}>
-                            <div className="column"  style={{backgroundColor: "#828A95",width: '545px' ,height: '350px'}} >
-                                <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
-                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesSemana} </p>
-                            </div>
-                        </Spin>
-                    </div>
-                </div>
-                {/* Gráfica que muestran el número de todos los trámites academicos que están en el sistema */}
-                <div className="row">
-                    <div className="column">
-                        <h1>Trámites académicos </h1>
-                        <Pie className="pie"
-                            hasLegend
-                            title="Trámites académicos"
-                            subTitle="Total"
-                            total={() => (
-                                <Spin spinning={this.state.tramitesAcademicos}>
-                                    <span className="chart-data"
-                                        dangerouslySetInnerHTML={{
-                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
-                                        }}
-                                    />
-                                </Spin>
-                            )}
-                            data={this.state.salesPieData}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
-                    </div>
-                    {/* Gráficas que muestran el porcentaje de trámites que se han completado*/}
-                    <div className="column">
-                        <h1>Trámites completados </h1>
-                        <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
-                    </div>
-                </div>
+
 
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
+
                     {this.state.procs.map((item, key) => (
-                    <Panel header={item.nombre} key={key}>
-                        <h2>{item.nombre}</h2>
-                        <Pie
-                            hasLegend
-                            title={item.nombre}
-                            subTitle="Total"
-                            total={() => (
-                                <Spin spinning={this.state.tramiteTransferencia}>
-                                    <span
-                                        dangerouslySetInnerHTML={{
-                                            __html: (this.state.salesPieData2.reduce((pre, now) => now.y + pre, 0))
-                                        }}
-                                    />
-                                </Spin>
-                            )}
-                            data={this.state.salesPieData}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
-                        </Panel>)
-                        )}
+                        //
+                        )
+                    )}
+
+
                 </Collapse>
+
+
             </div>
         );
     }
