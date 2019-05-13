@@ -26,6 +26,7 @@ export default class Alumnos extends Component {
         this.setState({loading:true});
         API.restCall({
             service:'return_student_list/',
+
             method: "get",
             params: "",
             success:(response) => {
@@ -36,6 +37,8 @@ export default class Alumnos extends Component {
     };
 
     deleteStudent = (rows) =>{
+        {/* Botón para eliminar a alumnos*/}
+        {/* Método que elimina a un alumno de la base de datos*/}
         this.setState({loading:true});
         API.call('eliminar_alumnos/',{alumno:JSON.stringify(rows)},(response) => {
             this.setState({ loading:false});
@@ -49,11 +52,15 @@ export default class Alumnos extends Component {
 
     showContent = (record) => {
         let data = JSON.parse(record.contenido_subido);
+        {/* Método que muestra el contenido de los alumnos
+        Mostrando nombre, apellido, email, y el último login*/}
         this.setState({cols:data.cols, data2:data.data, visible:true,record:record});
     };
 
     render() {
+        {/*Tabla donde se muestra el contenido de los alumnos*/}
         return (
+
             <div>
                 <h1><Icon type="team" /> Alumnos</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
