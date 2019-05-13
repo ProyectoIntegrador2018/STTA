@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Collapse, Spin } from 'antd';
 import { Pie } from 'ant-design-pro/lib/Charts';
+import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
 import API from "../tools/API";
@@ -152,7 +153,14 @@ class DashboardView extends Component {
                         this.state["data_"+key+"status"] : -1),
                     method:'get',
                     success:(response) => {
-
+                        let data = [];
+                        console.log(response)
+                        let finished = 0;
+                        let sumDays = 0;
+                        for (let i in pasos) {
+                            data[i] = {numero: pasos[i].numero, x: pasos[i].nombre_mostrar, y: 0};
+                        }
+                        //
                     },
                     error:(response) => {
                         this.setState({["data_"+key+"spinner"]:false});
