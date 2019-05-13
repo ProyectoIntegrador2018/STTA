@@ -3,7 +3,6 @@ import '../App.css';
 import {
     Form, Icon, Input, Button, Row, Col, Modal, Checkbox
 } from 'antd';
-import {Redirect} from 'react-router-dom';
 import loginImage from '../images/stte.png';
 import logo from '../images/logo.png';
 import API from "../tools/API";
@@ -13,14 +12,12 @@ class Registro extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             confirmDirty: false,
             loading: false,
             warning: false,
             redirect:false
         };
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
         this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
@@ -28,8 +25,8 @@ class Registro extends Component {
     }
 
     handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     };
 
     compareToFirstPassword = (rule, value, callback) => { {/* Método que compara la contraseña de confirmación con la
@@ -62,8 +59,7 @@ class Registro extends Component {
                       API.redirectTo('/')
                   } {/* Creada la cuenta con éxito redirige a la página de Login */}
                   this.setState({ loading: false, });
-
-              },(response)=>{this.setState({ loading: false, });},false);
+              }, (response)=>{this.setState({ loading: false, });},false);
           }
         });
       };
@@ -71,7 +67,6 @@ class Registro extends Component {
     render() {
 
         const { getFieldDecorator } = this.props.form;
-
 
         return (
             <div >
@@ -82,7 +77,6 @@ class Registro extends Component {
                     <img className="login-image" src={loginImage} alt={''}/>
                     </div>
                 </Col>
-
                 <Col xs={24} sm={24} md={24} lg={12} xl={10}>
                     <Form onSubmit={this.handleSubmit} className="login-form lform">
                     <div className="logo-image-container-registro">

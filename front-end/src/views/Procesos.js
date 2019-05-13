@@ -4,14 +4,13 @@ import {
 } from 'antd';
 import DataTable from "../components/DataTable";
 import API from "../tools/API";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import moment from 'moment';
 
 class ProcesosForm extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             visible:false,
             loading:true,
@@ -21,9 +20,7 @@ class ProcesosForm extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-
         API.call('procesos/',[],(response) => {
-
             this.setState({data: response, loading:false});
         });
     };
@@ -41,9 +38,9 @@ class ProcesosForm extends Component {
         });
     };
 
-    deleteProcs = (rows) =>{
+    deleteProcs = (rows) => {
         this.setState({loading:true});
-        API.call('borrar-procesos/',{procesos:JSON.stringify(rows)},(response) => {
+        API.call('borrar-procesos/', {procesos:JSON.stringify(rows)},(response) => {
 
             this.setState({ loading:false});
             this.refreshData();
@@ -70,7 +67,6 @@ class ProcesosForm extends Component {
                                 </div>
                                 ),}
                                ]}/>
-
                 <Modal
                     title="Agregar proceso nuevo"
                     visible={this.state.visible}
@@ -92,12 +88,10 @@ class ProcesosForm extends Component {
                         </Form.Item>
                     </Form>
                 </Modal>
-
             </div>
         );
     }
 }
-
 
 const Procesos = Form.create({ name: 'normal_login' })(ProcesosForm);
 export default Procesos;
