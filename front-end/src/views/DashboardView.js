@@ -160,6 +160,17 @@ class DashboardView extends Component {
                         for (let i in pasos) {
                             data[i] = {numero: pasos[i].numero, x: pasos[i].nombre_mostrar, y: 0};
                         }
+                        for (let i in response) {
+                            for (let r in data){
+                                if (data[r].numero == response[i].numero_paso_actual){
+                                    data[r].y += 1;
+                                }
+                            }
+                            if (response[i].Status == 2){
+                                sumDays += moment(response[i].fecha_ultima_actualizacion).diff(moment(response[i].fecha_inicio),'days');
+                                finished += 1;
+                            }
+                        }
                         //
                     },
                     error:(response) => {
