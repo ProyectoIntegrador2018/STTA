@@ -217,6 +217,12 @@ class DashboardView extends Component {
             }
         });
     }
+    getData = (key, item) => {
+        this.setState({["data_"+key+"spinner"]:true});
+        API.restCall({
+
+        });
+    };
 
     render() {
 
