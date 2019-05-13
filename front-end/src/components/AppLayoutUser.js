@@ -34,9 +34,9 @@ export default class AppLayoutUser extends Component {
                 let data2 = [];
                 console.log(response)
                 response.map((item) => {
-                        if(item.pasos == item.numero_paso_actual){
+                        if(item.pasos == item.numero_paso_actual) {
                             data2.push(item);
-                        }else{
+                        } else {
                             data1.push(item);
                         }
                     }

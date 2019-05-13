@@ -26,7 +26,7 @@ import DashboardView from "./views/DashboardView";
 
 class App extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             toLogin:false
@@ -34,7 +34,7 @@ class App extends Component {
         API.bodySiteRef = React.createRef();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         document.getElementById("site_loader").remove();
     }
 

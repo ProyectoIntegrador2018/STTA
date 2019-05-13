@@ -57,7 +57,7 @@ class Registro extends Component {
           if (!error) {
               this.setState({ loading: true, });
               API.call('registro-estudiante/',{nombre: values.name, apellido: values.lastName, email: values.userName, password:values.password},(response)=>{
-                  if(response === 1){ {/* Valida que todos los campos hayan sido llenados */}
+                  if(response === 1) { {/* Valida que todos los campos hayan sido llenados */}
                       Notifications.openNotificationWithIcon("success","Tu cuenta ha sido creada con éxito","");
                       API.redirectTo('/')
                   } {/* Creada la cuenta con éxito redirige a la página de Login */}
