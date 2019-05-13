@@ -171,7 +171,8 @@ class DashboardView extends Component {
                                 finished += 1;
                             }
                         }
-                        //
+                        console.log(sumDays);
+                        this.setState({["data_"+key+"spinner"]:false, ["data_"+key+"xy"]:data,  ["data_"+key+"prom"]: (sumDays / finished)});
                     },
                     error:(response) => {
                         this.setState({["data_"+key+"spinner"]:false});
