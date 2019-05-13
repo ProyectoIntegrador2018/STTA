@@ -60,4 +60,3 @@ urlpatterns = [
     path('get_tramites_resumen/<proceso>/<month>/<status>',controller.get_tramites_resumen ),
     path('get_pasos_proceso/<proceso>', controller.get_pasos_proceso)
 ]
-
