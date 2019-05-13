@@ -80,12 +80,12 @@ export default class Administradores extends Component {
         });
     };
 
-    deleteAdmin = (rows) =>{
+    deleteAdmin = (rows) => {
         this.setState({loading:true});
-        API.call('eliminar_administradores/',{admin:JSON.stringify(rows)},(response) => {
+        API.call('eliminar_administradores/',{admin:JSON.stringify(rows)}, (response) => {
             this.setState({ loading:false});
             this.refreshData();
-        },(response) => {this.setState({ loading:false})});
+        }, (response) => {this.setState({ loading:false})});
     };
 
     componentWillMount() {
@@ -111,7 +111,7 @@ export default class Administradores extends Component {
     
             this.setState({ loading: true });
             form.resetFields();
-            API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo},(response) => {
+            API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo}, (response) => {
                 this.setState({ visible: false  });
                 this.setState({ loading: false  });
                 this.refreshData();

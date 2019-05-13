@@ -33,14 +33,14 @@ export default class Alumnos extends Component {
         });
     };
 
-    deleteStudent = (rows) =>{
+    deleteStudent = (rows) => {
         {/* Botón para eliminar a alumnos*/}
         {/* Método que elimina a un alumno de la base de datos*/}
         this.setState({loading:true});
-        API.call('eliminar_alumnos/',{alumno:JSON.stringify(rows)},(response) => {
+        API.call('eliminar_alumnos/',{alumno:JSON.stringify(rows)}, (response) => {
             this.setState({ loading:false});
             this.refreshData();
-        },(response) => {this.setState({ loading:false})});
+        }, (response) => {this.setState({ loading:false})});
     };
 
     componentWillMount() {

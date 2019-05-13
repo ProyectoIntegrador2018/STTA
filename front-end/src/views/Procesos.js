@@ -20,7 +20,7 @@ class ProcesosForm extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.call('procesos/',[],(response) => {
+        API.call('procesos/',[], (response) => {
             this.setState({data: response, loading:false});
         });
     };
@@ -40,11 +40,11 @@ class ProcesosForm extends Component {
 
     deleteProcs = (rows) => {
         this.setState({loading:true});
-        API.call('borrar-procesos/', {procesos:JSON.stringify(rows)},(response) => {
+        API.call('borrar-procesos/', {procesos:JSON.stringify(rows)}, (response) => {
 
             this.setState({ loading:false});
             this.refreshData();
-        },()=>{this.setState({ loading:false});});
+        }, () => {this.setState({ loading:false});});
     };
 
     render() {

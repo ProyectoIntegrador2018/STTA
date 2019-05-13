@@ -59,7 +59,7 @@ export default class AppLayoutUser extends Component {
                     <Menu  theme="dark" className={'ant-menu-tec'} mode="inline" defaultSelectedKeys={[this.props.view || 0]}>
                         <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                             {
-                                this.state.data1.map((objectToMap,index) =>{
+                                this.state.data1.map((objectToMap,index) => {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
@@ -67,7 +67,7 @@ export default class AppLayoutUser extends Component {
                             <span>Trámites Concluidos</span>
                         </span>}>
                             {
-                                this.state.data2.map((objectToMap,index) =>{
+                                this.state.data2.map((objectToMap,index) => {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
