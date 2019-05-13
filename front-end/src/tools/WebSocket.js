@@ -33,7 +33,30 @@ class WebSocketService {
             this.connect();
         };
     }
+    /*
+    constructor() {
+        this.socketRef = null;
+    }
 
+    connect() {
+        this.socketRef = new WebSocket(API_PATH);
+        //console.log(this.socketRef);
+        this.socketRef.onopen = () => {
+            console.log('WebSocket open');
+        };
+        this.socketRef.onmessage = e => {
+            this.socketNewMessage(e.data);
+        };
+
+        this.socketRef.onerror = e => {
+            console.log(e.message);
+        };
+        this.socketRef.onclose = () => {
+            console.log("WebSocket closed let's reopen");
+            this.connect();
+        };
+
+    */
     socketNewMessage(data) {
         const parsedData = JSON.parse(data);
         const command = parsedData.command;
