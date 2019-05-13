@@ -439,6 +439,26 @@ def return_tramite_transferencia_pasos(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: month y status; Salida: Todas las columnas de ResumenTramites
+#                                                          # en formato de diccionario
+def get_tramites_resumen(request, proceso, month, status):
+    from django.db import connection
+    cursor = connection.cursor()
+    if month == "0":
+        cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                       'where proceso = {0} and status = {1};'.format(proceso, status))
+        if status == "-1":
+            cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                           'where proceso = {0};'.format(proceso))
+    else:
+        cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                       'where proceso = {0} and status = {1} and month = {2};'.format(proceso, status, month))
+        if status == "-1":
+            cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                           'where proceso = {0} and month = {1};'.format(proceso, month))
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
 def return_procesos(request):
     from django.db import connection
     cursor = connection.cursor()

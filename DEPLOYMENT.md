@@ -4,11 +4,10 @@ El proyecto será desplegado en un servidor EC2 de ASW, con Apache. Los pasos pa
 
 ## Conexión al AWS
 
-1. Open an SSH client. (find out how to connect using PuTTY)
-2. Locate your private key file (tramitesescolares_ubuntu.pem). The wizard automatically detects the key you used to launch the instance.
-3. Your key must not be publicly viewable for SSH to work. Use this command if needed:
-  chmod 400 tramitesescolares_ubuntu.pem
-4. Connect to your instance using its Public DNS:
+1. Abrir un cliente SSH. (descubre cómo conectarte usando PuTTY)
+2. Localice su archivo de clave privada (tramitesescolares_ubuntu.pem). El asistente detecta automáticamente la clave que utilizó para iniciar la instancia.
+3. Su clave no debe ser visible públicamente para que SSH funcione. Use este comando si es necesario: chmod 400 tramitesescolares_ubuntu.pem
+4. Conéctese a su instancia usando su DNS público:
   ec2-18-191-151-193.us-east-2.compute.amazonaws.com
 
 ```
@@ -31,25 +30,25 @@ $ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
 
 ## Backend
 
-### Instalar librerias  
+### Instalar librerías  
 
-Ya instalado Python 3 >=3.4
+Ya instalado Python 3 >= 3.4
 
-Instalar las librerias del proyecto que se encuentran en requieremnts.txt
+Instalar las librerías del proyecto que se encuentran en requirements.txt
 ```
 $ pip install -r requirements.tx
 ```
 
 ## Frontend
 
-### Instalar librerias  
+### Instalar librerías  
 
 Ya instalado npm
 ```
 $ npm install
 ```
 
-Las librerias que se instalan son:
+Las librerías que se instalan son:
 * ant-desing-pro
 * antd
 * fetch-http-client
@@ -58,7 +57,7 @@ Las librerias que se instalan son:
 
 ### Construir
 
-Dentro del folder del proyecto ejecutar el compando de cosntruccion:
+Dentro del folder del proyecto ejecutar el compando de construcción:
 ```
 $ npm run build
 ```
