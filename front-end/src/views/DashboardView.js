@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Collapse, Spin } from 'antd';
+import Charts from 'ant-design-pro/lib/Charts';
 import { Pie } from 'ant-design-pro/lib/Charts';
 import moment from 'moment';
 import '../App.css';
@@ -13,10 +14,57 @@ function callback(key) {
     //console.log(key);
 }
 
+// Transferencia otro campus    QUITAR
+const salesPieData3 = [
+    {
+        x: 'Director de programa autoriza',
+        y: 100,
+    },
+    {
+        x: 'Escolar origen autoriza',
+        y: 220,
+    },
+    {
+        x: 'Tesorería',
+        y: 40,
+    },
+    {
+        x: 'Escolar destino autoriza',
+        y: 40,
+    },
+    {
+        x: 'Trámite terminado',
+        y: 40,
+    },
+];
+
+// Baja de materias    QUITAR
+const salesPieData4 = [
+    {
+        x: 'Escolar inicia trámite',
+        y: 40,
+    },
+    {
+        x: 'Becas autoriza',
+        y: 30,
+    },
+    {
+        x: 'DC autoriza',
+        y: 10,
+    },
+    {
+        x: 'Trámite terminado',
+        y: 5,
+    },
+];
+
+
+
 class DashboardView extends Component {
 
-    constructor(props) {
+    constructor(props){
         super(props);
+
         this.state = {
             tramitesMes: 0,
             tramitesSemana: 0,
@@ -46,7 +94,7 @@ class DashboardView extends Component {
                     if (response[i].status == "TERMINADO") {
                         tramitesMes += 1;
                     }
-                }   
+                }
                 this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
                 let tramitesTerminados = 0;
                 if (this.state.totalTramites != 0) {
@@ -67,22 +115,22 @@ class DashboardView extends Component {
                     x: 'Baja de materias',
                     y: 0,
                 },
-                {
-                    x: 'InterCampus',
-                    y: 0,
-                },
-                {
-                    x: 'Cambio de carrera',
-                    y: 0,
-                },
-                {
-                    x: 'Baja temporal',
-                    y: 0,
-                },
-                {
-                    x: 'Transferencia',
-                    y: 0,
-                }]
+                    {
+                        x: 'InterCampus',
+                        y: 0,
+                    },
+                    {
+                        x: 'Cambio de carrera',
+                        y: 0,
+                    },
+                    {
+                        x: 'Baja temporal',
+                        y: 0,
+                    },
+                    {
+                        x: 'Transferencia',
+                        y: 0,
+                    }]
                 for (let i in response) {
                     if (response[i].nombre == "Intercampus") {
                         xy[1].y += 1;
@@ -99,8 +147,8 @@ class DashboardView extends Component {
                     else if (response[i].nombre == "Transferencia") {
                         xy[4].y += 1;
                     }
-                }   
-                this.setState({tramitesAcademicos: false, salesPieData:xy});    
+                }
+                this.setState({tramitesAcademicos: false, salesPieData:xy});
             },
             error:(response) => {
                 this.setState({tramitesAcademicos: false});
@@ -116,13 +164,43 @@ class DashboardView extends Component {
                     if (response[i].status == "TERMINADO") {
                         tramitesSemana += 1;
                     }
-                }   
-                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});    
+                }
+                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});
             },
             error:(response) => {
                 this.setState({loadingWeek: false});
             }
         });
+
+        /*this.setState({tramiteTransferencia: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia_pasos',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in response) {
+                    xy[i] = response[i].nombre;
+                }
+                this.setState({pasosTransferencia: xy});
+            },
+        });
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in this.state.pasosTransferencia) {
+                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
+                }
+                for (let i in response) {
+                    xy[response[i].paso_actual - 1].y += 1;
+                }
+                this.setState({tramiteTransferencia: false, salesPieData2: xy});
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });*/
         API.restCall({
             service: 'get_procesos',
             method:'get',
@@ -131,7 +209,7 @@ class DashboardView extends Component {
                 console.log(response)
 
                 for (let i in response) {
-                    datos[i] = {x: response[i].nombre, y: 0};
+                    this.getData(i, response[i]);
                 }
                 this.setState({procesos: datos, procs: response});
             },
@@ -185,8 +263,8 @@ class DashboardView extends Component {
             }
         });
     };
-
     render() {
+
         return (
             <div className="graficas">
 
@@ -194,8 +272,36 @@ class DashboardView extends Component {
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
 
                     {this.state.procs.map((item, key) => (
-                        //
-                        )
+                        <Panel header={item.nombre} key={key}>
+                            <Button onClick={()=>this.getData(key, item)} style={{float:"right", width:"100px", marginRight:5}} type={"primary"}>Consultar</Button>
+
+                            <Select defaultValue="-1" onChange={(value)=> this.setState({["data_"+key+"status"]:value})}  style={{float:"right", width:"200px", marginRight:5}}>
+                                <Select.Option value="-1">Todos los status</Select.Option>
+                                <Select.Option value="0">Iniciado</Select.Option>
+                                <Select.Option value="1">En Proceso</Select.Option>
+                                <Select.Option value="2">Finalizado</Select.Option>
+                            </Select>
+
+                            <Select defaultValue="0"  onChange={(value)=> this.setState({["data_"+key+"month"]:value})}   style={{float:"right", width:"200px", marginRight:5}}>
+                                <Select.Option value="0">Todos los meses</Select.Option>
+                                <Select.Option value="1">Enero</Select.Option>
+                                <Select.Option value="2">Febrero</Select.Option>
+                                <Select.Option value="3">Marzo</Select.Option>
+                                <Select.Option value="4">Abril</Select.Option>
+                                <Select.Option value="5">Mayo</Select.Option>
+                                <Select.Option value="6">Junio</Select.Option>
+                                <Select.Option value="7">Julio</Select.Option>
+                                <Select.Option value="8">Agosto</Select.Option>
+                                <Select.Option value="9">Septiembre</Select.Option>
+                                <Select.Option value="10">Octubre</Select.Option>
+                                <Select.Option value="11">Noviembre</Select.Option>
+                                <Select.Option value="12">Diciembre</Select.Option>
+                            </Select>
+                            <h2>{item.nombre} </h2>
+                            <h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
+
+                            //
+                        </Panel>)
                     )}
 
 

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="814ce5f3-aefb-4d1c-9ee3-0e744c648217" name="Default" comment="Update de getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/DashboardView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/DashboardView.js" afterDir="false" />
-    </list>
+    <list default="true" id="814ce5f3-aefb-4d1c-9ee3-0e744c648217" name="Default" comment="Función render editada para mostrar cambios en el dashboard" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -19,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/views/DashboardView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="173" column="26" selection-start-line="173" selection-start-column="26" selection-end-line="173" selection-end-column="26" />
+            <state relative-caret-position="294">
+              <caret line="197" column="24" selection-start-line="197" selection-start-column="24" selection-end-line="197" selection-end-column="24" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -365,11 +362,32 @@
       <option name="project" value="LOCAL" />
       <updated>1557735469963</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Update de getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard">
+      <created>1557735688995</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1557735688995</updated>
+    </task>
+    <task id="LOCAL-00020" summary="getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard completado">
+      <created>1557735862067</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1557735862067</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Función render editada para mostrar cambios en el dashboard">
+      <created>1557736497590</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1557736497590</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="184671000" />
+    <option name="totallyTimeSpent" value="185510000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -434,7 +452,9 @@
     <MESSAGE value="Metodo get para desplegar informacion de resumen de tramites y pasos de proceso en dashboard" />
     <MESSAGE value="Metodo getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard" />
     <MESSAGE value="Update de getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update de getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard" />
+    <MESSAGE value="getData para desplegar informacion de resumen de tramites y pasos de proceso en dashboard completado" />
+    <MESSAGE value="Función render editada para mostrar cambios en el dashboard" />
+    <option name="LAST_COMMIT_MESSAGE" value="Función render editada para mostrar cambios en el dashboard" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/node_modules/ajv/lib/keyword.js" />
@@ -723,8 +743,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/views/DashboardView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="173" column="26" selection-start-line="173" selection-start-column="26" selection-end-line="173" selection-end-column="26" />
+        <state relative-caret-position="294">
+          <caret line="197" column="24" selection-start-line="197" selection-start-column="24" selection-end-line="197" selection-end-column="24" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
