@@ -50,6 +50,7 @@ class Registro extends Component {
         callback();
     };
 
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((error, values) => {
