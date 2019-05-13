@@ -144,7 +144,20 @@ class DashboardView extends Component {
             service: 'get_pasos_proceso/' + item.id,
             method:'get',
             success:(response) => {
+                console.log(response);
+                let pasos = response;
+                API.restCall({
+                    service: 'get_tramites_resumen/' + item.id + "/" + (this.state["data_"+key+"month"] != undefined ?
+                        this.state["data_"+key+"month"] : 0) + "/" + (this.state["data_"+key+"status"] != undefined  ?
+                        this.state["data_"+key+"status"] : -1),
+                    method:'get',
+                    success:(response) => {
 
+                    },
+                    error:(response) => {
+                        this.setState({["data_"+key+"spinner"]:false});
+                    }
+                });
             },
             error:(response) => {
                 this.setState({["data_"+key+"spinner"]:false});
