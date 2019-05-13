@@ -6,8 +6,6 @@ import DataTable from "../components/DataTable";
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
 
-
-
 export default class Documentos extends Component {
 
     constructor(props) {
@@ -36,9 +34,10 @@ export default class Documentos extends Component {
     componentWillMount() {
         this.refreshData();
     }
+
     uploadData = () => {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
-        if(this.state.id_proceso == undefined  ||   csv == undefined || csv == "" ||
+        if (this.state.id_proceso == undefined  ||   csv == undefined || csv == "" ||
              this.state.fileName == undefined ||
             this.state.fileName == "" ) {
             Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
@@ -65,7 +64,6 @@ export default class Documentos extends Component {
         const data = result.data;
         // Here this is available and we can call this.setState (since it's binded in the constructor)
         // or shorter ES syntax: this.setState({ data });
-
         if (this.state.columns && this.state.columns.length > 0) {
             let dataT = [];
             data.splice(1).map((item,index) => {
@@ -85,7 +83,6 @@ export default class Documentos extends Component {
             this.setState({disabled: false, proceso: this.state.data[value], loadingTable: false});
             cols.push({key:"ticket",title:'# Ticket',llave:this.state.data[value].columna_ticket});
             cols.push({key:"matricula",title:'Matrícula',llave:this.state.data[value].columna_matricula});
-
             cols.push({key:"fecha_apertura",title:'Fecha de apertura',llave:this.state.data[value].columna_fecha_inicio});
             cols.push({key:"fecha_ultima",title:'Fecha de última actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
             this.setState({id_proceso: this.state.data[value].id});
@@ -94,7 +91,6 @@ export default class Documentos extends Component {
                     cols.push({key:"paso_" + val.numero, title:val.nombre_mostrar, llave:val.columna_csv});
                 });
                 this.setState({columns: cols});
-
             });
         }
     };
@@ -129,7 +125,6 @@ export default class Documentos extends Component {
                 <div style={{textAlign:'right'}}>
                     <Button onClick={this.uploadData} style={{marginTop:10}} className={'button-success'}><Icon type={'upload'}/> Subir datos</Button>
                 </div>
-
             </div>
         );
     }

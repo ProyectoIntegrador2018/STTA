@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import {
     Icon, Upload, Form, Divider,Button, Input, Steps, Select,Switch, Row, Col, Modal
 } from 'antd';
-import DataTable from "../components/DataTable";
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
-
-
 
 export default class ProcesoNuevo extends Component {
 
@@ -16,7 +13,6 @@ export default class ProcesoNuevo extends Component {
             loading:false,
             columns: [],
             disabled: true,
-
             matricula:"",
             ticket:"",
             ultima_actualizacion:"",
@@ -25,9 +21,7 @@ export default class ProcesoNuevo extends Component {
         }
     }
 
-    refreshData = () => {
-
-    };
+    refreshData = () => {};
 
     componentWillMount() {
         this.refreshData();
@@ -36,8 +30,6 @@ export default class ProcesoNuevo extends Component {
     getColumnByKey = (key) => {
         return this.state.columns[key];
     };
-
-
 
     uploadData = () => {
 
@@ -50,12 +42,10 @@ export default class ProcesoNuevo extends Component {
             pasos:this.state.pasos
         };
 
-        if(params.nombre == "" || params.matricula == "" || params.ticket == "" || params.ultima_actualizacion == "" ||
+        if (params.nombre == "" || params.matricula == "" || params.ticket == "" || params.ultima_actualizacion == "" ||
             params.fecha_apertura == "" || params.pasos ==  "") {
             Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
-
         } else {
-
             Modal.confirm({
                 title: 'Estos son los datos a subir:',
                 content: <div>
@@ -100,7 +90,6 @@ export default class ProcesoNuevo extends Component {
         }
     };
 
-
     parseFile = (file) => {
         this.setState({fileName:file.name});
         let Papa = require("papaparse/papaparse.min.js");
@@ -127,18 +116,15 @@ export default class ProcesoNuevo extends Component {
         this.setState({columns: columns});
     };
 
-
     handleSelect = (name, keyvalue) => {
-
         this.setState({[name]:keyvalue});
-
     };
 
     add = () => {
         this.state.pasos.push({nombre:"", columna_csv:"", nombre_mostrar:"", mostrar:true, numero:this.state.pasos.length + 1, title:""});
         this.setState({pasos: this.state.pasos});
-
     };
+
     remove = () => {
         this.state.pasos.splice(-1,1);
         this.setState({pasos: this.state.pasos});
@@ -157,7 +143,6 @@ export default class ProcesoNuevo extends Component {
 
         this.setState({pasos: pasos});
     };
-
 
     render() {
         return (
@@ -278,9 +263,6 @@ export default class ProcesoNuevo extends Component {
                         </Button>
                     </div>
                 </Form.Item>
-
-
-
                 <div style={{textAlign:'right'}}>
                     <Button loading={this.state.loading} disabled={this.state.loading} onClick={this.uploadData} style={{marginTop:10}} className={'button-success'}><Icon type={'upload'}/> Subir datos</Button>
                 </div>

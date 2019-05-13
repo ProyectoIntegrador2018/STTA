@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 import API from "../tools/API";
 import moment from 'moment';
 
-
 export default class Documentos extends Component {
 
     constructor(props) {
@@ -24,12 +23,11 @@ export default class Documentos extends Component {
     refreshData = () => {
         this.setState({loading:true});
         API.call('documentos/',[],(response) => {
-
             this.setState({data: response, loading:false});
         });
     };
 
-    deleteFiles = (rows) =>{
+    deleteFiles = (rows) => {
         this.setState({loading:true});
         API.call('eliminar-documentos/',{documentos:JSON.stringify(rows)},(response) => {
             this.setState({ loading:false});
@@ -45,35 +43,6 @@ export default class Documentos extends Component {
         let data = JSON.parse(record.contenido_subido);
         this.setState({cols:data.cols, data2:data.data, visible:true,record:record});
     };
-    /*this.setState({tramiteTransferencia: true});
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia_pasos',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in response) {
-                    xy[i] = response[i].nombre;
-                }
-                this.setState({pasosTransferencia: xy});
-            },
-        });
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in this.state.pasosTransferencia) {
-                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
-                }
-                for (let i in response) {
-                    xy[response[i].paso_actual - 1].y += 1;
-                }
-                this.setState({tramiteTransferencia: false, salesPieData2: xy});
-            },
-            error:(response) => {
-                this.setState({tramiteTransferencia: false});
-            }
-        });*/
 
     render() {
         return (
@@ -121,11 +90,7 @@ export default class Documentos extends Component {
                         </Button>,]}>
                     <div style={{textAlign:'right'}}><h3>{moment(this.state.record.fecha).format('DD-MMM-YYYY')}</h3></div>
                     <DataTable columns={this.state.cols} data={this.state.data2}/>
-
-
                 </Modal>
-
-
             </div>
         );
     }

@@ -3,11 +3,8 @@ import {
     Icon, Button, Modal
 } from 'antd';
 import DataTable from "../components/DataTable";
-import { Link } from 'react-router-dom'
 import API from "../tools/API";
 import moment from 'moment';
-
-
 
 export default class TramitesAdmin extends Component {
 
@@ -41,7 +38,7 @@ export default class TramitesAdmin extends Component {
         API.call('eliminar_tramites/',{tramites:JSON.stringify(rows)},(response) => {
             this.setState({ loading:false});
             this.refreshData();
-        },(response) => {this.setState({ loading:false})});
+        }, (response) => {this.setState({ loading:false})});
     };
 
     componentWillMount() {
@@ -92,7 +89,6 @@ export default class TramitesAdmin extends Component {
                     key: 'proceso__nombre',
                 }
                 ]}/>
-
                 <Modal
                     width={1300}
                     title={this.state.record.nombre}
@@ -105,11 +101,7 @@ export default class TramitesAdmin extends Component {
                         </Button>,]}>
                     <div style={{textAlign:'right'}}><h3>{this.state.record.fecha}</h3></div>
                     <DataTable columns={this.state.cols} data={this.state.data2}/>
-
-
                 </Modal>
-
-
             </div>
         );
     }

@@ -61,12 +61,12 @@ class LoginUser extends Component {
   handleCancel = () => {
     this.setState({ visible: false });
   };
+
   handleChangeCheck = (e) => {
     this.setState({
       rememberMe: e.target.checked,
     });
   }
-
 
   handleCreate = () => {
     const form = this.formRef.props.form;
@@ -98,19 +98,18 @@ class LoginUser extends Component {
     e.preventDefault();
     this.props.form.validateFields((error, values) => {
       if (!error) {
-          this.setState({ loading: true });
-          let params = { email:values.userName, password:values.password, remember:values.remember ? 1:0};
+        this.setState({ loading: true });
+        let params = { email:values.userName, password:values.password, remember:values.remember ? 1:0};
         API.call('login-estudiante/',params,(response) => {
-            this.setState({ loading: false });
-            Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
-            localStorage.setItem('token', response.token);
-            localStorage.removeItem('esAdmin');
-            localStorage.setItem('matricula', response.matricula.substr(0,9));
-            localStorage.setItem('nombre', response.nombre);
-            console.log(localStorage.getItem('matricula'));
-            API.redirectTo("/tramite");
-        },(response) => {this.setState({ loading: false });},false);
-
+          this.setState({ loading: false });
+          Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
+          localStorage.setItem('token', response.token);
+          localStorage.removeItem('esAdmin');
+          localStorage.setItem('matricula', response.matricula.substr(0,9));
+          localStorage.setItem('nombre', response.nombre);
+          console.log(localStorage.getItem('matricula'));
+          API.redirectTo("/tramite");
+        }, (response) => {this.setState({ loading: false });},false);
       }
     });
   };
@@ -127,8 +126,6 @@ class LoginUser extends Component {
               <img className="login-image" src={loginImage} alt={''}/>
             </div>
           </Col>
-
-
           <Col xs={24} sm={24} md={24} lg={12} xl={10}>
             <Form onSubmit={this.handleSubmit} className="login-form">
 
@@ -153,13 +150,11 @@ class LoginUser extends Component {
                   <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
                 )}
               </Form.Item>
-
               <Form.Item>
                 <Link to={"/registro"} >
                   <span style={{float:'left'}} className="login-form-right">Registrarme</span>
                 </Link>
                 <a className="login-form-right" style={{float:'right'}} onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
-
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
                   Accesar
@@ -179,7 +174,6 @@ class LoginUser extends Component {
     );
   }
 }
-
 
 const WrappedNormalLoginUserForm = Form.create({ name: 'normal_login' })(LoginUser);
 export default WrappedNormalLoginUserForm;
