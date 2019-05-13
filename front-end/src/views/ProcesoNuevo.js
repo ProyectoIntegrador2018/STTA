@@ -146,12 +146,12 @@ export default class ProcesoNuevo extends Component {
 
     edit = (index,campo, value) => {
         let pasos = this.state.pasos;
-        if (campo === 'columna_csv'){
+        if (campo === 'columna_csv') {
             let c = this.getColumnByKey(value);
             pasos[index][campo] = value;
             pasos[index].nombre = c.nombre;
             pasos[index].title = c.title;
-        }else{
+        } else {
             pasos[index][campo] = value;
         }
 

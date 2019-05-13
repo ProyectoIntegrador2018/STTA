@@ -27,7 +27,7 @@ export default class ChatView extends Component {
         WebSocketInstance.connect();
     }
 
-    render(){
+    render() {
         return (<div>{
             this.state.loggedIn ?
                 <Chat

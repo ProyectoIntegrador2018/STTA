@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { Widget, addResponseMessage, addUserMessage } from 'react-chat-widget';
-
 import 'react-chat-widget/lib/styles.css';
-
 import WebSocketInstance from '../../../tools/WebSocket'
 
 export default class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {messages:[]}
-
     this.waitForSocketConnection(() => {
       WebSocketInstance.initChatUser(this.props.currentUser);
       WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this))
@@ -39,7 +36,6 @@ export default class Chat extends Component {
   componentDidUpdate() {
   }
 
-
   addMessage(message) {
     this.setState({ messages: [...this.state.messages, message]});
     if (message.author != this.props.currentUser)
@@ -62,9 +58,9 @@ export default class Chat extends Component {
     this.setState({ messages: messages.reverse()});
     for (let i = 0; i < this.state.messages.length; i++) {
       //console.log(this.state.messages[i])
-      if (this.state.messages[i].author != this.props.currentUser){
+      if (this.state.messages[i].author != this.props.currentUser) {
         addResponseMessage(this.state.messages[i].content);
-      }else{
+      } else {
         addUserMessage(this.state.messages[i].content);
       }
     }

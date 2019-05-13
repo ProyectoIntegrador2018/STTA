@@ -29,7 +29,7 @@ class Restablecer extends Component {
         this.validateToNextPassword = this.validateToNextPassword.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.validateToken();
     }
 
@@ -40,9 +40,9 @@ class Restablecer extends Component {
         Si ya expiró el tiempo manda mensaje de error
         y redirige a la página de Login*/}
         API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
-            if(response === 1){
+            if(response === 1) {
 
-            }else{
+            } else {
                 this.setState({ warning: true });
                 Modal.warning({
                     title: 'Lo sentimos!',
@@ -117,7 +117,7 @@ class Restablecer extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        if (this.state.redirect){
+        if (this.state.redirect) {
             return (<Redirect to={'/login'}/>);
         }
 

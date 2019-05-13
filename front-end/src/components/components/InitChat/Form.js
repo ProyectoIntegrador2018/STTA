@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
-
 export default class InitForm extends Component {
 
   constructor(props) {
-      super(props);
-      this.state = {
-        value: ''
-      };
-    }
+    super(props);
+    this.state = {
+      value: ''
+    };
+  }
 
   usernameChangeHandler = (event) =>  {
     this.setState({
@@ -17,7 +16,6 @@ export default class InitForm extends Component {
   }
 
   render() {
-
     return (
       <div className="login">
         <form onSubmit={() => this.props.onSubmit(this.state.username)} className="form">
