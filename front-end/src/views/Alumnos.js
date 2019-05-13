@@ -3,11 +3,8 @@ import {
     Icon, Button, Modal
 } from 'antd';
 import DataTable from "../components/DataTable";
-import { Link } from 'react-router-dom'
 import API from "../tools/API";
 import moment from 'moment';
-
-
 
 export default class Alumnos extends Component {
 
@@ -45,7 +42,7 @@ export default class Alumnos extends Component {
 
     componentWillMount() {
         this.refreshData();
-    }
+    };
 
     showContent = (record) => {
         let data = JSON.parse(record.contenido_subido);
@@ -80,7 +77,6 @@ export default class Alumnos extends Component {
                     ),
                 }
                 ]}/>
-
             </div>
         );
     }

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Switch, Collapse, Spin } from 'antd';
-import Charts from 'ant-design-pro/lib/Charts';
+import { Collapse, Spin } from 'antd';
 import { Pie } from 'ant-design-pro/lib/Charts';
-import moment from 'moment';
 import '../App.css';
 import "antd/dist/antd.css";
 import API from "../tools/API";
@@ -13,57 +11,10 @@ function callback(key) {
     //console.log(key);
 }
 
-// Transferencia otro campus    QUITAR
-const salesPieData3 = [
-    {
-        x: 'Director de programa autoriza',
-        y: 100,
-    },
-    {
-        x: 'Escolar origen autoriza',
-        y: 220,
-    },
-    {
-        x: 'Tesorería',
-        y: 40,
-    },
-    {
-        x: 'Escolar destino autoriza',
-        y: 40,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 40,
-    },
-];
-
-// Baja de materias    QUITAR
-const salesPieData4 = [
-    {
-        x: 'Escolar inicia trámite',
-        y: 40,
-    },
-    {
-        x: 'Becas autoriza',
-        y: 30,
-    },
-    {
-        x: 'DC autoriza',
-        y: 10,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 5,
-    },
-];
-
-
-
 class DashboardView extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             tramitesMes: 0,
             tramitesSemana: 0,
@@ -170,36 +121,6 @@ class DashboardView extends Component {
                 this.setState({loadingWeek: false});
             }
         });
-
-        /*this.setState({tramiteTransferencia: true});
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia_pasos',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in response) {
-                    xy[i] = response[i].nombre;
-                }   
-                this.setState({pasosTransferencia: xy});    
-            },
-        });
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in this.state.pasosTransferencia) {
-                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
-                }
-                for (let i in response) {
-                    xy[response[i].paso_actual - 1].y += 1;
-                }
-                this.setState({tramiteTransferencia: false, salesPieData2: xy});      
-            },
-            error:(response) => {
-                this.setState({tramiteTransferencia: false});
-            }
-        });*/
         API.restCall({
             service: 'get_procesos',
             method:'get',
@@ -219,7 +140,6 @@ class DashboardView extends Component {
     }
 
     render() {
-
         return (
             <div className="graficas">
                 {/* Gráficas que muestran el número de trámites terminados por semana y mes */}
@@ -271,7 +191,6 @@ class DashboardView extends Component {
                 </div>
 
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
-
                     {this.state.procs.map((item, key) => (
                     <Panel header={item.nombre} key={key}>
                         <h2>{item.nombre}</h2>
@@ -294,11 +213,7 @@ class DashboardView extends Component {
                         />
                         </Panel>)
                         )}
-
-
                 </Collapse>
-
-
             </div>
         );
     }

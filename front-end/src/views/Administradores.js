@@ -3,10 +3,8 @@ import {
     Icon, Button, Modal, Form, Input
 } from 'antd';
 import DataTable from "../components/DataTable";
-import { Link } from 'react-router-dom'
 import API from "../tools/API";
 import moment from 'moment';
-
 
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
     class extends React.Component {
@@ -40,13 +38,11 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                     </Form.Item>
                 </Form>
             </Modal>
-        );
-      }
+        )}
     }
-  );
+);
 
 export default class Administradores extends Component {
-
 
     constructor(props) {
         super(props);
@@ -61,15 +57,15 @@ export default class Administradores extends Component {
 
     state = {
         visible: false,
-      };
+    };
 
     showModal = () => {
         this.setState({ visible: true });
-      };
+    };
     
-      handleCancel = () => {
+    handleCancel = () => {
         this.setState({ visible: false });
-      };
+    };
 
     refreshData = () => {
         this.setState({loading:true});
@@ -80,7 +76,7 @@ export default class Administradores extends Component {
             success:(response) => {
                 this.setState({data: response, loading:false});
             },
-            error:(response) => {this.setState({ loading: false });},
+            error:(response) => {this.setState({ loading: false })},
         });
     };
 
@@ -105,21 +101,21 @@ export default class Administradores extends Component {
         this.formRef = formRef;
     };
 
-      handleCreate = () => {
+    handleCreate = () => {
         const form = this.formRef.props.form;
     
         form.validateFields((err, values) => {
-          if (err) {
-            return;
-          }
+            if (err) {
+                return;
+            }
     
-          this.setState({ loading: true });
-          form.resetFields();
-          API.call('agregar_administrador/',{nombre: values.nombre, email: values.correo},(response)=>{
-              this.setState({ visible: false  });
-              this.setState({ loading: false  });
-              this.refreshData();
-          },(response)=>{
+            this.setState({ loading: true });
+            form.resetFields();
+            API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo},(response) => {
+                this.setState({ visible: false  });
+                this.setState({ loading: false  });
+                this.refreshData();
+            }, (response) => {
                 this.setState({ visible: false  });
                 this.setState({ loading: false  });
             });
@@ -152,14 +148,12 @@ export default class Administradores extends Component {
                     )
                 }
                 ]}/>
-
                 <CollectionCreateForm
                     wrappedComponentRef={this.saveFormRef}
                     visible={this.state.visible}
                     loading={this.state.loading}
                     onCancel={this.handleCancel}
                     onCreate={this.handleCreate}/>
-
             </div>
         );
     }
