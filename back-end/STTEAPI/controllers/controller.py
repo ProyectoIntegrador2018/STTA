@@ -467,6 +467,8 @@ def get_pasos_proceso(request, proceso):
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM STTE.Paso '
                    'where proceso = {0}'.format(proceso))
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
 
 
 def return_procesos(request):
