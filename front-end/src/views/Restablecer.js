@@ -29,16 +29,16 @@ class Restablecer extends Component {
         this.validateToNextPassword = this.validateToNextPassword.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.validateToken();
     }
 
     validateToken = () =>{
         this.setState({ loading: true, });
         API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
-            if(response === 1){
+            if(response === 1) {
 
-            }else{
+            } else {
                 this.setState({ warning: true });
                 Modal.warning({
                     title: 'Lo sentimos!',
@@ -105,7 +105,7 @@ class Restablecer extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        if (this.state.redirect){
+        if (this.state.redirect) {
             return (<Redirect to={'/login'}/>);
         }
 

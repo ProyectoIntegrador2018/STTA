@@ -61,7 +61,7 @@ const salesPieData4 = [
 
 class DashboardView extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {

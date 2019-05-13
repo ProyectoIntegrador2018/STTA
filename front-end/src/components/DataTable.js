@@ -40,7 +40,7 @@ export default class DataTable extends Component {
 
     prepareColumns = (cols) =>{
         let columns = [];
-        cols.map(function(val){
+        cols.map(function(val) {
             columns.push({title: val.title,
                 dataIndex: val.key,
                 key: val.key,
