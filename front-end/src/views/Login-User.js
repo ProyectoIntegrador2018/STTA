@@ -78,15 +78,15 @@ class LoginUser extends Component {
 
       this.setState({ loading: true });
       form.resetFields();
-      API.call('request_restore/',{email:values.correo},(response)=>{
+      API.call('request_restore/',{email:values.correo}, (response) => {
         Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
 
           this.setState({ visible: false  });
           this.setState({ loading: false  });
-      },(response)=>{
+      }, (response) => {
             this.setState({ visible: false  });
             this.setState({ loading: false  });
-        },false);
+        }, false);
     });
   };
 
@@ -100,7 +100,7 @@ class LoginUser extends Component {
       if (!error) {
         this.setState({ loading: true });
         let params = { email:values.userName, password:values.password, remember:values.remember ? 1:0};
-        API.call('login-estudiante/',params,(response) => {
+        API.call('login-estudiante/', params, (response) => {
           this.setState({ loading: false });
           Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
           localStorage.setItem('token', response.token);

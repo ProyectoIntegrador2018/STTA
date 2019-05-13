@@ -33,9 +33,9 @@ export default class TramitesAdmin extends Component {
         })
     };
 
-    deleteFiles = (rows) =>{
+    deleteFiles = (rows) => {
         this.setState({loading:true});
-        API.call('eliminar_tramites/',{tramites:JSON.stringify(rows)},(response) => {
+        API.call('eliminar_tramites/',{tramites:JSON.stringify(rows)}, (response) => {
             this.setState({ loading:false});
             this.refreshData();
         }, (response) => {this.setState({ loading:false})});

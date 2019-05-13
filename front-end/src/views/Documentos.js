@@ -22,17 +22,17 @@ export default class Documentos extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.call('documentos/',[],(response) => {
+        API.call('documentos/',[], (response) => {
             this.setState({data: response, loading:false});
         });
     };
 
     deleteFiles = (rows) => {
         this.setState({loading:true});
-        API.call('eliminar-documentos/',{documentos:JSON.stringify(rows)},(response) => {
+        API.call('eliminar-documentos/',{documentos:JSON.stringify(rows)}, (response) => {
             this.setState({ loading:false});
             this.refreshData();
-        },(response) => {this.setState({ loading:false})});
+        }, (response) => {this.setState({ loading:false})});
     };
 
     componentWillMount() {

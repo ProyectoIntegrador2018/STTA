@@ -56,7 +56,7 @@ export default class ProcesoNuevo extends Component {
                     <b><label>Columna de última actualización: </label></b>  {params.ultima_actualizacion.title}<br/>
                     <h4><b>Pasos:</b> </h4><br/>
                     <Divider/>
-                    {params.pasos.map((p)=><div>
+                    {params.pasos.map((p) =><div>
                         <b> <label>Columna: </label></b> {p.title}<br/>
                         <b> <label># de paso: </label></b> {p.numero}<br/>
                         <b> <label>Nombre a mostrar: </label></b> {p.nombre_mostrar }<br/>
@@ -76,11 +76,11 @@ export default class ProcesoNuevo extends Component {
                     };
                     this.setState({loading:true});
                     console.log(this.state.pasos)
-                    API.call('agregar-proceso/',params,(resposne) =>{
+                    API.call('agregar-proceso/',params, (resposne) => {
                         Notifications.openNotificationWithIcon("success","¡Proceso nuevo creado exitosamente!","")
                         API.redirectTo('/procesos');
                         this.setState({loading:false});
-                    },(resposne) =>{this.setState({loading:false});});
+                    }, (resposne) => {this.setState({loading:false});});
                 },
                 cancelText:"Cancelar",
                 onCancel() {

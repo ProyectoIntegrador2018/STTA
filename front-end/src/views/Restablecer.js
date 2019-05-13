@@ -31,13 +31,13 @@ class Restablecer extends Component {
         this.validateToken();
     }
 
-    validateToken = () =>{
+    validateToken = () => {
         this.setState({ loading: true, });
         {/* Valida que el link para cambiar la contraseña aún esté activo
         Ya que el link solo está activo por 24 hrs.
         Si ya expiró el tiempo manda mensaje de error
         y redirige a la página de Login*/}
-        API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
+        API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token}, (response) => {
             if(response === 1) {
             } else {
                 this.setState({ warning: true });
@@ -48,7 +48,7 @@ class Restablecer extends Component {
                 });
             }
             this.setState({ loading: false, });
-        }, (response)=>{
+        }, (response) => {
             this.setState({ loading: false, });
         }, false);
     };

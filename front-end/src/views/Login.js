@@ -68,11 +68,11 @@ class Login extends Component {
       }
       this.setState({ loading: true });
       form.resetFields();
-      API.call('request_restore/',{email:values.correo},(response)=>{
+      API.call('request_restore/',{email:values.correo}, (response) => {
         Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
         this.setState({ visible: false  });
         this.setState({ loading: false  });
-      }, (response)=>{
+      }, (response) => {
             this.setState({ visible: false  });
             this.setState({ loading: false  });
         }, false);

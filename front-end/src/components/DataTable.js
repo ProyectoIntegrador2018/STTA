@@ -38,7 +38,7 @@ export default class DataTable extends Component {
         }
     }
 
-    prepareColumns = (cols) =>{
+    prepareColumns = (cols) => {
         let columns = [];
         cols.map(function(val) {
             columns.push({title: val.title,
@@ -136,5 +136,5 @@ export default class DataTable extends Component {
 }
 
 DataTable.defaultProps = {
-    deleteFunc: (rows)=>{},
+    deleteFunc: (rows) => {},
 };

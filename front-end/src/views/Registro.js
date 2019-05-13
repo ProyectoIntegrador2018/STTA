@@ -53,13 +53,13 @@ class Registro extends Component {
         this.props.form.validateFields((error, values) => {
           if (!error) {
               this.setState({ loading: true, });
-              API.call('registro-estudiante/',{nombre: values.name, apellido: values.lastName, email: values.userName, password:values.password},(response)=>{
+              API.call('registro-estudiante/',{nombre: values.name, apellido: values.lastName, email: values.userName, password:values.password}, (response) => {
                   if(response === 1) { {/* Valida que todos los campos hayan sido llenados */}
                       Notifications.openNotificationWithIcon("success","Tu cuenta ha sido creada con éxito","");
                       API.redirectTo('/')
                   } {/* Creada la cuenta con éxito redirige a la página de Login */}
                   this.setState({ loading: false, });
-              }, (response)=>{this.setState({ loading: false, });},false);
+              }, (response) => {this.setState({ loading: false, });},false);
           }
         });
       };
@@ -141,7 +141,7 @@ class Registro extends Component {
                                 valuePropName: 'checked',
                                 initialValue: false,
                                 rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{
-                                    validator: (rule, value, cb)=>{value === true ? cb() : cb(true)},
+                                    validator: (rule, value, cb) => {value === true ? cb() : cb(true)},
                                     message: 'Para continuar tienes que aceptar términos y condiciones'}]
                             })
                             (
