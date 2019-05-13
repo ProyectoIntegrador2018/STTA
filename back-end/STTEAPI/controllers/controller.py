@@ -26,6 +26,7 @@ from django.db.models import Count, F
 from django.core.mail import send_mail
 from django.template import loader
 
+# Regular expression for email validation
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
 @api_view(["POST"])

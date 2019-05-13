@@ -6,13 +6,10 @@ import {
     HeaderSearch
 } from 'ant-design-pro';
 
-
-
 export default class DataTable extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             results: false,
             rowToSearch:"",
@@ -25,8 +22,6 @@ export default class DataTable extends Component {
             rowSelection: props.rowSelection || false,
             selectedRowKeys:[]
         }
-
-
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -38,15 +33,12 @@ export default class DataTable extends Component {
             this.setState({loading: this.props.loading});
 
         }
-
         if (prevProps.columns !== this.props.columns  ) {
             this.setState({columns:  this.prepareColumns(this.props.columns || [])});
         }
     }
 
-
     prepareColumns = (cols) =>{
-
         let columns = [];
         cols.map(function(val){
             columns.push({title: val.title,
@@ -60,10 +52,8 @@ export default class DataTable extends Component {
                 render: val.render ?  val.render  : (text, record) => (<span>{text}</span>)
             });
         });
-
         return columns;
     };
-
 
     getData = () => {
         let newData = this.state.dataSource.filter((v) => {
@@ -73,10 +63,8 @@ export default class DataTable extends Component {
             }
             return false;
         });
-
         return newData;
     };
-
 
     render() {
         const { selectedRowKeys } = this.state;
@@ -91,62 +79,61 @@ export default class DataTable extends Component {
 
         return (
             <Table loading={this.state.loading}
-                   locale={{ emptyText: (<div style={{margin:'20px'}}><Icon style={{ fontSize: '36px' }} type="exception" /><br/><b>No hay datos</b></div>) }}
-                   rowSelection={this.state.rowSelection ? rowSelection: false} bordered size={'middle'} dataSource={this.getData()}
-                       columns={this.state.columns} scroll={{x:true}}
-                       title={() => (
-                           <div style={{textAlign:'right', marginRight:10}}>
-                               <div style={{float:'left',lineHeight: 2.5}}>
+                locale={{ emptyText: (<div style={{margin:'20px'}}><Icon style={{ fontSize: '36px' }} type="exception" /><br/><b>No hay datos</b></div>) }}
+                rowSelection={this.state.rowSelection ? rowSelection: false} bordered size={'middle'} dataSource={this.getData()}
+                    columns={this.state.columns} scroll={{x:true}}
+                    title={() => (
+                        <div style={{textAlign:'right', marginRight:10}}>
+                            <div style={{float:'left',lineHeight: 2.5}}>
 
-                                   <span hidden={this.state.selectedRows.length > 0}>
-                                       <b>{'Total ' + this.state.dataSource.length}</b>
-                                   </span>
+                                <span hidden={this.state.selectedRows.length > 0}>
+                                    <b>{'Total ' + this.state.dataSource.length}</b>
+                                </span>
 
-                                   <span hidden={!(this.state.selectedRows.length > 1)}>
-                                        <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
-                                                    okText="Sí" cancelText="No"
-                                                    onConfirm={() => {this.props.deleteFunc(this.state.selectedRows);  this.setState({selectedRows:[],selectedRowKeys:[]});}}
-                                        >
-                                            <Button type="danger" className={'button-danger'} icon={'delete'}/>
-                                       </Popconfirm>
-                                       &nbsp; &nbsp;{'  ' + this.state.selectedRows.length+ ' elementos seleccionados de un total de ' + this.state.dataSource.length }
+                                <span hidden={!(this.state.selectedRows.length > 1)}>
+                                    <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
+                                                okText="Sí" cancelText="No"
+                                                onConfirm={() => {this.props.deleteFunc(this.state.selectedRows);  this.setState({selectedRows:[],selectedRowKeys:[]});}}
+                                    >
+                                        <Button type="danger" className={'button-danger'} icon={'delete'}/>
+                                    </Popconfirm>
+                                    &nbsp; &nbsp;{'  ' + this.state.selectedRows.length+ ' elementos seleccionados de un total de ' + this.state.dataSource.length }
 
 
-                                   </span>
-                                   <span hidden={!(this.state.selectedRows.length === 1)}>
-                                       <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
-                                                   okText="Sí" cancelText="No"
-                                                   onConfirm={() => {this.props.deleteFunc(this.state.selectedRows);  this.setState({selectedRows:[],selectedRowKeys:[]});}}
-                                       >
-                                           <Button type="danger" className={'button-danger'} icon={'delete'}/>
-                                       </Popconfirm>
-                                       &nbsp; &nbsp;{'  ' + this.state.selectedRows.length+ ' elemento seleccionado de un total de ' + this.state.dataSource.length}
-                                   </span>
+                                </span>
+                                <span hidden={!(this.state.selectedRows.length === 1)}>
+                                    <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
+                                                okText="Sí" cancelText="No"
+                                                onConfirm={() => {this.props.deleteFunc(this.state.selectedRows);  this.setState({selectedRows:[],selectedRowKeys:[]});}}
+                                    >
+                                        <Button type="danger" className={'button-danger'} icon={'delete'}/>
+                                    </Popconfirm>
+                                    &nbsp; &nbsp;{'  ' + this.state.selectedRows.length+ ' elemento seleccionado de un total de ' + this.state.dataSource.length}
+                                </span>
 
-                               </div>
+                            </div>
 
-                               <span hidden={!this.state.results}>
-                                        {'Mostrando '+ this.getData().length+ ' de ' + this.state.dataSource.length + ' resultados para '}
-                                   <Tag closable visible={true}
-                                        onClose={() => {this.setState({results:false,rowToSearch:""})}}>
-                                        {this.state.rowToSearch}</Tag>
-                                    </span>
+                            <span hidden={!this.state.results}>
+                                    {'Mostrando '+ this.getData().length+ ' de ' + this.state.dataSource.length + ' resultados para '}
+                                <Tag closable visible={true}
+                                    onClose={() => {this.setState({results:false,rowToSearch:""})}}>
+                                    {this.state.rowToSearch}</Tag>
+                                </span>
 
-                               <HeaderSearch
-                                   placeholder="Buscar..."
-                                   dataSource={[]}
-                                   onSearch={(value) => {
-                                       if (value === "")
-                                           this.setState({rowToSearch:value,results:false});
-                                       else
-                                           this.setState({rowToSearch:value,results:true});
-                                   }}/>
-                           </div>)}
+                            <HeaderSearch
+                                placeholder="Buscar..."
+                                dataSource={[]}
+                                onSearch={(value) => {
+                                    if (value === "")
+                                        this.setState({rowToSearch:value,results:false});
+                                    else
+                                        this.setState({rowToSearch:value,results:true});
+                                }}/>
+                        </div>)}
                 />
         );
     }
 }
-
 
 DataTable.defaultProps = {
     deleteFunc: (rows)=>{},
