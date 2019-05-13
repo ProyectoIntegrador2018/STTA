@@ -138,6 +138,19 @@ class DashboardView extends Component {
             }
         });
     }
+    getData = (key, item) => {
+        this.setState({["data_"+key+"spinner"]:true});
+        API.restCall({
+            service: 'get_pasos_proceso/' + item.id,
+            method:'get',
+            success:(response) => {
+
+            },
+            error:(response) => {
+                this.setState({["data_"+key+"spinner"]:false});
+            }
+        });
+    };
 
     render() {
         return (
