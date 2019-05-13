@@ -35,6 +35,10 @@ class Restablecer extends Component {
 
     validateToken = () =>{
         this.setState({ loading: true, });
+        {/* Valida que el link para cambiar la contraseña aún esté activo
+        Ya que el link solo está activo por 24 hrs.
+        Si ya expiró el tiempo manda mensaje de error
+        y redirige a la página de Login*/}
         API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
             if(response === 1) {
 
@@ -61,6 +65,10 @@ class Restablecer extends Component {
 
     compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
+        {/* Método que valida si la primera contraseña es igual a la contraseña de confirmación
+        obtiene los valores de los campos y los compara
+        si hay un error muestra un mensaje que la contraseña no coincide
+        de lo contrario, se hace el cambio de contraseña*/}
         if (value && value !== form.getFieldValue('password')) {
             callback('La contraseña no coincide con la introducida previamente');
         } else {
@@ -77,7 +85,7 @@ class Restablecer extends Component {
     };
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault(); {/* Método para cambiar la contraseña del usuario*/}
         this.props.form.validateFields((error, values) => {
           if (!error) {
                 this.setState({ loading: true, });
@@ -86,11 +94,15 @@ class Restablecer extends Component {
                     method: "post",
                     params: {uid: this.state.uid,password:values.password, token: this.state.token},
                     success:(response) => {
+                        {/* Notificación de éxito cuando se restablece la contraseña
+                        redirige a la página de Login*/}
                         Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
                         API.logout();
                         API.redirectTo("/")
                     },
                     error:(response) => {
+                        {/* Notificación de error cuando no se puede restablecer la contraseña
+                        redirige a la página de Login*/}
                         Notifications.openNotificationWithIcon("success","Tu contraseña se restableció con éxito","");
                         API.logout();
                         API.redirectTo("/")
@@ -114,6 +126,7 @@ class Restablecer extends Component {
                 <Row>
                 <Col xs={0} sm={0} md={0} lg={12} xl={14}>
                     <div className="login-image-container">
+                        {/* Formulario de registro con el mensaje desplegable de cambiar contraseña*/}
                     <img className="login-image" src={loginImage} alt={''}/>
                     </div>
                 </Col>
