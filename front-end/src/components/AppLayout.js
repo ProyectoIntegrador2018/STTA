@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-    Layout, Menu, Icon, Affix
+    Layout, Menu, Icon
 } from 'antd';
 import tec from '../images/tec.png'
-import { Link,Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import API from "../tools/API";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -14,7 +14,6 @@ export default class AppLayout extends Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-
         }
     }
 
@@ -28,9 +27,7 @@ export default class AppLayout extends Component {
                     onBreakpoint={(broken) => { console.log(broken); }}
                     className={'ant-menu-tec'}
                     onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
-                    style={{minHeight:'100vh'}}
-
-                >
+                    style={{minHeight:'100vh'}}>
 
                     <div className="logo"><img alt="ExSaM" className={'logo'} src={tec}/></div>
 
@@ -68,7 +65,7 @@ export default class AppLayout extends Component {
                 </Sider>
 
                 <Layout>
-                <Header className={'primaryBackground header-bar'}>
+                    <Header className={'primaryBackground header-bar'}>
                         <span className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</span>
                         <span className={'logoName'} style={{float:'right'}} ><Icon type={'user'}/> {(localStorage.getItem("email") || "").toLocaleLowerCase() + " | " + localStorage.getItem("nombre")}</span>
                     </Header>
@@ -87,7 +84,6 @@ export default class AppLayout extends Component {
         )};
 
     render() {
-
         return API.validateToken() ? this.Basic() : (<div></div>);
     }
 }
