@@ -32,10 +32,11 @@ class Registro extends Component {
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     };
 
-    compareToFirstPassword = (rule, value, callback) => {
+    compareToFirstPassword = (rule, value, callback) => { {/* Método que compara la contraseña de confirmación con la
+     primera contraseña*/}
         const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('La contraseña no coincide con la introducida previamente');
+        if (value && value !== form.getFieldValue('password')) { {/* Obtiene el valor del campo y lo compara*/}
+            callback('La contraseña no coincide con la introducida previamente'); {/* Si hay un error, manda el mensaje */}
         } else {
             callback();
         }
@@ -55,10 +56,10 @@ class Registro extends Component {
           if (!error) {
               this.setState({ loading: true, });
               API.call('registro-estudiante/',{nombre: values.name, apellido: values.lastName, email: values.userName, password:values.password},(response)=>{
-                  if(response === 1){
+                  if(response === 1){ {/* Valida que todos los campos hayan sido llenados */}
                       Notifications.openNotificationWithIcon("success","Tu cuenta ha sido creada con éxito","");
                       API.redirectTo('/')
-                  }
+                  } {/* Creada la cuenta con éxito redirige a la página de Login */}
                   this.setState({ loading: false, });
 
               },(response)=>{this.setState({ loading: false, });},false);
@@ -74,6 +75,7 @@ class Registro extends Component {
         return (
             <div >
                 <Row>
+                    {/* Formulario de registro */}
                 <Col xs={0} sm={0} md={0} lg={12} xl={14}>
                     <div className="login-image-container">
                     <img className="login-image" src={loginImage} alt={''}/>
@@ -110,7 +112,7 @@ class Registro extends Component {
                         </Row>
                     <Form.Item>
                         {getFieldDecorator('userName', {
-                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A00...@itesm.mx)' }],
+                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A0....@itesm.mx)' }],
                         })(
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico institucional (A0...@itesm.mx)" />
                         )}

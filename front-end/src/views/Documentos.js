@@ -8,7 +8,6 @@ import API from "../tools/API";
 import moment from 'moment';
 
 
-
 export default class Documentos extends Component {
 
     constructor(props) {

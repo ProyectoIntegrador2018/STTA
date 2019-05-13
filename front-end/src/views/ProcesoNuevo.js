@@ -85,6 +85,7 @@ export default class ProcesoNuevo extends Component {
                         pasos:JSON.stringify(this.state.pasos)
                     };
                     this.setState({loading:true});
+                    console.log(this.state.pasos)
                     API.call('agregar-proceso/',params,(resposne) =>{
                         Notifications.openNotificationWithIcon("success","¡Proceso nuevo creado exitosamente!","")
                         API.redirectTo('/procesos');

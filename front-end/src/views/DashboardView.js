@@ -76,6 +76,7 @@ class DashboardView extends Component {
             salesPieData2: [],
             tramiteTransferencia: false,
             pasosTransferencia: [],
+            procs:[]
         }
     }
 
@@ -204,10 +205,12 @@ class DashboardView extends Component {
             method:'get',
             success:(response) => {
                 let datos = [];
+                console.log(response)
+
                 for (let i in response) {
                     datos[i] = {x: response[i].nombre, y: 0};
                 }
-                this.setState({procesos: datos});      
+                this.setState({procesos: datos, procs: response});
             },
             error:(response) => {
                 this.setState({tramiteTransferencia: false});
@@ -266,13 +269,15 @@ class DashboardView extends Component {
                         <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
                     </div>
                 </div>
-                {/* RENGLON 1 END
+
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
-                    <Panel header="Estatus Transferencias como destino Monterrey" key="1">
-                        <h1>Estatus trámites transferencias como destino Monterrey </h1>
+
+                    {this.state.procs.map((item, key) => (
+                    <Panel header={item.nombre} key={key}>
+                        <h2>{item.nombre}</h2>
                         <Pie
                             hasLegend
-                            title="Transferencias como destino Monterrey"
+                            title={item.nombre}
                             subTitle="Total"
                             total={() => (
                                 <Spin spinning={this.state.tramiteTransferencia}>
@@ -287,47 +292,11 @@ class DashboardView extends Component {
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
-                    </Panel>
-                    <Panel header="Estatus de Transferencias a otros campus" key="2">
-                        <h1>Estatus de Transferencias a otros campus </h1>
-                        <Pie
-                            hasLegend
-                            title="Transferencias a otros campus"
-                            subTitle="Total"
-                            total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData3.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
-                            )}
-                            data={salesPieData3}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
-                    </Panel>
-                    <Panel header="Estatus de trámites baja de materias" key="3">
-                        <h1>Estatus de trámites baja de materias </h1>
-                        <Pie
-                            hasLegend
-                            title="Baja de materias"
-                            subTitle="Total"
-                            total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData4.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
-                            )}
-                            data={salesPieData4}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
+                        </Panel>)
+                        )}
 
 
-                    </Panel>
                 </Collapse>
-*/}
 
 
             </div>
