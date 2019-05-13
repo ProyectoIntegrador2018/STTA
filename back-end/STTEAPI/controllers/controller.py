@@ -49,7 +49,8 @@ def borrar_procesos(request):
             proc = Proceso.objects.get(id=p['id'])
             proc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(
+                detail="El proceso ("+str(p['id'])+") no se puede eliminar porque hay documentos o trámites ligados a él.")
 
     return JsonResponse(1, safe=False)
 
@@ -118,7 +119,10 @@ def registro_Alumnos(request):
     args = args.__dict__()
     if not re.match(EMAIL_REGEX, args['email']):
         raise exceptions.PermissionDenied(detail="Email invalido")
-    user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
+    try:
+        user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
+    except IntegrityError as e:
+        raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
 
@@ -145,10 +149,22 @@ def subir_documento(request):
                                    proceso_id=args['proceso'])
 
     contenido = json.loads(args['content'])
+
+    print(contenido['data'])
     for c in contenido['data']:
-        fecha_1 = datetime.strptime(c['fecha_apertura'], '%m/%d/%y %H:%M')
-        fecha_2 = datetime.strptime(c['fecha_ultima'], '%m/%d/%y %H:%M')
-        p_ok = -1
+        fecha_1 = now()
+        fecha_2 = now()
+        if  c['fecha_apertura'] != None and c['fecha_apertura'] != "":
+            try:
+                fecha_1 = datetime.strptime(c['fecha_apertura'], '%d/%m/%y')
+            except:
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
+        if c['fecha_ultima'] != None and c['fecha_ultima'] != "":
+            try:
+                fecha_2 = datetime.strptime(c['fecha_ultima'], '%d/%m/%y')
+            except:
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
+        p_ok = 0
         p = 1
         while (('paso_' + str(p)) in c ):
             if c['paso_' + str(p)] == 'ok':
@@ -157,9 +173,20 @@ def subir_documento(request):
         paso = None
         if p_ok != -1:
             paso = Paso.objects.filter(proceso_id=args['proceso'], numero=p_ok).first()
+        else:
+            paso = Paso.objects.filter(proceso_id=args['proceso'], numero=1).first()
 
-        tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
-                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso)
+        num_results = Tramitealumno.objects.filter(numero_ticket=c['ticket']).count()
+        if num_results > 0:
+            tra = Tramitealumno.objects.filter(numero_ticket=c['ticket']).first()
+            tra.fecha_ultima_actualizacion = fecha_2
+            tra.paso_actual = paso
+            tra.numero_paso_actual = p_ok
+            tra.save()
+        else:
+            tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
+                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
+                                               numero_paso_actual=p_ok)
 
     return JsonResponse(doc.id, safe=False)
 
@@ -174,7 +201,10 @@ def login_admin(request):
     if not user.es_admin:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
-    return JsonResponse({'token': token.key}, safe=False)
+    al = Administrador.objects.get(usuario=user)
+    user.last_login = now()
+    user.save()
+    return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email }, safe=False)
 
 @api_view(["POST"])
 def login_student(request):
@@ -187,6 +217,8 @@ def login_student(request):
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
     al = Alumno.objects.get(usuario=user)
+    user.last_login = now()
+    user.save()
     return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
 
 @api_view(["POST"])
@@ -201,21 +233,18 @@ def request_restore(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
     url_data = PasswordToken.request_uid_token(args['email'])
-    user = PasswordToken.validate_token(url_data.uid, url_data.token)
-    user = Alumno.objects.get(usuario=user)
 
     try:
 
         html_message = loader.render_to_string(
                 '../templates/mailTemplate.html',
                 {
-                    'user_name': user.nombre,
+                    'user_name': "",
                     'subject':  'Restablecer contraseña',
                     'token': url_data.uid + "/"+url_data.token
                 }
             )
-        send_mail( 'Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
-
+        send_mail('Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
     except:
         raise APIExceptions.SendMailError
 
@@ -227,11 +256,13 @@ def reset_password(request):
     args.check_parameter(key='uid', required=True)
     args.check_parameter(key='token', required=True)
     args.check_parameter(key='password', required=True)
+
     check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
 
     if check:
-        user = PasswordToken.validate_token(args['uid'], args['token'])
-        return JsonResponse(1 if user and user.es_admin else 2, safe=False)
+        check.is_active = True
+        check.save()
+        return JsonResponse(1 if check and check.es_admin else 2, safe=False)
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
@@ -292,9 +323,11 @@ def eliminar_alumnos(request):
     for a in args['alumno']:
         try:
             doc = Alumno.objects.get(id=a['id'])
+            user = Usuario.objects.get(id=doc.usuario_id)
+            user.delete()
             doc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(detail="No se pudo eliminar el alumno")
 
     return JsonResponse(1, safe=False)
 
@@ -310,9 +343,11 @@ def eliminar_administradores(request):
     for a in args['admin']:
         try:
             doc = Administrador.objects.get(id=a['id'])
+            user = Usuario.objects.get(id=doc.usuario_id)
+            user.delete()
             doc.delete()
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            raise exceptions.PermissionDenied(detail="No se puede eliminar el usuario. Puede ser que el usuario tengo documentos registrados.")
 
     return JsonResponse(1, safe=False)
 
@@ -341,7 +376,10 @@ def registro_administradores(request):
     args.check_parameter(key='email', required=True)
     args.check_parameter(key='nombre', required=True)
     args = args.__dict__()
-    user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'],is_active=True)
+    try:
+        user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
+    except IntegrityError as e:
+        raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de
@@ -351,7 +389,7 @@ def registro_administradores(request):
 @api_view(["GET", "POST"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_datos_tramite(request):
-    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'paso_actual',
+    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'numero_paso_actual','proceso__nombre',
                                                                                           'fecha_ultima_actualizacion')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
@@ -368,7 +406,7 @@ def dictfetchall(cursor):
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
+    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual,numero_paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
                    "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
                    'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
                    ' Paso p on ta.proceso=p.proceso ' +
@@ -400,6 +438,12 @@ def return_tramite_transferencia_pasos(request):
                    ' WHERE pr.nombre="Transferencia" ')
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
+
+#                                                          # Entrada: month y status; Salida: Todas las columnas de ResumenTramites
+#                                                          # en formato de diccionario
+def get_tramites_resumen(request, proceso, month, status):
+    from django.db import connection
+    cursor = connection.cursor()
 
 def return_procesos(request):
     from django.db import connection
@@ -462,19 +506,19 @@ def return_tramite_alumnos_status_week(request):
     return JsonResponse(tra, safe=False)
 
 @api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAlumno))
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_datos_tramite_alumno(request,id):
 
     tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
                                                                  'proceso__nombre', 'proceso_id',
-                                                                 'fecha_inicio', 'paso_actual',
+                                                                 'fecha_inicio', 'paso_actual', 'numero_paso_actual',
                                                                  'fecha_ultima_actualizacion').filter(
                                                                  id=id)
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
 @api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAlumno))
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
     args = PostParametersList(request)
     args.check_parameter(key='id', required=True)

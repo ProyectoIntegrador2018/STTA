@@ -26,7 +26,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
             okButtonProps={{ disabled: loading, loading:loading }}
             onOk={onCreate}>
             <Form layout="vertical">
-              <Form.Item label="Correo electrónico" type="email">
+              <Form.Item label="Introduce tu correo electrónico" type="email">
                 {getFieldDecorator('correo', {
                   rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
                 })(
@@ -104,6 +104,7 @@ class LoginUser extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.removeItem('esAdmin');
             localStorage.setItem('matricula', response.matricula.substr(0,9));
             localStorage.setItem('nombre', response.nombre);
             console.log(localStorage.getItem('matricula'));

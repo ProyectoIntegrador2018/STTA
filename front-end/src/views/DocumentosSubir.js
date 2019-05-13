@@ -38,13 +38,17 @@ export default class Documentos extends Component {
     }
     uploadData = () => {
         let csv = JSON.stringify({data: this.state.dataTable, cols: this.state.columns });
-
-        API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
-            Notifications.openNotificationWithIcon("success","Información cargada exitosamente!","")
-            API.redirectTo('/documentos');
-        });
+        if(this.state.id_proceso == undefined  ||   csv == undefined || csv == "" ||
+             this.state.fileName == undefined ||
+            this.state.fileName == "" ) {
+            Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
+        } else {
+            API.call('subir-documento/',{proceso: this.state.id_proceso, filename:this.state.fileName, content: csv},(resposne) =>{
+                Notifications.openNotificationWithIcon("success","¡Información cargada exitosamente!","")
+                API.redirectTo('/documentos');
+            });
+        }
     };
-
 
     parseFile = (file) => {
         this.setState({fileName:file.name});
@@ -80,14 +84,14 @@ export default class Documentos extends Component {
             let cols = [];
             this.setState({disabled: false, proceso: this.state.data[value], loadingTable: false});
             cols.push({key:"ticket",title:'# Ticket',llave:this.state.data[value].columna_ticket});
-            cols.push({key:"matricula",title:'Matricula',llave:this.state.data[value].columna_matricula});
+            cols.push({key:"matricula",title:'Matrícula',llave:this.state.data[value].columna_matricula});
 
             cols.push({key:"fecha_apertura",title:'Fecha de apertura',llave:this.state.data[value].columna_fecha_inicio});
-            cols.push({key:"fecha_ultima",title:'Fecha de ultima actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
+            cols.push({key:"fecha_ultima",title:'Fecha de última actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
             this.setState({id_proceso: this.state.data[value].id});
             API.call('pasos-procesos/',{proceso: this.state.data[value].id},(resposne) =>{
                 resposne.map((val) => {
-                    cols.push({key:"paso_" + val.id, title:val.nombre_mostrar, llave:val.columna_csv});
+                    cols.push({key:"paso_" + val.numero, title:val.nombre_mostrar, llave:val.columna_csv});
                 });
                 this.setState({columns: cols});
 

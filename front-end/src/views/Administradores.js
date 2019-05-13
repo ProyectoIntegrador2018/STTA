@@ -5,6 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
+import moment from 'moment';
 
 
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
@@ -32,7 +33,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                     </Form.Item>
                     <Form.Item label="Correo electrónico" type="email">
                         {getFieldDecorator('correo', {
-                        rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
+                        rules: [{ required: true, message: 'Por favor introduce su correo electrónico' }],
                         })(
                         <Input />
                         )}
@@ -142,8 +143,13 @@ export default class Administradores extends Component {
                     key: 'email',
 
                 }, {
-                    title: 'Último Login',
+                    title: 'Último login',
                     key: 'last_login',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    )
                 }
                 ]}/>
 

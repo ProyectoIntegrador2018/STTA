@@ -110,9 +110,9 @@ class Registro extends Component {
                         </Row>
                     <Form.Item>
                         {getFieldDecorator('userName', {
-                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico (A00...)' }],
+                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A00...@itesm.mx)' }],
                         })(
-                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico (A0...@itesm.mx)" />
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico institucional (A0...@itesm.mx)" />
                         )}
                     </Form.Item>
                         <Row gutter={8}>
@@ -129,7 +129,7 @@ class Registro extends Component {
                             <Col span={12}>
                     <Form.Item>
                         {getFieldDecorator('passwordVerification', {
-                        rules: [{ required: true, message: 'Por favor ingresa la verificación de la contraseña' }, {
+                        rules: [{ required: true, message: 'Por favor verifica la contraseña' }, {
                             validator: this.compareToFirstPassword,
                         }],
                         })(
@@ -139,16 +139,17 @@ class Registro extends Component {
                             </Col>
                         </Row>
                         <Form.Item>
-                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de Privacidad</a>
+                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de privacidad</a>
                             {getFieldDecorator('remember', {
                                 valuePropName: 'checked',
                                 initialValue: false,
                                 rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{
                                     validator: (rule, value, cb)=>{value === true ? cb() : cb(true)},
                                     message: 'Para continuar tienes que aceptar términos y condiciones'}]
-                            })(
-                                <Checkbox checked={this.state.rememberMe}
-                                          onChange={this.handleChangeCheck}>He leído y acepto el Aviso de Privacidad</Checkbox>
+                            })
+                            (
+                                <Checkbox className="aviso-privacidad" checked={this.state.rememberMe}
+                                          onChange={this.handleChangeCheck}>He leído y acepto el aviso de privacidad</Checkbox>
                             )}
                         </Form.Item>
                     <Form.Item>

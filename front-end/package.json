@@ -15,11 +15,14 @@
     "react-chat-widget": "^2.1.4-1",
     "react-dom": "^16.8.1",
     "react-icons": "^3.4.0",
+    "react-responsive": "^6.1.2",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
+    "react-typing-animation": "^1.6.2",
     "universal-cookie": "^3.0.7"
   },
   "scripts": {
+    "deploy": "aws s3 sync build/ s3://www.tramitesescolares.com.mx",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

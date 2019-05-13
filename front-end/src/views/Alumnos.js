@@ -5,7 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
-
+import moment from 'moment';
 
 
 
@@ -71,8 +71,13 @@ export default class Alumnos extends Component {
                     key: 'email',
 
                 }, {
-                    title: 'Último Login',
+                    title: 'Último login',
                     key: 'last_login',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    ),
                 }
                 ]}/>
 

@@ -5,8 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
-
-
+import moment from 'moment';
 
 
 export default class Documentos extends Component {
@@ -66,6 +65,11 @@ export default class Documentos extends Component {
                 }, {
                     title: 'Fecha',
                     key: 'fecha',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    ),
                 }, {
                     title: 'Contenido subido',
                     key: 'id',
@@ -86,7 +90,7 @@ export default class Documentos extends Component {
                         <Button key="submit" type="primary"  onClick={() => {this.setState({visible:false})}}>
                             OK
                         </Button>,]}>
-                    <div style={{textAlign:'right'}}><h3>{this.state.record.fecha}</h3></div>
+                    <div style={{textAlign:'right'}}><h3>{moment(this.state.record.fecha).format('DD-MMM-YYYY')}</h3></div>
                     <DataTable columns={this.state.cols} data={this.state.data2}/>
 
 

@@ -41,7 +41,6 @@ export default class ProcesoNuevo extends Component {
 
     uploadData = () => {
 
-
         let params = {
             nombre: this.state.nombre,
             matricula:this.getColumnByKey(this.state.matricula),
@@ -51,47 +50,54 @@ export default class ProcesoNuevo extends Component {
             pasos:this.state.pasos
         };
 
+        if(params.nombre == "" || params.matricula == "" || params.ticket == "" || params.ultima_actualizacion == "" ||
+            params.fecha_apertura == "" || params.pasos ==  "") {
+            Notifications.openNotificationWithIcon("warning","Verifica que todos los campos estén completos","")
 
-        Modal.confirm({
-            title: 'Estos son los datos a subir:',
-            content: <div>
-                <b><label>Nombre: </label></b> {params.nombre}<br/>
-                <b><label>Columna de la matrícula: </label></b>  {params.matricula.title}<br/>
-                <b><label>Columna del ticket: </label></b>  {params.ticket.title}<br/>
-                <b><label>Columna de fecha de apertura: </label></b>  {params.fecha_apertura.title}<br/>
-                <b><label>Columna de ultima actualización: </label></b>  {params.ultima_actualizacion.title}<br/>
-                <h4><b>Pasos:</b> </h4><br/>
-                <Divider/>
-                {params.pasos.map((p)=><div>
-                    <b> <label>Columna: </label></b> {p.title}<br/>
-                    <b> <label># de paso: </label></b> {p.numero}<br/>
-                    <b> <label>Nombre a mostrar: </label></b> {p.nombre_mostrar }<br/>
-                    <b> <label>Mostrar: </label></b> {p.mostrar ? "Sí" : "No"}<br/>
+        } else {
+
+            Modal.confirm({
+                title: 'Estos son los datos a subir:',
+                content: <div>
+                    <b><label>Nombre: </label></b> {params.nombre}<br/>
+                    <b><label>Columna de la matrícula: </label></b>  {params.matricula.title}<br/>
+                    <b><label>Columna del ticket: </label></b>  {params.ticket.title}<br/>
+                    <b><label>Columna de fecha de apertura: </label></b>  {params.fecha_apertura.title}<br/>
+                    <b><label>Columna de última actualización: </label></b>  {params.ultima_actualizacion.title}<br/>
+                    <h4><b>Pasos:</b> </h4><br/>
                     <Divider/>
-                </div>)}
-            </div>,
-            onOk: () => {
-                console.log('OK');
-                params = {
-                    nombre: this.state.nombre,
-                    matricula:JSON.stringify(this.getColumnByKey(this.state.matricula)),
-                    ticket:JSON.stringify(this.getColumnByKey(this.state.ticket)),
-                    ultima_actualizacion:JSON.stringify(this.getColumnByKey(this.state.ultima_actualizacion)),
-                    fecha_apertura:JSON.stringify(this.getColumnByKey(this.state.fecha_apertura)),
-                    pasos:JSON.stringify(this.state.pasos)
-                };
-                this.setState({loading:true});
-                API.call('agregar-proceso/',params,(resposne) =>{
-                    Notifications.openNotificationWithIcon("success","Proceso nuevo creado exitosamente!","")
-                    API.redirectTo('/procesos');
-                    this.setState({loading:false});
-                },(resposne) =>{this.setState({loading:false});});
-            },
-            cancelText:"Cancelar",
-            onCancel() {
-                console.log('Cancel');
-            },
-        });
+                    {params.pasos.map((p)=><div>
+                        <b> <label>Columna: </label></b> {p.title}<br/>
+                        <b> <label># de paso: </label></b> {p.numero}<br/>
+                        <b> <label>Nombre a mostrar: </label></b> {p.nombre_mostrar }<br/>
+                        <b> <label>Mostrar: </label></b> {p.mostrar ? "Sí" : "No"}<br/>
+                        <Divider/>
+                    </div>)}
+                </div>,
+                onOk: () => {
+                    //console.log('OK');
+                    params = {
+                        nombre: this.state.nombre,
+                        matricula:JSON.stringify(this.getColumnByKey(this.state.matricula)),
+                        ticket:JSON.stringify(this.getColumnByKey(this.state.ticket)),
+                        ultima_actualizacion:JSON.stringify(this.getColumnByKey(this.state.ultima_actualizacion)),
+                        fecha_apertura:JSON.stringify(this.getColumnByKey(this.state.fecha_apertura)),
+                        pasos:JSON.stringify(this.state.pasos)
+                    };
+                    this.setState({loading:true});
+                    console.log(this.state.pasos)
+                    API.call('agregar-proceso/',params,(resposne) =>{
+                        Notifications.openNotificationWithIcon("success","¡Proceso nuevo creado exitosamente!","")
+                        API.redirectTo('/procesos');
+                        this.setState({loading:false});
+                    },(resposne) =>{this.setState({loading:false});});
+                },
+                cancelText:"Cancelar",
+                onCancel() {
+                    //console.log('Cancel');
+                }
+            }); 
+        }
     };
 
 

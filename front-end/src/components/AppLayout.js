@@ -68,7 +68,10 @@ export default class AppLayout extends Component {
                 </Sider>
 
                 <Layout>
-                    <Header className={'primaryBackground header-bar'}><h2 className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</h2></Header>
+                <Header className={'primaryBackground header-bar'}>
+                        <span className={'logoName'} >Sistema para Consulta de Estatus de Trámites Escolares</span>
+                        <span className={'logoName'} style={{float:'right'}} ><Icon type={'user'}/> {(localStorage.getItem("email") || "").toLocaleLowerCase() + " | " + localStorage.getItem("nombre")}</span>
+                    </Header>
                     <Content style={{ margin: '24px 16px 0' }}>
                         <div style={{ padding: 24, background: '#fff', minHeight: 360}}>
                             <Content style={{ padding: '0', height:'100%' }}>

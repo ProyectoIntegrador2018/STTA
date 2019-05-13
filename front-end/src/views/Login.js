@@ -25,7 +25,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
             okButtonProps={{ disabled: loading, loading:loading }}
             onOk={onCreate}>
             <Form layout="vertical">
-              <Form.Item label="Correo electrónico" type="email">
+              <Form.Item label="Introduce tu correo electrónico" type="email">
                 {getFieldDecorator('correo', {
                   rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
                 })(
@@ -72,8 +72,9 @@ class Login extends Component {
       this.setState({ loading: true });
       form.resetFields();
       API.call('request_restore/',{email:values.correo},(response)=>{
-          this.setState({ visible: false  });
-          this.setState({ loading: false  });
+        Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
+        this.setState({ visible: false  });
+        this.setState({ loading: false  });
       },(response)=>{
             this.setState({ visible: false  });
             this.setState({ loading: false  });
@@ -99,6 +100,9 @@ class Login extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.setItem('email', response.email);
+            localStorage.setItem('esAdmin', true);
+            localStorage.setItem('nombre', response.nombre);
             API.redirectTo("/dashboard");
           },
           error:(response) => {this.setState({ loading: false });},

@@ -5,7 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
-
+import moment from 'moment';
 
 
 
@@ -27,6 +27,7 @@ export default class TramitesAdmin extends Component {
         API.restCall({
             service:'get_tramites/',
             success:(response) => {
+                console.log(response);
                 this.setState({data: response, loading:false});
             },
             error:(response) => {
@@ -60,17 +61,36 @@ export default class TramitesAdmin extends Component {
                 }, {
                     title: '# De ticket',
                     key: 'numero_ticket',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <a onClick={() => {localStorage.setItem("matAlumno", record.matricula);
+                            API.redirectTo("/tramite/"+record.id)}}> #{text}</a>
+                        </div>
+                    )
 
                 }, {
                     title: 'Fecha de inicio',
                     key: 'fecha_inicio',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    )
                 }, {
                     title: 'Fecha de última actualización',
                     key: 'fecha_ultima_actualizacion',
+                    render: (text, record) => (
+                        <div style={{textAlign:'center'}}>
+                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
+                        </div>
+                    )
                 },{
                     title: 'Paso actual',
-                    key: 'paso_actual',
-                },
+                    key: 'numero_paso_actual',
+                },{
+                    title: 'Paso actual',
+                    key: 'proceso__nombre',
+                }
                 ]}/>
 
                 <Modal

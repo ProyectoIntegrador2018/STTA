@@ -10,7 +10,7 @@ import API from "../tools/API";
 const Panel = Collapse.Panel;
 
 function callback(key) {
-    console.log(key);
+    //console.log(key);
 }
 
 // Transferencia otro campus    QUITAR
@@ -76,6 +76,7 @@ class DashboardView extends Component {
             salesPieData2: [],
             tramiteTransferencia: false,
             pasosTransferencia: [],
+            procs:[]
         }
     }
 
@@ -93,8 +94,11 @@ class DashboardView extends Component {
                         tramitesMes += 1;
                     }
                 }   
-                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});  
-                let tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
+                let tramitesTerminados = 0;
+                if (this.state.totalTramites != 0) {
+                    tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
+                }
                 this.setState({tramitesTerminados: tramitesTerminados});
             },
             error:(response) => {
@@ -196,6 +200,22 @@ class DashboardView extends Component {
                 this.setState({tramiteTransferencia: false});
             }
         });*/
+        API.restCall({
+            service: 'get_procesos',
+            method:'get',
+            success:(response) => {
+                let datos = [];
+                console.log(response)
+
+                for (let i in response) {
+                    datos[i] = {x: response[i].nombre, y: 0};
+                }
+                this.setState({procesos: datos, procs: response});
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });
     }
 
     render() {
@@ -206,23 +226,22 @@ class DashboardView extends Component {
                 <div className="row">
                     <div className="column"  style={{height: '400px'}} >
                         <Spin spinning={this.state.loadingMonth}>
-                            <div className="column"  style={{backgroundColor: "#088A85",width: '545px' ,height: '350px'}} >
+                            <div className="column"  style={{backgroundColor: "#7798AB",width: '545px' ,height: '350px'}} >
                                 <h1 style={{ color: 'white' }}>Total de trámites concluidos este mes </h1>
-                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesMes} </p>
+                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesMes} </p>
                             </div>
                         </Spin>
                     </div>
                     <div className="column" style={{height: '400px'}} >
                         <Spin spinning={this.state.loadingWeek}>
-                            <div className="column"  style={{backgroundColor: "#B4045F",width: '545px' ,height: '350px'}} >
+                            <div className="column"  style={{backgroundColor: "#828A95",width: '545px' ,height: '350px'}} >
                                 <h1 style={{ color: 'white' }}>Total de trámites concluidos esta semana </h1>
-                                <p style={{ color: 'white', fontSize:130}}> {this.state.tramitesSemana} </p>
+                                <p style={{ color: 'white', fontSize:130, textAlign:"center"}}> {this.state.tramitesSemana} </p>
                             </div>
                         </Spin>
                     </div>
                 </div>
-                {/* RENGLON 0 END */}
-                {/* RENGLON 1 BEGIN */}
+                {/* Gráfica que muestran el número de todos los trámites academicos que están en el sistema */}
                 <div className="row">
                     <div className="column">
                         <h1>Trámites académicos </h1>
@@ -244,24 +263,27 @@ class DashboardView extends Component {
                             height={294}
                         />
                     </div>
+                    {/* Gráficas que muestran el porcentaje de trámites que se han completado*/}
                     <div className="column">
                         <h1>Trámites completados </h1>
                         <Pie percent={this.state.tramitesTerminados} subTitle="Procesos completos" total={this.state.tramitesTerminados + "%"} height={294} />
                     </div>
                 </div>
-                {/* RENGLON 1 END*/}
+
                 <Collapse defaultActiveKey={['1']} onChange={callback}>
-                    <Panel header="Estatus Transferencias como destino Monterrey" key="1">
-                        <h1>Estatus trámites transferencias como destino Monterrey </h1>
+
+                    {this.state.procs.map((item, key) => (
+                    <Panel header={item.nombre} key={key}>
+                        <h2>{item.nombre}</h2>
                         <Pie
                             hasLegend
-                            title="Transferencias como destino Monterrey"
+                            title={item.nombre}
                             subTitle="Total"
                             total={() => (
                                 <Spin spinning={this.state.tramiteTransferencia}>
                                     <span
                                         dangerouslySetInnerHTML={{
-                                            __html: (this.state.salesPieData.reduce((pre, now) => now.y + pre, 0))
+                                            __html: (this.state.salesPieData2.reduce((pre, now) => now.y + pre, 0))
                                         }}
                                     />
                                 </Spin>
@@ -270,47 +292,11 @@ class DashboardView extends Component {
                             valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                             height={294}
                         />
-                    </Panel>
-                    <Panel header="Estatus de Transferencias a otros campus" key="2">
-                        <h1>Estatus de Transferencias a otros campus </h1>
-                        <Pie
-                            hasLegend
-                            title="Transferencias a otros campus"
-                            subTitle="Total"
-                            total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData3.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
-                            )}
-                            data={salesPieData3}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
-                    </Panel>
-                    <Panel header="Estatus de trámites baja de materias" key="3">
-                        <h1>Estatus de trámites baja de materias </h1>
-                        <Pie
-                            hasLegend
-                            title="Baja de materias"
-                            subTitle="Total"
-                            total={() => (
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html: (salesPieData4.reduce((pre, now) => now.y + pre, 0))
-                                    }}
-                                />
-                            )}
-                            data={salesPieData4}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                            height={294}
-                        />
+                        </Panel>)
+                        )}
 
 
-                    </Panel>
                 </Collapse>
-
 
 
             </div>

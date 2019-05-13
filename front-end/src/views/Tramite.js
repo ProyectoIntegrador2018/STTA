@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import API from "../tools/API";
 import Notifications from "../tools/Notifications";
+import MediaQuery from 'react-responsive';
 
 export default class Tramite extends Component {
 
@@ -24,6 +25,7 @@ export default class Tramite extends Component {
             fecha1:"",
             fecha2:"",
             status:"",
+            n_paso: 1
         }
     }
 
@@ -47,8 +49,8 @@ export default class Tramite extends Component {
             params:{id:id},
             method:'post',
             success:(response) => {
-                this.setState({ pasos: response, loading:false, status:this.state.step==response.length ?
-                        "TERMINADO" : this.state.step == 0 ? "INICIADO":"ENPROCESO" });
+                this.setState({ pasos: response, loading:false, status:this.state.n_paso==response.length ?
+                        "Terminado" : this.state.n_paso == 0 ? "Iniciado":"En proceso" });
             },
             error:(response) => {
                 this.setState({loading:false});
@@ -63,7 +65,8 @@ export default class Tramite extends Component {
             success:(response) => {
 
                 this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion});
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
+                n_paso:response[0].numero_paso_actual });
                 this.getPasos(response[0].proceso_id)
                 },
             error:(response) => {
@@ -75,28 +78,43 @@ export default class Tramite extends Component {
     render() {
         return (
             <Spin spinning={this.state.loading}><div>
-                <h1>{"Mi trámite"}</h1>
+                <h2 style={{float:'right'}}>{ localStorage.getItem("esAdmin") ? 
+                    <Statistic title="Matrícula" groupSeparator={""} value={(localStorage.getItem("matAlumno") || " ").toLocaleUpperCase()} />
+                 : "" }</h2>
+
+                <h1>{ localStorage.getItem("esAdmin") ? "Trámite del alumno" : "Mi trámite" }</h1>
+
                 <Divider/>
 
                 <Row style={{float:'right'}} gutter={8}>
                     <Col span={12}>
-                        <Statistic title="Dias transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} />
+                        <Statistic title="Días transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} />
                     </Col>
                     <Col span={12}>
                         <Statistic title="Estatus" groupSeparator={""} value={this.state.status} />
                     </Col>
                 </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
-                <Steps labelPlacement={'vertical'} current={this.state.step} style={{marginBottom:50}}>
-                    {
-                        this.state.pasos.map(value=>{
-                            return (<Steps.Step title={value.nombre_mostrar} />)
-                        })
-                    }
-                </Steps>
-
-                {this.state.step==this.state.pasos.length ?  <Row style={{textAlign:'center', }} gutter={8}>
-                        <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9  "}>Evalúa los trámites escolares</a></h2>
+                <MediaQuery query="(min-device-width: 1224px)">
+                    <Steps labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
+                        {
+                            this.state.pasos.map(value=>{
+                                return (<Steps.Step title={value.nombre_mostrar} />)
+                            })
+                        }
+                    </Steps>
+                </MediaQuery>
+                <MediaQuery query="(max-device-width: 1223px)">
+                    <Steps direction="vertical" labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>
+                        {
+                            this.state.pasos.map(value=>{
+                                return (<Steps.Step title={value.nombre_mostrar} />)
+                            })
+                        }
+                    </Steps>
+                </MediaQuery>
+                {this.state.n_paso==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}>
+                        <h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9"} target={"_blank"}>Evalúa los trámites escolares</a></h2>
                 </Row> : <div></div>}
                 <Row gutter={8}>
                     <Col span={12}>
@@ -108,7 +126,7 @@ export default class Tramite extends Component {
                                 <Statistic title="Fecha de inicio" value={moment.utc(this.state.fecha1).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />} />
                             </Col>
                             <Col span={12}>
-                                <Statistic title="Fecha de ultima actualizacion" value={moment.utc(this.state.fecha2).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />}/>
+                                <Statistic title="Fecha de última actualización" value={moment.utc(this.state.fecha2).format("DD/MM/YYYY")} prefix={<Icon type="calendar" />}/>
                             </Col>
                         </Row>
                     </Col>

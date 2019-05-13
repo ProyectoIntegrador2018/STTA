@@ -38,8 +38,9 @@ export default class AppLayoutUser extends Component {
             success:(response) => {
                 let data1 = [];
                 let data2 = [];
+                console.log(response)
                 response.map((item) => {
-                        if(item.pasos == item.paso_actual){
+                        if(item.pasos == item.numero_paso_actual){
                             data2.push(item);
                         }else{
                             data1.push(item);
@@ -77,7 +78,9 @@ export default class AppLayoutUser extends Component {
                             </SubMenu>
 
 
-                        <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" /><span>Trámites Concluidos</span></span>}>
+                        <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" />
+                            <span>Trámites Concluidos</span>
+                        </span>}>
                             {
                                 this.state.data2.map((objectToMap,index) =>{
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
