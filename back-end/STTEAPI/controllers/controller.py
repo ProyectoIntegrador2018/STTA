@@ -444,6 +444,12 @@ def return_tramite_transferencia_pasos(request):
 def get_tramites_resumen(request, proceso, month, status):
     from django.db import connection
     cursor = connection.cursor()
+    if month == "0":
+        cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                       'where proceso = {0} and status = {1};'.format(proceso, status))
+        if status == "-1":
+            cursor.execute('SELECT * FROM STTE.ResumenTramites '
+                           'where proceso = {0};'.format(proceso))
 
 def return_procesos(request):
     from django.db import connection
