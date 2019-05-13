@@ -45,6 +45,35 @@ export default class Documentos extends Component {
         let data = JSON.parse(record.contenido_subido);
         this.setState({cols:data.cols, data2:data.data, visible:true,record:record});
     };
+    /*this.setState({tramiteTransferencia: true});
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia_pasos',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in response) {
+                    xy[i] = response[i].nombre;
+                }
+                this.setState({pasosTransferencia: xy});
+            },
+        });
+        API.restCall({
+            service: 'get_tramite_alumnos_transferencia',
+            method:'get',
+            success:(response) => {
+                let xy = [];
+                for (let i in this.state.pasosTransferencia) {
+                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
+                }
+                for (let i in response) {
+                    xy[response[i].paso_actual - 1].y += 1;
+                }
+                this.setState({tramiteTransferencia: false, salesPieData2: xy});
+            },
+            error:(response) => {
+                this.setState({tramiteTransferencia: false});
+            }
+        });*/
 
     render() {
         return (

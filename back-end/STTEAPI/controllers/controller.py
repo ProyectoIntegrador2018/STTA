@@ -465,6 +465,8 @@ def get_tramites_resumen(request, proceso, month, status):
 def get_pasos_proceso(request, proceso):
     from django.db import connection
     cursor = connection.cursor()
+    cursor.execute('SELECT * FROM STTE.Paso '
+                   'where proceso = {0}'.format(proceso))
 
 
 def return_procesos(request):
