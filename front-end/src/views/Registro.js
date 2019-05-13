@@ -110,7 +110,7 @@ class Registro extends Component {
                         </Row>
                     <Form.Item>
                         {getFieldDecorator('userName', {
-                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A00...@itesm.mx)' }],
+                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A0....@itesm.mx)' }],
                         })(
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico institucional (A0...@itesm.mx)" />
                         )}
