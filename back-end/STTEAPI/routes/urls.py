@@ -57,6 +57,7 @@ urlpatterns = [
     path('get_procesos', controller.return_procesos),
      path('get_procesos_pasos/<proceso>/', controller.return_procesos_pasos),
       path('get_tramite/<proceso>/', controller.return_tramite)  ,
-    path('get_tramites_resumen/<proceso>/<month>/<status>',controller.get_tramites_resumen )
+    path('get_tramites_resumen/<proceso>/<month>/<status>',controller.get_tramites_resumen ),
+    path('get_pasos_proceso/<proceso>', controller.get_pasos_proceso)
 ]
 
