@@ -459,6 +459,13 @@ def get_tramites_resumen(request, proceso, month, status):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: proceso; Salida: Todos los atributos de Proceso
+#                                                          # en formato de diccionario
+def get_pasos_proceso(request, proceso):
+    from django.db import connection
+    cursor = connection.cursor()
+
+
 def return_procesos(request):
     from django.db import connection
     cursor = connection.cursor()
