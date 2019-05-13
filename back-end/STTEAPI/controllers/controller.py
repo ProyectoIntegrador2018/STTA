@@ -26,7 +26,6 @@ from django.db.models import Count, F
 from django.core.mail import send_mail
 from django.template import loader
 
-# Regular expression for email validation
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
 @api_view(["POST"])
@@ -419,6 +418,7 @@ def return_tramite_alumnos(request,matricula):
 
 
 
+
 def return_tramite_transferencia(request):
     from django.db import connection
     cursor = connection.cursor()
@@ -460,13 +460,15 @@ def get_tramites_resumen(request, proceso, month, status):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: proceso; Salida: Todos los atributos de Proceso
+#                                                          # Entrada: proceso; Salida: Todos los atributos de Paso
 #                                                          # en formato de diccionario
 def get_pasos_proceso(request, proceso):
     from django.db import connection
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM STTE.Paso '
                    'where proceso = {0}'.format(proceso))
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
 
 
 def return_procesos(request):
