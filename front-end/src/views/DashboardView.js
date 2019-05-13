@@ -300,7 +300,23 @@ class DashboardView extends Component {
                             <h2>{item.nombre} </h2>
                             <h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
 
-                            //
+                            <Pie
+                                hasLegend
+                                title={item.nombre}
+                                subTitle="Total"
+                                total={() => (
+                                    <Spin spinning={this.state["data_"+key+"spinner"]}>
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))
+                                        }}
+                                    />
+                                    </Spin>
+                                )}
+                                data={this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []}
+                                valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
+                                height={294}
+                            />
                         </Panel>)
                     )}
 
