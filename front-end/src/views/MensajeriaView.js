@@ -1,29 +1,21 @@
 import React, { Component } from 'react';
 import {
-    Icon, Button, Modal, List
+    List
 } from 'antd';
-import DataTable from "../components/DataTable";
-import { Link } from 'react-router-dom'
 import API from "../tools/API";
 
 export default class MensajeriaView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-
-        }
+        this.state = {}
     }
 
     refreshData = () => {
         API.restCall({
             service:'usuarios_chat/',
-            success: (response)=>{
-
-            },
-            error: (response)=>{
-
-            },
+            success: (response) => {},
+            error: (response) => {},
             wToken: true
         })
     };
@@ -31,7 +23,6 @@ export default class MensajeriaView extends Component {
     componentWillMount() {
         this.refreshData();
     }
-
 
     render() {
         return (

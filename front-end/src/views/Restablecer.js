@@ -13,7 +13,6 @@ class Restablecer extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             uid: props.uid,
             token: props.token,
@@ -22,7 +21,6 @@ class Restablecer extends Component {
             warning: false,
             redirect:false
         };
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
         this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
@@ -41,7 +39,6 @@ class Restablecer extends Component {
         y redirige a la página de Login*/}
         API.call('validate_password_token/',{uid: this.state.uid, token:this.state.token},(response)=>{
             if(response === 1) {
-
             } else {
                 this.setState({ warning: true });
                 Modal.warning({
@@ -51,16 +48,14 @@ class Restablecer extends Component {
                 });
             }
             this.setState({ loading: false, });
-        },(response)=>{
-
+        }, (response)=>{
             this.setState({ loading: false, });
-        },false);
+        }, false);
     };
 
-
     handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     };
 
     compareToFirstPassword = (rule, value, callback) => {
@@ -130,7 +125,6 @@ class Restablecer extends Component {
                     <img className="login-image" src={loginImage} alt={''}/>
                     </div>
                 </Col>
-
                 <Col xs={24} sm={24} md={24} lg={12} xl={10}>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                     <div className="logo-image-container">

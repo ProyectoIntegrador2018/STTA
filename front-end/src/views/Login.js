@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../App.css';
-
 import {
   Form, Icon, Input, Button, Checkbox, Row, Col, Modal
 } from 'antd';
@@ -10,35 +9,34 @@ import API from "../tools/API";
 import Notifications from "../tools/Notifications";
 
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
-    class extends React.Component {
-      render() {
-        const {
-          visible, onCancel, onCreate, form, loading
-        } = this.props;
-        const { getFieldDecorator } = form;
-        return (
-          <Modal
-            visible={visible}
-            title="Restablecer contraseña"
-            okText="Enviar"
-            onCancel={onCancel}
-            okButtonProps={{ disabled: loading, loading:loading }}
-            onOk={onCreate}>
-            <Form layout="vertical">
-              <Form.Item label="Introduce tu correo electrónico" type="email">
-                {getFieldDecorator('correo', {
-                  rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
-                })(
-                  <Input />
-                )}
-              </Form.Item>
-            </Form>
-          </Modal>
-        );
-      }
+  class extends React.Component {
+    render() {
+      const {
+        visible, onCancel, onCreate, form, loading
+      } = this.props;
+      const { getFieldDecorator } = form;
+      return (
+        <Modal
+          visible={visible}
+          title="Restablecer contraseña"
+          okText="Enviar"
+          onCancel={onCancel}
+          okButtonProps={{ disabled: loading, loading:loading }}
+          onOk={onCreate}>
+          <Form layout="vertical">
+            <Form.Item label="Introduce tu correo electrónico" type="email">
+              {getFieldDecorator('correo', {
+                rules: [{ required: true, message: 'Por favor introduce tu correo electrónico' }],
+              })(
+                <Input />
+              )}
+            </Form.Item>
+          </Form>
+        </Modal>
+      );
     }
-  );
-  
+  }
+);
 
 class Login extends Component {
 
@@ -68,17 +66,16 @@ class Login extends Component {
       if (err) {
         return;
       }
-
       this.setState({ loading: true });
       form.resetFields();
       API.call('request_restore/',{email:values.correo},(response)=>{
         Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
         this.setState({ visible: false  });
         this.setState({ loading: false  });
-      },(response)=>{
+      }, (response)=>{
             this.setState({ visible: false  });
             this.setState({ loading: false  });
-        },false);
+        }, false);
     });
   };
 
@@ -175,7 +172,6 @@ class Login extends Component {
     );
   }
 }
-
 
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Login);
 export default WrappedNormalLoginForm;
