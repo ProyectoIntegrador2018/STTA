@@ -470,7 +470,8 @@ def get_pasos_proceso(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
+#                                                          # Entrada: nada; Salida: Todos los atributos de Proceso
+#                                                          # en formato de diccionario
 def return_procesos(request):
     from django.db import connection
     cursor = connection.cursor()
