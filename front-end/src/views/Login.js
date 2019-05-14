@@ -155,7 +155,7 @@ class Login extends Component {
                 <br></br>
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
-                  Accesar
+                  Acceder
                 </Button> 
                 <br></br>
               </Form.Item>
