@@ -28,6 +28,8 @@ from django.template import loader
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Cuenta los pasos de un proceso
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def procesos(request):
@@ -35,6 +37,8 @@ def procesos(request):
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra procesos del sistema
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -54,6 +58,8 @@ def borrar_procesos(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra un documento dado un id pasado en request
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -70,6 +76,8 @@ def eliminar_documentos(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Registra los procesos nuevos en la base de datos
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -96,6 +104,8 @@ def agregar_proceso(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Regresa los pasos de un proceso
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def pasos_procesos(request):
@@ -125,7 +135,8 @@ def registro_Alumnos(request):
         raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Regresa el registro de archivos subidos por administradores usuario
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def documentos(request):
@@ -137,6 +148,8 @@ def documentos(request):
     docs = [dict(p) for p in docs]
     return JsonResponse(docs, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Sube los documentos .csv a la base de datos
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -190,7 +203,8 @@ def subir_documento(request):
 
     return JsonResponse(doc.id, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Corrobora las credenciales en el inicio de sesión del administrador
 @api_view(["POST"])
 def login_admin(request):
     email = request.POST.get('email','')
@@ -206,6 +220,8 @@ def login_admin(request):
     user.save()
     return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email }, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Corrobora las credenciales del inicio de sesión del estudiante
 @api_view(["POST"])
 def login_student(request):
     email = request.POST.get('email','')
@@ -221,13 +237,16 @@ def login_student(request):
     user.save()
     return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Cierra la sesión del usuario actual
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, ))
 def logout(request):
     request.user.auth_token.delete()
     return JsonResponse("SESION CERRADA de " + request.user.email, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Envía la respuesta html para restablecer la contrseña
 @api_view(["POST"])
 def request_restore(request):
     args = PostParametersList(request)
@@ -250,6 +269,9 @@ def request_restore(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: check
+#                                                           #Procedimiento almacenado que se encarga de verificar que el reseteo
+#                                                           # de la contraseña sea válido, si es así entonces manda un check, si no manda una excepción
 @api_view(["POST"])
 def reset_password(request):
     args = PostParametersList(request)
@@ -266,6 +288,8 @@ def reset_password(request):
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña inválido")
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Valida que los tokens de contraseña proporcionados sean válidos
 @api_view(["POST"])
 def validate_password_token(request):
     args = PostParametersList(request)
@@ -351,6 +375,8 @@ def eliminar_administradores(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
+#                                                           #Registra un administrador
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -394,15 +420,17 @@ def return_datos_tramite(request):
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
-
+#                                                          # Entrada: cursos; Salida: Los atributos pasados en la entrada
+#                                                          # en formato de diccionario
 def dictfetchall(cursor):
     desc = cursor.description
     return [dict(zip([col[0] for col in desc], row))
               for row in cursor.fetchall()]
+
+#                                                          # Entrada: matricula; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual dada una matricula de usuario
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
-
-#Función que regresa un json con la información de los trámites de un alumno
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
@@ -415,10 +443,8 @@ def return_tramite_alumnos(request,matricula):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
-
-
-
+#                                                          # Entrada: nada; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
+#                                                          # en formato de diccionario
 def return_tramite_transferencia(request):
     from django.db import connection
     cursor = connection.cursor()
@@ -431,6 +457,8 @@ def return_tramite_transferencia(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: nada; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
+#                                                          # en formato de diccionario
 def return_tramite_transferencia_pasos(request):
     from django.db import connection
     cursor = connection.cursor()
@@ -470,7 +498,8 @@ def get_pasos_proceso(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
+#                                                          # Entrada: nada; Salida: Todos los atributos de Proceso
+#                                                          # en formato de diccionario
 def return_procesos(request):
     from django.db import connection
     cursor = connection.cursor()
@@ -479,6 +508,8 @@ def return_procesos(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: proceso; Salida: Los atributos de nombre de proceso y nombre de paso de Paso
+#                                                          # en formato de diccionario
 def return_procesos_pasos(request, proceso):
     from django.db import connection
     cursor = connection.cursor()
@@ -488,6 +519,8 @@ def return_procesos_pasos(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del proceso actual
+#                                                          # en formato de diccionario
 def return_tramite(request, proceso):
     from django.db import connection
     cursor = connection.cursor()
@@ -500,9 +533,8 @@ def return_tramite(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
-
-
+#                                                          # Entrada: nada; Salida: Todos los atributos del trámite actual del alumno que invoca la función
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):
@@ -517,6 +549,8 @@ def return_tramite_alumnos_status(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: nada; Salida: Todos los atributos de tramite actual por semana del alumno que la invoca
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status_week(request):
@@ -531,6 +565,8 @@ def return_tramite_alumnos_status_week(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: id; Salida: Datos sobre el proceso del trámite actual del alumno que invoca la función
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_datos_tramite_alumno(request,id):
@@ -543,6 +579,8 @@ def get_datos_tramite_alumno(request,id):
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: nada; Salida: Los pasoa del trámite dada la llave id
+#                                                          # en formato de diccionario
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
