@@ -28,6 +28,8 @@ from django.template import loader
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Cuenta los pasos de un proceso
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def procesos(request):
@@ -35,6 +37,8 @@ def procesos(request):
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra procesos del sistema
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -54,6 +58,8 @@ def borrar_procesos(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Borra un documento dado un id pasado en request
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -70,6 +76,8 @@ def eliminar_documentos(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Registra los procesos nuevos en la base de datos
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -96,6 +104,8 @@ def agregar_proceso(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Regresa los pasos de un proceso
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def pasos_procesos(request):
@@ -125,7 +135,8 @@ def registro_Alumnos(request):
         raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
+#                                                           #Regresa el registro de archivos subidos por administradores usuario
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def documentos(request):
@@ -137,6 +148,8 @@ def documentos(request):
     docs = [dict(p) for p in docs]
     return JsonResponse(docs, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Sube los documentos .csv a la base de datos
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -190,7 +203,8 @@ def subir_documento(request):
 
     return JsonResponse(doc.id, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Corrobora las credenciales en el inicio de sesión del administrador
 @api_view(["POST"])
 def login_admin(request):
     email = request.POST.get('email','')
