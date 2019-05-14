@@ -521,6 +521,8 @@ def return_tramite_alumnos_status(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: nada; Salida: Todos los atributos de tramite actual por semana del alumno que la invoca
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status_week(request):
