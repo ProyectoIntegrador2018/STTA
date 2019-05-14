@@ -537,6 +537,8 @@ def return_tramite_alumnos_status_week(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: id; Salida: Datos sobre el proceso del trámite actual del alumno que invoca la función
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_datos_tramite_alumno(request,id):
