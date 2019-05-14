@@ -37,7 +37,26 @@ class ProcesosForm extends Component {
             }
         });
     };
+    /*
+    refreshData = () => {
+        this.setState({loading:true});
+        API.restCall({
+            service:'get_datos_tramite_alumno/' + this.props.id ,
+            success:(response) => {
 
+                this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
+                n_paso:response[0].numero_paso_actual });
+                this.getPasos(response[0].proceso_id)
+                },
+            error:(response) => {
+                this.setState({loading:false});
+            }
+        })
+    };
+    */
+
+    //Método que elimina los procesos de la base de datos
     deleteProcs = (rows) => {
         this.setState({loading:true});
         API.call('borrar-procesos/', {procesos:JSON.stringify(rows)}, (response) => {
