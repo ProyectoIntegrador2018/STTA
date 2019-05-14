@@ -505,9 +505,8 @@ def return_tramite(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
-
-
+#                                                          # Entrada: nada; Salida: Todos los atributos del trámite actual del alumno que invoca la función
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):
