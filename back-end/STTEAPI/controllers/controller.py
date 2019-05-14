@@ -394,15 +394,17 @@ def return_datos_tramite(request):
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
-
+#                                                          # Entrada: cursos; Salida: Los atributos pasados en la entrada
+#                                                          # en formato de diccionario
 def dictfetchall(cursor):
     desc = cursor.description
     return [dict(zip([col[0] for col in desc], row))
               for row in cursor.fetchall()]
+
+#                                                          # Entrada: matricula; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual dada una matricula de usuario
+#                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
-
-#Función que regresa un json con la información de los trámites de un alumno
 def return_tramite_alumnos(request,matricula):
     from django.db import connection
     cursor = connection.cursor()
@@ -415,7 +417,7 @@ def return_tramite_alumnos(request,matricula):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: id; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
+#                                                          # Entrada: nada; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
 #                                                          # en formato de diccionario
 def return_tramite_transferencia(request):
     from django.db import connection
@@ -429,7 +431,7 @@ def return_tramite_transferencia(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: id; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
+#                                                          # Entrada: nada; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
 #                                                          # en formato de diccionario
 def return_tramite_transferencia_pasos(request):
     from django.db import connection
