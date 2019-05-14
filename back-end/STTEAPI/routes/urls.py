@@ -22,6 +22,7 @@ from django.conf.urls import url, include
 #admin.site.register(Usuario, UserAdmin)
 #admin.site.unregister(Group)
 
+#                                                          #Guarda los paths asociados a cada procedimiento del controller
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login-admin/', controller.login_admin),
