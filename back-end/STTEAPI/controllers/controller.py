@@ -250,6 +250,9 @@ def request_restore(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: check
+#                                                           #Procedimiento almacenado que se encarga de verificar que el reseteo
+#                                                           # de la contraseña sea válido, si es así entonces manda un check, si no manda una excepción
 @api_view(["POST"])
 def reset_password(request):
     args = PostParametersList(request)
