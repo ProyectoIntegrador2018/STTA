@@ -42,6 +42,6 @@ class APIBaseException(APIException):
 class APIExceptions:
     PermissionDenied = exceptions.PermissionDenied(detail="ee")
     DataBase = APIBaseException(error_code="E1", detail="D")
-    InvalidToken = APIBaseException(error_code="E100", detail="Token invalido o expirado")
+    InvalidToken = APIBaseException(error_code="E100", detail="Token inválido o expirado")
     InvalidUIdToken = APIBaseException(error_code="E110", detail="Usuario no encontrado")
     SendMailError = APIBaseException(error_code="E200", detail="El correo no pudo ser enviado")

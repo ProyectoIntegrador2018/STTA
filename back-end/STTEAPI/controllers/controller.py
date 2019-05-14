@@ -118,7 +118,7 @@ def registro_Alumnos(request):
     args.check_parameter(key='apellido', required=True)
     args = args.__dict__()
     if not re.match(EMAIL_REGEX, args['email']):
-        raise exceptions.PermissionDenied(detail="Email invalido")
+        raise exceptions.PermissionDenied(detail="Email inválido")
     try:
         user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
     except IntegrityError as e:
@@ -158,12 +158,12 @@ def subir_documento(request):
             try:
                 fecha_1 = datetime.strptime(c['fecha_apertura'], '%d/%m/%y')
             except:
-                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es inválido. El formato debe ser: D/M/A")
         if c['fecha_ultima'] != None and c['fecha_ultima'] != "":
             try:
                 fecha_2 = datetime.strptime(c['fecha_ultima'], '%d/%m/%y')
             except:
-                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es invalido. El formato debe ser: D/M/A")
+                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es inválido. El formato debe ser: D/M/A")
         p_ok = 0
         p = 1
         while (('paso_' + str(p)) in c ):
@@ -264,7 +264,7 @@ def reset_password(request):
         check.save()
         return JsonResponse(1 if check and check.es_admin else 2, safe=False)
     else:
-        raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
+        raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña inválido")
 
 @api_view(["POST"])
 def validate_password_token(request):
