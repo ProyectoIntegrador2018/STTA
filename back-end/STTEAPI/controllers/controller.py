@@ -551,6 +551,8 @@ def get_datos_tramite_alumno(request,id):
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: nada; Salida: Los pasoa del trámite dada la llave id
+#                                                          # en formato de diccionario
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
