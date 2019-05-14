@@ -431,6 +431,8 @@ def return_tramite_transferencia(request):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: id; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
+#                                                          # en formato de diccionario
 def return_tramite_transferencia_pasos(request):
     from django.db import connection
     cursor = connection.cursor()
