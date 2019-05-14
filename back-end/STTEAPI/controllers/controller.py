@@ -206,6 +206,8 @@ def login_admin(request):
     user.save()
     return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email }, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Corrobora las credenciales del inicio de sesión del estudiante
 @api_view(["POST"])
 def login_student(request):
     email = request.POST.get('email','')
@@ -221,13 +223,16 @@ def login_student(request):
     user.save()
     return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Cierra la sesión del usuario actual
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, ))
 def logout(request):
     request.user.auth_token.delete()
     return JsonResponse("SESION CERRADA de " + request.user.email, safe=False)
 
-
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Envía la respuesta html para restablecer la contrseña
 @api_view(["POST"])
 def request_restore(request):
     args = PostParametersList(request)
