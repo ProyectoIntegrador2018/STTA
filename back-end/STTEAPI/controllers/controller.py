@@ -491,6 +491,8 @@ def return_procesos_pasos(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
+#                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual
+#                                                          # en formato de diccionario
 def return_tramite(request, proceso):
     from django.db import connection
     cursor = connection.cursor()
