@@ -266,6 +266,8 @@ def reset_password(request):
     else:
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
+#                                                           #Entrada: Nada ; Salida: Nada
+#                                                           #Valida que los tokens proporcionado en la petición sean validos
 @api_view(["POST"])
 def validate_password_token(request):
     args = PostParametersList(request)
@@ -351,6 +353,8 @@ def eliminar_administradores(request):
 
     return JsonResponse(1, safe=False)
 
+#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
+#                                                           #Registra un administrador
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
