@@ -415,10 +415,8 @@ def return_tramite_alumnos(request,matricula):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-
-
-
-
+#                                                          # Entrada: id; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
+#                                                          # en formato de diccionario
 def return_tramite_transferencia(request):
     from django.db import connection
     cursor = connection.cursor()
@@ -493,7 +491,7 @@ def return_procesos_pasos(request, proceso):
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual
+#                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del proceso actual
 #                                                          # en formato de diccionario
 def return_tramite(request, proceso):
     from django.db import connection
