@@ -267,7 +267,7 @@ def reset_password(request):
         raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña invalido")
 
 #                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Valida que los tokens proporcionado en la petición sean validos
+#                                                           #Valida que los tokens de contraseña proporcionados sean válidos
 @api_view(["POST"])
 def validate_password_token(request):
     args = PostParametersList(request)
