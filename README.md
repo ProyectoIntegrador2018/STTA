@@ -7,20 +7,31 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 
 ## Tabla de contenidos
 
-* [Detalles del cliente](#detalles-del-cliente)
-* [URLs de ambiente](#urls-de-ambiente)
-* [Equipo](#equipo)
-* [Recursos de gestión](#recursos-de-gestion)
-* [Stack tecnológico](#Stack-Tecnologico)
-* [Desarrollo](#desarrollo)
-* [Repositorios](#clonar-repositorioa)
-* [Backend](#backend)
-* [Frontend](#frontend)
+- [Sistema de Consulta de Trámites Escolares](#sistema-de-consulta-de-tr%c3%a1mites-escolares)
+  - [Tabla de contenidos](#tabla-de-contenidos)
+  - [Detalles del cliente](#detalles-del-cliente)
+  - [URLs de ambiente](#urls-de-ambiente)
+  - [Equipo](#equipo)
+  - [Recursos de gestión](#recursos-de-gesti%c3%b3n)
+  - [Stack Tecnológico](#stack-tecnol%c3%b3gico)
+    - [Librerías Front End:](#librer%c3%adas-front-end)
+    - [Librerias Back End:](#librerias-back-end)
+    - [Persistencia de datos:](#persistencia-de-datos)
+  - [Desarollo](#desarollo)
+    - [1. Clonar el repositorio](#1-clonar-el-repositorio)
+  - [Backend](#backend)
+  - [Caracteristicas](#caracteristicas)
+  - [Cómo instalar](#c%c3%b3mo-instalar)
+  - [Variables del ambiente](#variables-del-ambiente)
+  - [Frontend](#frontend)
+    - [Instalar librerías](#instalar-librer%c3%adas)
+    - [Ejecutar](#ejecutar)
+    - [Detener el proyecto](#detener-el-proyecto)
 
 ## Detalles del cliente
 
-| Nombre | Email | Rol |
-| ------- | ----- | --- |
+| Nombre             | Email         | Rol                                      |
+| ------------------ | ------------- | ---------------------------------------- |
 | Ing. Amanda Quiroz | amanda@tec.mx | Dirección de Servicios Escolares del Tec |
 
 ## URLs de ambiente
@@ -30,18 +41,18 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 
 ## Equipo
 
-| Nombre | Email | Rol |
-| ------- | ----- | --- |
-| Andrea Chacón Balderas | A01327020@itesm.mx | Scrum Master |
-| Jorge Luis Mendez Montoya | A00816559@itesm.mx | Product Owner |
-| Laura Jaideny Pérez Gómez | A01271904@itesm.mx | Desarrollador |
-| Erik Eduardo Velasco Gómez | A00510780@itesm.mx | Desarrollador |
+| Nombre                       | Email              | Rol           |
+| ---------------------------- | ------------------ | ------------- |
+| Marcela Maria Garza Botello  | A00815888@itesm.mx | Scrum Master  |
+| Enrique Barragán González    | A01370878@itesm.mx | Product Owner |
+| Juan Pablo Galaz Chávez      | A01251406@itesm.mx | Desarrollador |
+| Jesús Eugenio Alatorre Cantú | A00819508@itesm.mx | Desarrollador |
 
 ## Recursos de gestión
 
-* [Github](https://github.com/ProyectoIntegrador2018/stta-frontend)
-* [Backlog](https://github.com/ProyectoIntegrador2018/stta-backend/projects/1)
-* [Documentación](https://drive.google.com/drive/folders/15AvY0wG4RHUDM6egkHuAgLJnr3TcDuRj?usp=sharing)
+* [Github](https://github.com/ProyectoIntegrador2018/STTA)
+* [Backlog](https://github.com/ProyectoIntegrador2018/STTA/projects/1)
+* [Documentación](https://drive.google.com/drive/folders/1e7J2xKsqwhiYtfO7NGgFIzVfx1me6oOo?usp=sharing)
 
 ## Stack Tecnológico
 ### Librerías Front End:
@@ -56,15 +67,9 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 
 ## Desarollo
 
-### 1. Clonar los repositorios
-Backend
+### 1. Clonar el repositorio
 ```
-$ git clone https://github.com/ProyectoIntegrador2018/stte-backend.git
-```
-
-Frontend
-```
-$ git clone https://github.com/ProyectoIntegrador2018/stte-frontend.git
+$ git clone https://github.com/ProyectoIntegrador2018/STTA.git
 ```
 
 ## Backend
