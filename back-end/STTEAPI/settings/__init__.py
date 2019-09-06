@@ -87,10 +87,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'STTE',
-        'USER': 'tramitestec',
-        'PASSWORD': 'Ingser19&',
-        'HOST': 'mysql-stte.cpmhc4vavlgx.us-east-2.rds.amazonaws.com',
-        'PORT': '',
+        'USER': 'root',
+        'PASSWORD': '3x4mPl3P4sSW0rD!',
+        'HOST': 'mysql',
+        'PORT': '3306',
     }
 }
 

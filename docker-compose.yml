@@ -1,0 +1,33 @@
+version: '2.4'
+
+volumes:
+  mysql_data: 
+
+services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 3x4mPl3P4sSW0rD!
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+
+  web:
+    image: proyecto_integrador/stta:backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - 8000:8000
+    volumes:
+      - ./back-end:/usr/src
+    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /usr/src
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mysql
