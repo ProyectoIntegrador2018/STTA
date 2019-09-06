@@ -119,6 +119,8 @@ db.sqlite3
 ### React dependencies
 
 front-end/node_modules/
+front-end/.node-gyp
+front-end/.npm
 
 ### venv backend
 

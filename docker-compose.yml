@@ -15,7 +15,7 @@ services:
       MYSQL_USERNAME: root
       MYSQL_PASSWORD: root
 
-  web:
+  backend:
     image: proyecto_integrador/stta:backend
     build:
       context: .
@@ -31,3 +31,21 @@ services:
     tty: true
     depends_on:
       - mysql
+
+  frontend:
+    image: proyecto_integrador/stta:frontend
+    build:
+      context: .
+      dockerfile: front.Dockerfile
+      target: development
+    ports:
+      - 5000:3000
+    volumes:
+      - ./front-end:/usr/src
+      - /usr/src/node_modules
+    command: npm run start
+    working_dir: /usr/src
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
