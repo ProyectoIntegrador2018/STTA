@@ -54,14 +54,23 @@ export default class Alumnos extends Component {
         this.setState({cols:data.cols, data2:data.data, visible:true,record:record});
     };
 
+
     render() {
         {/*Tabla donde se muestra el contenido de los alumnos*/}
+        let permitirBorrar
+
+        if (localStorage.getItem("tipo") == '2') {
+            permitirBorrar=false
+        }
+        else {
+            permitirBorrar=true
+        }
         return (
 
             <div>
                 <h1><Icon type="team" /> Alumnos</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteStudent} rowSelection={true}
+                           deleteFunc={this.deleteStudent} rowSelection={permitirBorrar}
                 columns={[{
                     title: 'Nombre del alumno',
                     key: 'nombre',

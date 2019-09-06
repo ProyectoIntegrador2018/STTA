@@ -26,6 +26,11 @@ from django.db.models import Count, F
 from django.core.mail import send_mail
 from django.template import loader
 
+# New imports LBRL
+from werkzeug.utils import secure_filename
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
+
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
 #                                                           #Entrada: Nada ; Salida: Un archivo diccinario
@@ -158,13 +163,15 @@ def subir_documento(request):
     args.check_parameter(key='filename', required=True)
     args.check_parameter(key='content', required=True)
     admin = Administrador.objects.get(usuario=request.user)
-    doc = Documento.objects.create(nombre=args['filename'],contenido_subido=args['content'],admin=admin,
-                                   proceso_id=args['proceso'])
+    doc = Documento.objects.create(nombre=args['filename'], contenido_subido=args['content'], admin=admin,
+                                proceso_id=args['proceso'])
 
     contenido = json.loads(args['content'])
 
     print(contenido['data'])
     for c in contenido['data']:
+        print(c)
+
         fecha_1 = now()
         fecha_2 = now()
         if  c['fecha_apertura'] != None and c['fecha_apertura'] != "":
@@ -197,9 +204,10 @@ def subir_documento(request):
             tra.numero_paso_actual = p_ok
             tra.save()
         else:
-            tra = Tramitealumno.objects.create(matricula=c['matricula'], numero_ticket=c['ticket'],proceso_id=args['proceso'],
-                                           fecha_inicio=fecha_1, fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
-                                               numero_paso_actual=p_ok)
+            tra = Tramitealumno.objects.create(matricula=c['matricula'], 
+            numero_ticket=c['ticket'],proceso_id=args['proceso'], 
+            fecha_inicio = fecha_1, fecha_ultima_actualizacion=fecha_2, 
+            paso_actual=paso, numero_paso_actual=p_ok)
 
     return JsonResponse(doc.id, safe=False)
 
@@ -218,7 +226,7 @@ def login_admin(request):
     al = Administrador.objects.get(usuario=user)
     user.last_login = now()
     user.save()
-    return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email }, safe=False)
+    return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email, 'is_superuser': user.is_superuser}, safe=False)
 
 #                                                           #Entrada: Nada ; Salida: Nada
 #                                                           #Corrobora las credenciales del inicio de sesión del estudiante
@@ -320,7 +328,7 @@ def return_admin_list(request):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
-    stu = Alumno.objects.select_related('usuario').values('id','nombre','apellido','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
     stu = [dict(adm) for adm in stu]
     return JsonResponse(stu, safe=False)
 
@@ -590,3 +598,178 @@ def get_pasos_tramites(request):
     tra = Paso.objects.filter(proceso_id=args['id']).order_by('numero').values()
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
+
+# New API functions LBRL
+
+# Database handler - Alumnos
+@api_view(["POST"])
+def upload_students(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='content', required=True)
+    contenido = json.loads(args['content'])
+
+    print(contenido['data'])
+
+    alumnosJson = contenido['data']
+
+    for alumno in alumnosJson:
+        # Dando de alta información en la tabla de alumnos
+        counter = Alumno.objects.filter(matricula = alumno['Matricula']).count()
+        if counter == 0:
+            # Crear nuevo usuario en la base de datos
+            usuario = Usuario.objects.create(email = alumno['Email'], password = alumno['Contraseña'], is_staff=True, is_superuser=True, es_alumno=True)
+            # Crear nuevo alumno en la base de datos
+            Alumno.objects.create(nombre = alumno['Nombre'], usuario = usuario, matricula = alumno['Matricula'], siglas_carrera = alumno['Siglas Carrera'], carrera = alumno['Carrera'],  
+            semestre_en_progreso = alumno['Semestre en Progreso'], periodo_de_aceptacion = alumno['Periodo de Aceptacion'], 
+            posible_graduacion = alumno['Posible Graduacion'], fecha_de_nacimiento = alumno['Fecha de Nacimiento'], nacionalidad = alumno['Nacionalidad'])
+        else:
+            #Actualizar alumno existente
+            alumno_db = Alumno.objects.filter(matricula = alumno['Matricula']).first()
+            alumno_db.nombre = alumno['Nombre']
+            alumno_db.siglas_carrera = alumno['Siglas Carrera']
+            alumno_db.carrera = alumno['Carrera']
+            alumno_db.semestre_en_progreso = alumno['Semestre en Progreso']
+            alumno_db.periodo_de_aceptacion = alumno['Periodo de Aceptacion']
+            alumno_db.posible_graduacion = alumno['Posible Graduacion']
+            alumno_db.fecha_de_nacimiento = alumno['Fecha de Nacimiento']
+            alumno_db.nacionalidad = alumno['Nacionalidad']
+            alumno_db.save()
+
+    return JsonResponse({'message': 'File uploaded successfully'})
+
+# Letters
+
+# Helper funcitons
+def handle_uploaded_file(uploadedFile):
+    templateFolder = '/Users/luisrosales/Documents/School/Junio2019/ProyectoIntegrador/Desarrollo/Proyectos/SistemaDeTrazabilidad/Codigo/autoservicio-cartas-back/STTEAPI/templates/'
+    #templateFolder = '../templates/'
+    with open(templateFolder + uploadedFile.name , 'wb+') as destination:
+        for chunk in uploadedFile.chunks():
+            destination.write(chunk)
+
+# API functions
+@api_view(["POST"])
+# @permission_classes((IsAuthenticated, EsAdmin))
+def create_letter_template(request):
+
+    # Validate body parameters
+    args = PostParametersList(request)
+    args.check_parameter(key='id_admin', required=True)
+    args.check_parameter(key='descripcion', required=True)
+
+    print(args['id_admin'])
+    print(args['descripcion'])
+
+    # Save file to templates
+    uploadedFile = request.FILES['file']
+    handle_uploaded_file(uploadedFile)
+
+    args = args.__dict__()
+
+    ts = datetime.now().timestamp()
+
+    # Sumbmit created letter data to db
+    carta = Carta.objects.create(creado_por = args['id_admin'], nombre = uploadedFile.name, 
+        descripcion = args['descripcion'], fecha_creacion = ts, fecha_modificacion = ts, modificado_por = args['id_admin'])
+
+    return JsonResponse({'message': 'File uploaded successfully'})
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def delete_letter_template(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='cartas', required=True, is_json=True)
+    print(args['cartas'])
+    for p in args['cartas']:
+        try:
+            carta = Carta.objects.get(id=p['id'])
+            carta.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+
+    return JsonResponse(1, safe=False)
+
+# Get letter
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
+def get_letters(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT a.id, a.nombre as nombre_carta, a.descripcion, a.fecha_creacion, b.nombre '
+    + 'FROM Carta a INNER JOIN '
+    + 'Administrador b on a.creado_por = b.id')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+# Get letter
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
+def get_students(request):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT a.id, a.matricula '
+    + 'FROM Alumno a')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
+def get_students_letters(request):
+    # cartas = CartaAlumno.objects.all().values()
+    # cartas = [dict(p) for p in cartas]
+    # return JsonResponse(cartas, safe=False)
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('SELECT a.matricula, a.nombre as nombre_alumno, c.nombre as nombre_carta, b.fecha_creacion '
+    + 'FROM Alumno a INNER JOIN '
+    + 'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
+    + 'Carta c on c.id = b.id_carta')
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
+@api_view(["GET"])
+# @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
+def get_student_letter(request, id_alumno, id_carta):
+    # Get letter by id_carta
+    carta = Carta.objects.filter(id = id_carta)
+
+    # Get student by id_student 
+    alumno = Alumno.objects.filter(id = id_alumno)
+
+    # Calculated data
+    today = datetime.today()
+    # dd/mm/YY
+    current_date = today.strftime("%d/%m/%Y")
+
+    # Send parameters student data to letter
+    html = loader.render_to_string(carta[0].nombre, 
+        {
+            'nombre': alumno[0].nombre,
+            'matricula': alumno[0].matricula, 
+            'siglas_carrera': alumno[0].siglas_carrera, 
+            'carrera': alumno[0].carrera, 
+            'semestre_en_progreso': alumno[0].semestre_en_progreso, 
+            'periodo_de_aceptacion': alumno[0].periodo_de_aceptacion, 
+            'posible_graduacion': alumno[0].posible_graduacion, 
+            'fecha_de_nacimiento': alumno[0].fecha_de_nacimiento, 
+            'nacionalidad': alumno[0].nacionalidad, 
+            'fecha_actual' : current_date
+        })
+
+    # Create carta alumno
+    ts = datetime.now().timestamp()
+
+    CartaAlumno.objects.create(id_carta = id_carta,
+        id_alumno = id_alumno,
+        fecha_creacion = ts,
+        fecha_modificacion = ts,
+        creado_por = id_alumno,
+        modificado_por = id_alumno)
+
+    # Create response
+    pdf_file = HTML(string = html).write_pdf()
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    # Response: inline to open pdf reader on browser | attachment to dowload . 
+    response['Content-Disposition'] = 'filename=output.pdf'
+
+    return response

@@ -59,5 +59,13 @@ urlpatterns = [
     path('get_procesos_pasos/<proceso>/', controller.return_procesos_pasos),
     path('get_tramite/<proceso>/', controller.return_tramite)  ,
     path('get_tramites_resumen/<proceso>/<month>/<status>',controller.get_tramites_resumen ),
-    path('get_pasos_proceso/<proceso>', controller.get_pasos_proceso)
+    path('get_pasos_proceso/<proceso>', controller.get_pasos_proceso),
+    # New API endpoints
+    path('agregar_alumnos/', controller.upload_students),
+    path('agregar_cartas/', controller.create_letter_template),
+    path('eliminar_cartas/', controller.delete_letter_template),
+    path('obtener_cartas/', controller.get_letters),
+    path('obtener_alumnos/', controller.get_students),
+    path('obtener_cartas_alumnos/', controller.get_students_letters),
+    path('obtener_carta/<id_alumno>/<id_carta>', controller.get_student_letter)
 ]

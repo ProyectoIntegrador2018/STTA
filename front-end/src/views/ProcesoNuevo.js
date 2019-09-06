@@ -86,7 +86,7 @@ export default class ProcesoNuevo extends Component {
                 onCancel() {
                     //console.log('Cancel');
                 }
-            }); 
+            });
         }
     };
 
