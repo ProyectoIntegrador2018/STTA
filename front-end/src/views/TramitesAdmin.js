@@ -46,11 +46,19 @@ export default class TramitesAdmin extends Component {
     }
 
     render() {
+        let permitirBorrar
+        if (localStorage.getItem("tipo") == '2') {
+            permitirBorrar=false
+        }
+        else {
+            permitirBorrar=true
+        }
+        
         return (
             <div>
                 <h1><Icon type="solution" /> Trámites</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteFiles} rowSelection={true}
+                           deleteFunc={this.deleteFiles} rowSelection={permitirBorrar}
                 columns={[{
                     title: 'Matrícula',
                     key: 'matricula',

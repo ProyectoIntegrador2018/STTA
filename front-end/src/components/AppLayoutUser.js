@@ -3,6 +3,7 @@ import {
     Layout, Menu, Icon
 } from 'antd';
 import tec from '../images/tec.png'
+import { Link } from 'react-router-dom'
 import API from "../tools/API";
 
 const { Header, Content, Footer, Sider } = Layout;

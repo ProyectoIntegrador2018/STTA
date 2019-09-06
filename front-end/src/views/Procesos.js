@@ -37,26 +37,7 @@ class ProcesosForm extends Component {
             }
         });
     };
-    /*
-    refreshData = () => {
-        this.setState({loading:true});
-        API.restCall({
-            service:'get_datos_tramite_alumno/' + this.props.id ,
-            success:(response) => {
 
-                this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
-                n_paso:response[0].numero_paso_actual });
-                this.getPasos(response[0].proceso_id)
-                },
-            error:(response) => {
-                this.setState({loading:false});
-            }
-        })
-    };
-    */
-
-    //Método que elimina los procesos de la base de datos
     deleteProcs = (rows) => {
         this.setState({loading:true});
         API.call('borrar-procesos/', {procesos:JSON.stringify(rows)}, (response) => {
@@ -69,13 +50,31 @@ class ProcesosForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
 
-        return (
-            <div>
-                <Link to={'/proceso/nuevo'}> <Button style={{float:'right'}} type="secondary" icon="plus">
+        let permitirBorrar
+        let botonAgregar
+
+        if (localStorage.getItem("tipo") == '2') {
+            botonAgregar = <Link to={'/proceso/nuevo'}> <Button style={{float:'right'}} type="secondary" icon="plus" disabled>
                     Agregar proceso nuevo</Button></Link>
+
+            permitirBorrar=false
+        }
+        else {
+            botonAgregar = <Link to={'/proceso/nuevo'}> <Button style={{float:'right'}} type="secondary" icon="plus">
+                    Agregar proceso nuevo</Button></Link>
+
+            permitirBorrar=true
+            
+        }
+
+        return (
+            <div>  
+
+                {botonAgregar}
+    
                 <h1><Icon type="cluster" /> Procesos</h1>
                     <DataTable data={this.state.data} loading={this.state.loading}
-                               deleteFunc={this.deleteProcs} rowSelection={true}
+                               deleteFunc={this.deleteProcs} rowSelection={permitirBorrar}
                            columns={[
                                {title: 'Nombre del proceso',key: 'nombre', },
                                {title: 'Pasos',key: 'pasos',},

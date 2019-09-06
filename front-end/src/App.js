@@ -20,6 +20,11 @@ import Administradores from './views/Administradores';
 import Alumnos from './views/Alumnos';
 import TramitesAdmin from "./views/TramitesAdmin";
 import DashboardView from "./views/DashboardView";
+import CartasSolicitadasView from "./views/CartasSolicitadasView";
+import CartaSolicitar from "./views/CartaSolicitar";
+import FormatoCartas from "./views/FormatoCartas"
+import FormatoSubir from "./views/FormatoSubir"
+import AdminBaseDatos from "./views/AdminBaseDatos"
 
 class App extends Component {
 
@@ -54,6 +59,11 @@ class App extends Component {
                         <Route exact path="/registro" component={this.RegisterView} />
                         <Route exact path="/tramite" component={this.StudentView} />
                         <Route exact path="/tramite/:id" component={this.AlumnosAdminTramiteView} />
+                        <Route exact path="/cartasSolicitadas" component={this.CartasSolicitadasView} />
+                        <Route exact path="/cartas" component={this.CartaSolicitarView} />
+                        <Route exact path="/formatoCartas" component={this.FormatoCartasView} />
+                        <Route exact path="/formatoCartas/subir" component={this.FormatoSubirView} />
+                        <Route exact path="/adminBD" component={this.AdminBaseDatosView} />
 
                     </div>
                 </Router>
@@ -79,6 +89,7 @@ class App extends Component {
             </AppLayoutUser>
         )
     };
+
     DashboardView = () => {
         return (
             <AppLayout view={"0"} type={"basic"}>
@@ -155,6 +166,45 @@ class App extends Component {
                 <TramitesAdmin/>
             </AppLayout>
         );
+    };
+    CartasSolicitadasView = () => {
+        return (
+            <AppLayout view={"7"} type={"basic"}>
+                <CartasSolicitadasView/>
+            </AppLayout>
+        );
+    };
+
+    FormatoCartasView = () => {
+        return (
+            <AppLayout view={"8"} type={"basic"}>
+                <FormatoCartas/>
+            </AppLayout>
+        );
+    };
+
+    FormatoSubirView = () => {
+        return (
+            <AppLayout view={"8"} type={"basic"}>
+                <FormatoSubir/>
+            </AppLayout>
+        );
+    };
+
+    CartaSolicitarView = () => {
+        return (
+            <AppLayout view={"9"} type={"basic"}>
+                <CartaSolicitar/>
+            </AppLayout>
+        );
+    };
+
+    AdminBaseDatosView = () => {
+      return (
+        <AppLayout view={"10"} type={"basic"}>
+        <AdminBaseDatos/>
+        </AppLayout>
+      );
     };
 }
 

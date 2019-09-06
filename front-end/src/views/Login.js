@@ -99,6 +99,7 @@ class Login extends Component {
             localStorage.setItem('token', response.token);
             localStorage.setItem('email', response.email);
             localStorage.setItem('esAdmin', true);
+            localStorage.setItem('is_superuser', response.is_superuser);
             localStorage.setItem('nombre', response.nombre);
             API.redirectTo("/dashboard");
           },
@@ -155,7 +156,7 @@ class Login extends Component {
                 <br></br>
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
-                  Acceder
+                  Accesar
                 </Button> 
                 <br></br>
               </Form.Item>

@@ -8,7 +8,6 @@
 from django.db import models
 from django.utils.timezone import now
 
-
 class Administrador(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='usuario')
@@ -17,16 +16,22 @@ class Administrador(models.Model):
         managed = False
         db_table = 'Administrador'
 
-
 class Alumno(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
-    apellido = models.CharField(max_length=100, blank=True, null=True)
+    matricula = models.CharField(max_length=100, blank=True, null=True)
+    siglas_carrera = models.CharField(max_length=100, blank=True, null=True)
+    carrera = models.CharField(max_length=100, blank=True, null=True)
+    semestre_en_progreso = models.CharField(max_length=100, blank=True, null=True)
+    periodo_de_aceptacion = models.CharField(max_length=100, blank=True, null=True)
+    posible_graduacion = models.CharField(max_length=100, blank=True, null=True)
+    fecha_de_nacimiento = models.CharField(max_length=100, blank=True, null=True)
+    nacionalidad = models.CharField(max_length=100, blank=True, null=True)
+
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='usuario')
 
     class Meta:
         managed = False
         db_table = 'Alumno'
-
 
 class Documento(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
@@ -38,7 +43,6 @@ class Documento(models.Model):
     class Meta:
         managed = False
         db_table = 'Documento'
-
 
 class Paso(models.Model):
     proceso = models.ForeignKey('Proceso', on_delete=models.CASCADE, db_column='proceso')
@@ -52,7 +56,6 @@ class Paso(models.Model):
         managed = False
         db_table = 'Paso'
 
-
 class Proceso(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     fecha = models.DateTimeField(default=now,blank=True, null=True)
@@ -65,7 +68,6 @@ class Proceso(models.Model):
         managed = False
         db_table = 'Proceso'
 
-#                                                           #
 class Tramitealumno(models.Model):
     id = models.IntegerField(primary_key=True)
 
@@ -79,7 +81,33 @@ class Tramitealumno(models.Model):
     fecha_inicio = models.DateTimeField(blank=True, null=True)
     fecha_ultima_actualizacion = models.DateTimeField(blank=True, null=True)
     encuesta  = models.IntegerField(default=0, null=False)
+
     class Meta:
         managed = False
         db_table = 'TramiteAlumno'
+
+# Nuevos modelos LBRL
+class Carta(models.Model):
+    nombre = models.CharField(max_length=255, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    fecha_creacion = models.DateField(auto_now_add=True, blank=True, null=True)
+    fecha_modificacion = models.DateField(auto_now_add=True, blank=True, null=True)
+    creado_por = models.IntegerField(null=False, unique=True)
+    modificado_por = models.IntegerField(null=False, unique=True)
+   
+    class Meta:
+        managed = False
+        db_table = 'Carta'
+
+class CartaAlumno(models.Model):
+  id_carta = models.IntegerField(null=False, unique=True)
+  id_alumno = models.IntegerField(null=False, unique=True)
+  fecha_creacion = models.DateField(auto_now_add=True, blank=True, null=True)
+  fecha_modificacion = models.DateField(auto_now_add=True, blank=True, null=True)
+  creado_por = models.IntegerField(null=False, unique=True)
+  modificado_por = models.IntegerField(null=False, unique=True)
+
+  class Meta:
+      managed = False
+      db_table = 'CartaAlumno'
 

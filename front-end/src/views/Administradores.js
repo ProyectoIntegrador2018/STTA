@@ -36,6 +36,8 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                         <Input />
                         )}
                     </Form.Item>
+
+                    
                 </Form>
             </Modal>
         )}
@@ -123,13 +125,22 @@ export default class Administradores extends Component {
     };
 
     render() {
+        let permitirBorrar
+        let botonAgregar
+
+        
+        botonAgregar= <Button style={{float:'right'}} onClick={this.showModal} type="secondary" icon="plus">
+        Agregar administrador</Button>
+        permitirBorrar=true
+
         return (
             <div>
-                <Button style={{float:'right'}} onClick={this.showModal} type="secondary" icon="plus">
-                    Agregar administrador</Button>
+
+                {botonAgregar}
+
                 <h1><Icon type="user" /> Administradores</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteAdmin} rowSelection={true}
+                           deleteFunc={this.deleteAdmin} rowSelection={permitirBorrar}
                 columns={[{
                     title: 'Nombre del administrador',
                     key: 'nombre',

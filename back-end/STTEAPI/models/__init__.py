@@ -8,7 +8,7 @@ class MyUserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_admin(self, email, password, **admin):
-        user = self.model(email=email, is_staff=True, is_superuser=True, es_admin=True, is_active=False)
+        user = self.model(email=email, is_staff=True, is_superuser=False, es_admin=True, is_active=True)
         user.set_password(password)
         user.save(using=self._db)
         pac = Administrador.objects.create(usuario=user)
@@ -18,7 +18,7 @@ class MyUserManager(BaseUserManager):
         return pac
 
     def create_alumno(self, email, password, **alumno):
-        user = self.model(email=email, is_staff=True, is_superuser=True, es_alumno=True)
+        user = self.model(email=email, is_staff=True, is_superuser=False, es_alumno=True)
         user.set_password(password)
         user.save(using=self._db)
         doc = Alumno.objects.create(usuario=user)

@@ -45,13 +45,28 @@ export default class Documentos extends Component {
     };
 
     render() {
+        
+        let botonsubir
+        let permitirBorrar
+
+        if (localStorage.getItem("tipo") == '2') {
+            botonsubir = <Link to={'/documentos/subir'}><Button style={{float:'right'}} type="secondary" icon="upload" disabled>
+                    Subir documento de proceso</Button></Link>
+            permitirBorrar=false
+        }
+        else {
+            botonsubir = <Link to={'/documentos/subir'}><Button style={{float:'right'}} type="secondary" icon="upload">
+                    Subir documento de proceso</Button></Link>
+            permitirBorrar=true
+        }
+
         return (
             <div>
-                <Link to={'/documentos/subir'}><Button style={{float:'right'}} type="secondary" icon="upload">
-                    Subir documento de proceso</Button></Link>
+                {botonsubir}
+
                 <h1><Icon type="file-excel" /> Documentos</h1>
                 <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteFiles} rowSelection={true}
+                           deleteFunc={this.deleteFiles} rowSelection={permitirBorrar}
                 columns={[{
                     title: 'Nombre del documento',
                     key: 'nombre',

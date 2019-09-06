@@ -157,7 +157,7 @@ class LoginUser extends Component {
                 <a className="login-form-right" style={{float:'right'}} onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
-                  Acceder
+                  Accesar
                 </Button> 
                 <br></br>
               </Form.Item>
