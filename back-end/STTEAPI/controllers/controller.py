@@ -27,9 +27,7 @@ from django.core.mail import send_mail
 from django.template import loader
 
 # New imports LBRL
-from werkzeug.utils import secure_filename
-from weasyprint import HTML
-from weasyprint.fonts import FontConfiguration
+# from weasyprint import HTML
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
