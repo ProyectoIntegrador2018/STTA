@@ -18,6 +18,7 @@ class Administrador(models.Model):
 
 class Alumno(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
+    apellido = models.CharField(max_length=100, blank=True, null=True)
     matricula = models.CharField(max_length=100, blank=True, null=True)
     siglas_carrera = models.CharField(max_length=100, blank=True, null=True)
     carrera = models.CharField(max_length=100, blank=True, null=True)
