@@ -80,6 +80,12 @@ export default class AppLayoutUser extends Component {
                                 this.state.data2.map((objectToMap,index) => {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
+
+                            <Menu.Item key="passwordUpdate" onClick={(e) => {console.log("pwd updt")}}>
+                                <Icon type="lock" />
+                                <span>Cambiar Contraseña</span>
+                            </Menu.Item>
+
                         </SubMenu>
 
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
