@@ -58,13 +58,13 @@ export default class AppLayoutUser extends Component {
                     style={{minHeight:'100vh'}}>
                     <div className="logo"><img alt="ExSaM" className={'logo'} src={tec}/></div>
                     <Menu  theme="dark" className={'ant-menu-tec'} mode="inline" defaultSelectedKeys={[this.props.view || 0]}>
-                        <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
+                        <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="exception" /><span>Trámites Actuales</span></span>}>
                             {
                                 this.state.data1.map((objectToMap,index) => {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
-                        <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" />
+                        <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="check-circle" />
                             <span>Trámites Concluidos</span>
                         </span>}>
                             {
@@ -72,7 +72,7 @@ export default class AppLayoutUser extends Component {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
-                        //account settings wip
+
                         <SubMenu key="subMenuMiCuenta" title={<span><Icon type="user" />
                             <span>Mi Cuenta</span>
                         </span>}>
