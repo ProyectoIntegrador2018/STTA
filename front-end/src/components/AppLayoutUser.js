@@ -72,6 +72,16 @@ export default class AppLayoutUser extends Component {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
                         </SubMenu>
+                        //account settings wip
+                        <SubMenu key="subMenuMiCuenta" title={<span><Icon type="user" />
+                            <span>Mi Cuenta</span>
+                        </span>}>
+                            {
+                                this.state.data2.map((objectToMap,index) => {
+                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                            }
+                        </SubMenu>
+
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
                             <Icon type="logout" />
                             <span>Salir</span>
