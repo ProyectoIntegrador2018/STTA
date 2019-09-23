@@ -58,6 +58,12 @@ export default class AppLayoutUser extends Component {
                     style={{minHeight:'100vh'}}>
                     <div className="logo"><img alt="ExSaM" className={'logo'} src={tec}/></div>
                     <Menu  theme="dark" className={'ant-menu-tec'} mode="inline" defaultSelectedKeys={[this.props.view || 0]}>
+
+                    <Menu.Item key="crearTramite" onClick={(e) => {API.crearTramite();}}>
+                        <Icon type="file-add" />
+                        <span>Crear Trámite</span>
+                    </Menu.Item>
+
                         <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="exception" /><span>Trámites Actuales</span></span>}>
                             {
                                 this.state.data1.map((objectToMap,index) => {
@@ -81,11 +87,10 @@ export default class AppLayoutUser extends Component {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
                             }
 
-                            <Menu.Item key="passwordUpdate" onClick={(e) => {console.log("pwd updt")}}>
+                            <Menu.Item key="restablecer" onClick={(e) => {API.restablecer();}}>
                                 <Icon type="lock" />
                                 <span>Cambiar Contraseña</span>
                             </Menu.Item>
-
                         </SubMenu>
 
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>

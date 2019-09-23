@@ -142,4 +142,13 @@ export default class API {
       API.redirectTo('/');
     }
   }
+
+  //restablecer contrasena wip
+  static restablecer(){
+    console.log('pswd reset was clicked');
+  }
+ //crear tramite wip
+  static crearTramite(){
+    console.log('crear tramite was clicked');
+  }
 }
