@@ -5,5 +5,7 @@ RUN mkdir /stte-back
 WORKDIR /stte-back
 COPY . /stte-back/
 
-RUN pip install -r requirements.txt
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN apt-get update && apt-get install -y gcc \
+    && pip install -r requirements.txt
+
+CMD ["uwsgi", "--http", ":8000", "--module", "STTEAPI.settings.wsgi"]
