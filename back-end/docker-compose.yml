@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: uwsgi --http :8000 --module STTEAPI.settings.wsgi
+    volumes:
+      - .:/stte-back
+    ports:
+      - "8000:8000"
