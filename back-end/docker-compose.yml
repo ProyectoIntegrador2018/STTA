@@ -4,7 +4,7 @@ services:
   web:
     build: .
     env_file:
-    - web-variables.env
+      - web-variables.env
     command: uwsgi --http :8000 --module STTEAPI.settings.wsgi
     volumes:
       - .:/stte-back
