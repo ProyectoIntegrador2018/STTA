@@ -28,7 +28,7 @@ from django.core.mail import send_mail
 from django.template import loader
 
 # New imports LBRL
-# from weasyprint import HTML
+from weasyprint import HTML
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
@@ -134,7 +134,13 @@ def registro_Alumnos(request):
     if not re.match(EMAIL_REGEX, args['email']):
         raise exceptions.PermissionDenied(detail="Email inválido")
     try:
-        user = Usuario.objects.create_alumno(email=args['email'], password=args['password'], nombre=args['nombre'], apellido=args['apellido'])
+        user = Usuario.objects.create_alumno(
+          email=args['email'],
+          password=args['password'],
+          nombre=args['nombre'],
+          apellido=args['apellido'],
+          matricula=args['email'].split('@')[0].upper()
+        )
     except IntegrityError as e:
         raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
@@ -716,11 +722,7 @@ def get_letters(request):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT a.id, a.matricula '
-    + 'FROM Alumno a')
-    tra = dictfetchall(cursor)
+    tra = list(Alumno.objects.all().values('id', 'matricula'))
     return JsonResponse(tra, safe=False)
 
 @api_view(["GET"])
@@ -778,7 +780,7 @@ def get_student_letter(request, id_alumno, id_carta):
         modificado_por = id_alumno)
 
     # Create response
-    pdf_file = HTML(string = html).write_pdf()
+    pdf_file = HTML(string=html).write_pdf()
     response = HttpResponse(pdf_file, content_type="application/pdf")
     # Response: inline to open pdf reader on browser | attachment to dowload . 
     response['Content-Disposition'] = 'filename=output.pdf'
