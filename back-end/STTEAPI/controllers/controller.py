@@ -4,6 +4,7 @@ import json
 import re
 
 from django.core import serializers
+from django.core.mail import send_mail
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, HttpResponse
@@ -207,7 +208,19 @@ def subir_documento(request):
             fecha_inicio = fecha_1, fecha_ultima_actualizacion=fecha_2, 
             paso_actual=paso, numero_paso_actual=p_ok)
 
+        finished_step = Paso.objects.filter(proceso_id=args['proceso']).order_by('-numero').first()
+        if paso == finished_step:
+          send_mail(
+            'Tu trámite #{} ha sido completado. Evalúa los trámites escolares'.format(c['ticket']),
+            email_text_for_completed_procedure(c['ticket']),
+            'tramites.escolares@tec.mx',
+            ["{}@itesm.mx".format(c['matricula'])], fail_silently=False)
+
     return JsonResponse(doc.id, safe=False)
+
+
+def email_text_for_completed_procedure(ticket_id):
+    return 'Hola,\n\nEste mensaje es para avisarte que tu trámite #{} ha sido completado el día de hoy.\n\nPor favor realiza la siguiente encuesta sobre tu experiencia https://forms.gle/GzcmC4f9cmFKS2ee9'.format(ticket_id)
 
 #                                                           #Entrada: Nada ; Salida: Nada
 #                                                           #Corrobora las credenciales en el inicio de sesión del administrador
