@@ -24,7 +24,6 @@ from STTEAPI.tools.parameters_list import PostParametersList
 from STTEAPI.settings.exceptions import *
 from STTEAPI.settings.password_token import PasswordToken
 from django.db.models import Count, F
-from django.core.mail import send_mail
 from django.template import loader
 
 # New imports LBRL
@@ -275,6 +274,8 @@ def logout(request):
 @api_view(["POST"])
 def request_restore(request):
 
+    print(request.data['email'])
+
     #args = PostParametersList(request)
 
     # print(args)
@@ -290,7 +291,7 @@ def request_restore(request):
             'Restablece tu contraseña',
             email_password_reset_text('test text'),
             'tramites.escolares@tec.mx',
-            [request.data['email']],
+            request.data['email'],
             fail_silently=False)
 
         # html_message = loader.render_to_string(
