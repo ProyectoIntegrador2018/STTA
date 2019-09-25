@@ -10,7 +10,6 @@ djangorestframework==3.10.3
 html5lib==1.0.1
 Pillow==6.1.0
 pycparser==2.19
-PyMySQL==0.9.3
 Pyphen==0.9.5
 pytz==2019.2
 six==1.12.0

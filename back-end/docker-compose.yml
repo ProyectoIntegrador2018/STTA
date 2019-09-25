@@ -1,12 +1,35 @@
 version: '3'
 
+volumes: 
+  mysql_data:
+
 services:
+  mysql:
+    image: mysql:5.7
+    volumes:  
+      - mysql_data:/var/lib/mysql  
+    ports:   
+      - "3306:3306" 
+    environment:  
+      MYSQL_ROOT_PASSWORD: 3x4mPl3P4sSW0rD! 
+      MYSQL_USERNAME: root 
+      MYSQL_PASSWORD: root
   web:
     build: .
     env_file:
       - web-variables.env
+    image: proyecto_integrador/stta:development
     command: uwsgi --http :8000 --module STTEAPI.settings.wsgi
     volumes:
       - .:/stte-back
     ports:
       - "8000:8000"
+    stdin_open: true
+    tty: true 
+    depends_on: 
+      - mysql
+    environment: 
+      DATABASE_PASSWORD: 3x4mPl3P4sSW0rD!
+      DATABASE_USERNAME: root
+      DATABASE_NAME: STTE
+      DATABASE_HOST: mysql
