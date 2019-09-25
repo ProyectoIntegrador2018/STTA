@@ -39,7 +39,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
       }
     }
   );
-  
+
 
 class LoginUser extends Component {
 
@@ -78,6 +78,7 @@ class LoginUser extends Component {
 
       this.setState({ loading: true });
       form.resetFields();
+      console.log(values.correo);
       API.call('request_restore/',{email:values.correo}, (response) => {
         Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
 
@@ -158,7 +159,7 @@ class LoginUser extends Component {
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
                   Accesar
-                </Button> 
+                </Button>
                 <br></br>
               </Form.Item>
             </Form>
@@ -170,7 +171,7 @@ class LoginUser extends Component {
                 onCreate={this.handleCreate}/>
           </Col>
         </Row>
-      </div>      
+      </div>
     );
   }
 }
