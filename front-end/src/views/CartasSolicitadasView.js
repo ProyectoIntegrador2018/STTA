@@ -37,10 +37,10 @@ export default class Documentos extends Component {
 
     deleteFiles = (rows) => {
         this.setState({loading:true});
-        // API.call('eliminar-documentos/',{documentos:JSON.stringify(rows)}, (response) => {
-        //     this.setState({ loading:false});
-        //     this.refreshData();
-        // }, (response) => {this.setState({ loading:false})});
+        API.call('eliminar_carta/',{documentos:JSON.stringify(rows)}, (response) => {
+            this.setState({ loading:false});
+            this.refreshData();
+        }, (response) => {this.setState({ loading:false})});
     };
 
     componentWillMount() {
@@ -74,7 +74,7 @@ export default class Documentos extends Component {
                     title: 'Nombre',
                     key: 'nombre_alumno',
 
-                },{
+                }, {
                     title: 'Fecha solicitada',
                     key: 'fecha_creacion',
 
