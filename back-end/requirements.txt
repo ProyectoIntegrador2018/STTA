@@ -3,7 +3,7 @@ CairoSVG==2.4.1
 cffi==1.12.3
 cssselect2==0.2.2
 defusedxml==0.6.0
-Django==2.1.1
+Django==2.1.11
 django-cors-headers==3.1.0
 django-sendgrid-v5==0.8.0
 djangorestframework==3.10.3
