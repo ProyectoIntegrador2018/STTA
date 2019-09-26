@@ -1,6 +1,6 @@
 # Sistema de Consulta de Trámites Escolares
 
-<a href="https://codeclimate.com/github/ProyectoIntegrador2018/STTA/maintainability"><img src="https://api.codeclimate.com/v1/badges/c60f047b52fa6baaa7f9/maintainability" /></a>
+[![Maintainability](https://api.codeclimate.com/v1/badges/c60f047b52fa6baaa7f9/maintainability)](https://codeclimate.com/github/ProyectoIntegrador2018/STTA/maintainability)
 
 
 Aplicación web que permite visualizar el estatus de los trámites escolares en la operación interna y además visualizar la consulta por parte de los usuarios hasta que concluya su trámite o petición.
