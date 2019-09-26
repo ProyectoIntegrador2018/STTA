@@ -157,7 +157,7 @@ class Login extends Component {
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
                   Accesar
-                </Button> 
+                </Button>
                 <br></br>
               </Form.Item>
             </Form>
@@ -169,7 +169,7 @@ class Login extends Component {
                 onCreate={this.handleCreate}/>
           </Col>
         </Row>
-      </div>      
+      </div>
     );
   }
 }

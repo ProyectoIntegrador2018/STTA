@@ -24,7 +24,6 @@ from STTEAPI.tools.parameters_list import PostParametersList
 from STTEAPI.settings.exceptions import *
 from STTEAPI.settings.password_token import PasswordToken
 from django.db.models import Count, F
-from django.core.mail import send_mail
 from django.template import loader
 
 # New imports LBRL
@@ -209,9 +208,9 @@ def subir_documento(request):
             tra.numero_paso_actual = p_ok
             tra.save()
         else:
-            tra = Tramitealumno.objects.create(matricula=c['matricula'], 
-            numero_ticket=c['ticket'],proceso_id=args['proceso'], 
-            fecha_inicio = fecha_1, fecha_ultima_actualizacion=fecha_2, 
+            tra = Tramitealumno.objects.create(matricula=c['matricula'],
+            numero_ticket=c['ticket'],proceso_id=args['proceso'],
+            fecha_inicio = fecha_1, fecha_ultima_actualizacion=fecha_2,
             paso_actual=paso, numero_paso_actual=p_ok)
 
         finished_step = Paso.objects.filter(proceso_id=args['proceso']).order_by('-numero').first()
@@ -277,22 +276,23 @@ def request_restore(request):
     args = PostParametersList(request)
     args.check_parameter(key='email', required=True)
     url_data = PasswordToken.request_uid_token(args['email'])
-
     try:
-
-        html_message = loader.render_to_string(
-                '../templates/mailTemplate.html',
-                {
-                    'user_name': "",
-                    'subject':  'Restablecer contraseña',
-                    'token': url_data.uid + "/"+url_data.token
-                }
-            )
-        send_mail('Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
+        send_mail(
+            'Restablece tu contraseña',
+            email_password_reset_plaintext(url_data.uid + '/' + url_data.token),
+            'tramites.escolares@tec.mx',
+            [request.data['email']],
+            fail_silently=False)
     except:
         raise APIExceptions.SendMailError
 
     return JsonResponse(1, safe=False)
+
+#def email_password_reset_html(url_data):
+#    return loader.render_to_string('../templates/mailTemplate.html', {'token' : url_data})
+
+def email_password_reset_plaintext(url_data):
+    return 'Hola,\n\nEste mensaje es para restablecer tu contraseña. Si no solicitaste restablecer tu contraseña, ignora este mensaje.\n\nhttps://www.tramitesescolares.com.mx/restaurar/{}'.format(url_data)
 
 #                                                           #Entrada: Nada ; Salida: check
 #                                                           #Procedimiento almacenado que se encarga de verificar que el reseteo
@@ -636,8 +636,8 @@ def upload_students(request):
             # Crear nuevo usuario en la base de datos
             usuario = Usuario.objects.create(email = alumno['Email'], password = alumno['Contraseña'], is_staff=True, is_superuser=True, es_alumno=True)
             # Crear nuevo alumno en la base de datos
-            Alumno.objects.create(nombre = alumno['Nombre'], usuario = usuario, matricula = alumno['Matricula'], siglas_carrera = alumno['Siglas Carrera'], carrera = alumno['Carrera'],  
-            semestre_en_progreso = alumno['Semestre en Progreso'], periodo_de_aceptacion = alumno['Periodo de Aceptacion'], 
+            Alumno.objects.create(nombre = alumno['Nombre'], usuario = usuario, matricula = alumno['Matricula'], siglas_carrera = alumno['Siglas Carrera'], carrera = alumno['Carrera'],
+            semestre_en_progreso = alumno['Semestre en Progreso'], periodo_de_aceptacion = alumno['Periodo de Aceptacion'],
             posible_graduacion = alumno['Posible Graduacion'], fecha_de_nacimiento = alumno['Fecha de Nacimiento'], nacionalidad = alumno['Nacionalidad'])
         else:
             #Actualizar alumno existente
@@ -686,7 +686,7 @@ def create_letter_template(request):
     ts = datetime.now().timestamp()
 
     # Sumbmit created letter data to db
-    carta = Carta.objects.create(creado_por = args['id_admin'], nombre = uploadedFile.name, 
+    carta = Carta.objects.create(creado_por = args['id_admin'], nombre = uploadedFile.name,
         descripcion = args['descripcion'], fecha_creacion = ts, fecha_modificacion = ts, modificado_por = args['id_admin'])
 
     return JsonResponse({'message': 'File uploaded successfully'})
@@ -763,7 +763,7 @@ def get_student_letter(request, id_alumno, id_carta):
     # Get letter by id_carta
     carta = Carta.objects.filter(id = id_carta)
 
-    # Get student by id_student 
+    # Get student by id_student
     alumno = Alumno.objects.filter(id = id_alumno)
 
     # Calculated data
@@ -772,17 +772,17 @@ def get_student_letter(request, id_alumno, id_carta):
     current_date = today.strftime("%d/%m/%Y")
 
     # Send parameters student data to letter
-    html = loader.render_to_string(carta[0].nombre, 
+    html = loader.render_to_string(carta[0].nombre,
         {
             'nombre': alumno[0].nombre,
-            'matricula': alumno[0].matricula, 
-            'siglas_carrera': alumno[0].siglas_carrera, 
-            'carrera': alumno[0].carrera, 
-            'semestre_en_progreso': alumno[0].semestre_en_progreso, 
-            'periodo_de_aceptacion': alumno[0].periodo_de_aceptacion, 
-            'posible_graduacion': alumno[0].posible_graduacion, 
-            'fecha_de_nacimiento': alumno[0].fecha_de_nacimiento, 
-            'nacionalidad': alumno[0].nacionalidad, 
+            'matricula': alumno[0].matricula,
+            'siglas_carrera': alumno[0].siglas_carrera,
+            'carrera': alumno[0].carrera,
+            'semestre_en_progreso': alumno[0].semestre_en_progreso,
+            'periodo_de_aceptacion': alumno[0].periodo_de_aceptacion,
+            'posible_graduacion': alumno[0].posible_graduacion,
+            'fecha_de_nacimiento': alumno[0].fecha_de_nacimiento,
+            'nacionalidad': alumno[0].nacionalidad,
             'fecha_actual' : current_date
         })
 
@@ -799,7 +799,7 @@ def get_student_letter(request, id_alumno, id_carta):
     # Create response
     pdf_file = HTML(string=html).write_pdf()
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    # Response: inline to open pdf reader on browser | attachment to dowload . 
+    # Response: inline to open pdf reader on browser | attachment to dowload .
     response['Content-Disposition'] = 'filename=output.pdf'
 
     return response

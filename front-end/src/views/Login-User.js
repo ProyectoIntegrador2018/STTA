@@ -39,7 +39,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
       }
     }
   );
-  
+
 
 class LoginUser extends Component {
 
@@ -158,7 +158,7 @@ class LoginUser extends Component {
                 <Button type="primary" htmlType="submit" className="login-form-button"
                         loading={this.state.loading} disabled={this.state.loading}>
                   Accesar
-                </Button> 
+                </Button>
                 <br></br>
               </Form.Item>
             </Form>
@@ -170,7 +170,7 @@ class LoginUser extends Component {
                 onCreate={this.handleCreate}/>
           </Col>
         </Row>
-      </div>      
+      </div>
     );
   }
 }
