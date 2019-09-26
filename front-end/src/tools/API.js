@@ -11,7 +11,6 @@ export default class API {
 
 
   static call(service, params = {}, responseFunc = (function (response) { }), errorFunc = (function (response) { }), wToken = true) {
-    //let  client = new FetchHttpClient('https://api.tramitesescolares.com.mx/');
     let client = new FetchHttpClient(this.apiLocal);
     client.addMiddleware(form());
     client.addMiddleware(json());

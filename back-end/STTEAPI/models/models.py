@@ -7,7 +7,8 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.utils.timezone import now
-
+# TODO FIX DATEFIELD initilization error: should be 'YYYY-MM-DD',
+# instead is 'YYYY-MM-DD HR:MIN:SEC'
 class Administrador(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='usuario')

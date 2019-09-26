@@ -728,17 +728,34 @@ def get_students(request):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students_letters(request):
-    # cartas = CartaAlumno.objects.all().values()
-    # cartas = [dict(p) for p in cartas]
-    # return JsonResponse(cartas, safe=False)
+    # TODO once mysql is set up modify schema to use foreign keys
+    # and django api instead of this ugliness...
     from django.db import connection
     cursor = connection.cursor()
-    cursor.execute('SELECT a.matricula, a.nombre as nombre_alumno, c.nombre as nombre_carta, b.fecha_creacion '
+    cursor.execute('SELECT b.id_alumno, b.id_carta, a.matricula, a.nombre as nombre_alumno, c.nombre as nombre_carta, b.fecha_creacion '
     + 'FROM Alumno a INNER JOIN '
     + 'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
     + 'Carta c on c.id = b.id_carta')
     tra = dictfetchall(cursor)
     return JsonResponse(tra, safe=False)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_carta(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='documentos', required=True, is_json=True)
+    print(args['documentos'])
+    for p in args['documentos']:
+        try:
+            # TODO utilize fecha_creacion.
+            docs = CartaAlumno.objects.filter(
+                id_alumno=p['id_alumno'],
+                id_carta=p['id_carta'])
+            docs.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+    return JsonResponse(1, safe=False)
 
 @api_view(["GET"])
 # @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
