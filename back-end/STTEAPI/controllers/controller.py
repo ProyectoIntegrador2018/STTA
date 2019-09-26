@@ -274,25 +274,30 @@ def logout(request):
 @api_view(["POST"])
 def request_restore(request):
 
-    print(request.data['email'])
+    args = PostParametersList(request)
 
-    #args = PostParametersList(request)
-
-    # print(args)
+    print('1')
+    print(args['email'])
+    print('2')
     # print(request.data['email'])
 
-    # args.check_parameter(key='email', required=True)
-    # url_data = PasswordToken.request_uid_token(request.data['email'])
+    args.check_parameter(key='email', required=True)
+    url_data = PasswordToken.request_uid_token(args['email'])
+    print(url_data)
+    print(url_data.uid)
+    print(url_data.token)
 
-    print('request_restore')
 
-    try:
-        send_mail(
-            'Restablece tu contraseña',
-            email_password_reset_text('test text'),
-            'tramites.escolares@tec.mx',
-            request.data['email'],
-            fail_silently=False)
+
+    #try:
+    send_mail(
+        'Restablece tu contraseña',
+        'Este texto deberia de tener algo relevante',
+        'tramites.escolares@tec.mx',
+        [request.data['email']],
+        fail_silently=False,
+        html_message=email_password_reset_text(url_data.uid + "/" + url_data.token))
+    print('enviando correo')
 
         # html_message = loader.render_to_string(
         #        '../templates/mailTemplate.html',
@@ -303,13 +308,14 @@ def request_restore(request):
         #        }
         #    )
         # send_mail('Restablece tu contraseña', 'STTE ITESM', "", [args['email']],html_message=html_message,fail_silently=False)
-    except:
-        raise APIExceptions.SendMailError
+    #except:
+        #print('no se envio')
+        #raise APIExceptions.SendMailError
 
     return JsonResponse(1, safe=False)
 
 def email_password_reset_text(url_data):
-    return 'Hola,\n\n Has solicitado restablecer tu contraseña.\n token: ${}'.format(url_data)
+    return loader.render_to_string('../templates/mailTemplate.html', {'token' : url_data})
 
 #                                                           #Entrada: Nada ; Salida: check
 #                                                           #Procedimiento almacenado que se encarga de verificar que el reseteo
