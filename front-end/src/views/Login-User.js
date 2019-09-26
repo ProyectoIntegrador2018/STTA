@@ -78,7 +78,6 @@ class LoginUser extends Component {
 
       this.setState({ loading: true });
       form.resetFields();
-      console.log(values);
       API.call('request_restore/',{email:values.correo}, (response) => {
         Notifications.openNotificationWithIcon("success","Revisa tu correo electrónico","");
 
