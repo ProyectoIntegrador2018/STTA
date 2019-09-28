@@ -12,46 +12,19 @@ const Panel = Collapse.Panel;
 
 // Transferencia otro campus    QUITAR
 const salesPieData3 = [
-    {
-        x: 'Director de programa autoriza',
-        y: 100,
-    },
-    {
-        x: 'Escolar origen autoriza',
-        y: 220,
-    },
-    {
-        x: 'Tesorería',
-        y: 40,
-    },
-    {
-        x: 'Escolar destino autoriza',
-        y: 40,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 40,
-    },
+    { x: 'Director de programa autoriza', y: 100, },
+    { x: 'Escolar origen autoriza', y: 220, },
+    { x: 'Tesorería', y: 40, },
+    { x: 'Escolar destino autoriza', y: 40, },
+    { x: 'Trámite terminado', y: 40, },
 ];
 
 // Baja de materias    QUITAR
 const salesPieData4 = [
-    {
-        x: 'Escolar inicia trámite',
-        y: 40,
-    },
-    {
-        x: 'Becas autoriza',
-        y: 30,
-    },
-    {
-        x: 'DC autoriza',
-        y: 10,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 5,
-    },
+    { x: 'Escolar inicia trámite', y: 40, },
+    { x: 'Becas autoriza', y: 30, },
+    { x: 'DC autoriza', y: 10, },
+    { x: 'Trámite terminado', y: 5, },
 ];
 
 
@@ -100,26 +73,12 @@ class DashboardView extends Component {
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                let xy = [  {
-                    x: 'Baja de materias',
-                    y: 0,
-                },
-                    {
-                        x: 'InterCampus',
-                        y: 0,
-                    },
-                    {
-                        x: 'Cambio de carrera',
-                        y: 0,
-                    },
-                    {
-                        x: 'Baja temporal',
-                        y: 0,
-                    },
-                    {
-                        x: 'Transferencia',
-                        y: 0,
-                    }]
+                let xy = [
+                    {x: 'Baja de materias', y: 0, },
+                    { x: 'InterCampus', y: 0, },
+                    { x: 'Cambio de carrera', y: 0,},
+                    { x: 'Baja temporal', y: 0, },
+                    { x: 'Transferencia', y: 0,}]
                 for (let i in response) {
                     if (response[i].nombre == "Intercampus") { xy[1].y += 1; }
                     else if (response[i].nombre == "Baja de materias") { xy[0].y += 1;}
@@ -137,9 +96,7 @@ class DashboardView extends Component {
             service: 'get_tramite_alumnos_status_week',
             method:'get',
             success:(response) => {
-                for (let i in response) {
-                    if (response[i].status == "TERMINADO") { tramitesSemana += 1;}
-                }
+                for (let i in response) { if (response[i].status == "TERMINADO") { tramitesSemana += 1;} }
                 this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});
             },
             error:(response) => { this.setState({loadingWeek: false}); }
@@ -254,10 +211,7 @@ class DashboardView extends Component {
                             <h2>{item.nombre} </h2>
                             <h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
 
-                            <Pie
-                                hasLegend
-                                title={item.nombre}
-                                subTitle="Total"
+                            <Pie hasLegend title={item.nombre} subTitle="Total"
                                 total={() => (
                                     <Spin spinning={this.state["data_"+key+"spinner"]}>
                                     <span dangerouslySetInnerHTML={{ __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))}}/>

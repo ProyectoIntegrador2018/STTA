@@ -22,9 +22,7 @@ export default class Documentos extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.call('documentos/',[], (response) => {
-            this.setState({data: response, loading:false});
-        });
+        API.call('documentos/',[], (response) => { this.setState({data: response, loading:false}); });
     };
 
     deleteFiles = (rows) => {
@@ -60,17 +58,11 @@ export default class Documentos extends Component {
                 {botonsubir}
                 <h1><Icon type="file-excel" /> Documentos</h1>
                 <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} rowSelection={permitirBorrar}
-                columns={[{
-                    title: 'Nombre del documento',
-                    key: 'nombre', },
-                {   title: 'Usuario',
-                    key: 'email', },
-                {   title: 'Fecha',
-                    key: 'fecha',
-                    render: (text, record) => (<div style={{textAlign:'center'}}> <div>{moment(text).format('DD-MMM-YYYY')}</div></div>),},
-                {   title: 'Contenido subido',
-                    key: 'id',
-                    render: (text, record) => ( <div style={{textAlign:'center'}}> <a onClick={() => this.showContent(record)}><Icon type={'table'}/> Ver contenido</a></div>),
+                columns={[
+                  { title: 'Nombre del documento', key: 'nombre', },
+                  { title: 'Usuario', key: 'email', },
+                  { title: 'Fecha', key: 'fecha', render: (text, record) => (<div style={{textAlign:'center'}}> <div>{moment(text).format('DD-MMM-YYYY')}</div></div>),},
+                  { title: 'Contenido subido', key: 'id', render: (text, record) => ( <div style={{textAlign:'center'}}> <a onClick={() => this.showContent(record)}><Icon type={'table'}/> Ver contenido</a></div>),
                 }]}/>
                 <Modal width={1300} title={this.state.record.nombre} visible={this.state.visible} onCancel={() => {this.setState({visible:false})}}
                     footer={[
