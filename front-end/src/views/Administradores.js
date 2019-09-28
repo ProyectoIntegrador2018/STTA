@@ -37,7 +37,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                         )}
                     </Form.Item>
 
-                    
+
                 </Form>
             </Modal>
         )}
@@ -64,7 +64,7 @@ export default class Administradores extends Component {
     showModal = () => {
         this.setState({ visible: true });
     };
-    
+
     handleCancel = () => {
         this.setState({ visible: false });
     };
@@ -105,12 +105,12 @@ export default class Administradores extends Component {
 
     handleCreate = () => {
         const form = this.formRef.props.form;
-    
+
         form.validateFields((err, values) => {
             if (err) {
                 return;
             }
-    
+
             this.setState({ loading: true });
             form.resetFields();
             API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo}, (response) => {
@@ -127,44 +127,19 @@ export default class Administradores extends Component {
     render() {
         let permitirBorrar
         let botonAgregar
-
-        
-        botonAgregar= <Button style={{float:'right'}} onClick={this.showModal} type="secondary" icon="plus">
-        Agregar administrador</Button>
+        botonAgregar= <Button style={{float:'right'}} onClick={this.showModal} type="secondary" icon="plus">Agregar administrador</Button>
         permitirBorrar=true
-
         return (
             <div>
-
                 {botonAgregar}
-
                 <h1><Icon type="user" /> Administradores</h1>
-                <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteAdmin} rowSelection={permitirBorrar}
-                columns={[{
-                    title: 'Nombre del administrador',
-                    key: 'nombre',
-
-                }, {
-                    title: 'Email',
-                    key: 'email',
-
-                }, {
-                    title: 'Último login',
-                    key: 'last_login',
-                    render: (text, record) => (
-                        <div style={{textAlign:'center'}}>
-                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
-                        </div>
-                    )
-                }
+                <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteAdmin} rowSelection={permitirBorrar}
+                columns={[
+                  { title: 'Nombre del administrador',key: 'nombre',},
+                  { title: 'Email',key: 'email',},
+                  { title: 'Último login', key: 'last_login', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)}
                 ]}/>
-                <CollectionCreateForm
-                    wrappedComponentRef={this.saveFormRef}
-                    visible={this.state.visible}
-                    loading={this.state.loading}
-                    onCancel={this.handleCancel}
-                    onCreate={this.handleCreate}/>
+                <CollectionCreateForm wrappedComponentRef={this.saveFormRef} visible={this.state.visible} loading={this.state.loading} onCancel={this.handleCancel} onCreate={this.handleCreate}/>
             </div>
         );
     }

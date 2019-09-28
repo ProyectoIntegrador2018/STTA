@@ -10,52 +10,21 @@ import Select from "antd/lib/select";
 
 const Panel = Collapse.Panel;
 
-function callback(key) {
-    //console.log(key);
-}
-
 // Transferencia otro campus    QUITAR
 const salesPieData3 = [
-    {
-        x: 'Director de programa autoriza',
-        y: 100,
-    },
-    {
-        x: 'Escolar origen autoriza',
-        y: 220,
-    },
-    {
-        x: 'Tesorería',
-        y: 40,
-    },
-    {
-        x: 'Escolar destino autoriza',
-        y: 40,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 40,
-    },
+    { x: 'Director de programa autoriza', y: 100, },
+    { x: 'Escolar origen autoriza', y: 220, },
+    { x: 'Tesorería', y: 40, },
+    { x: 'Escolar destino autoriza', y: 40, },
+    { x: 'Trámite terminado', y: 40, },
 ];
 
 // Baja de materias    QUITAR
 const salesPieData4 = [
-    {
-        x: 'Escolar inicia trámite',
-        y: 40,
-    },
-    {
-        x: 'Becas autoriza',
-        y: 30,
-    },
-    {
-        x: 'DC autoriza',
-        y: 10,
-    },
-    {
-        x: 'Trámite terminado',
-        y: 5,
-    },
+    { x: 'Escolar inicia trámite', y: 40, },
+    { x: 'Becas autoriza', y: 30, },
+    { x: 'DC autoriza', y: 10, },
+    { x: 'Trámite terminado', y: 5, },
 ];
 
 
@@ -89,87 +58,43 @@ class DashboardView extends Component {
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                for (let i in response) {
-                    totalTramites += 1;
-                    if (response[i].status == "TERMINADO") {
-                        tramitesMes += 1;
-                    }
-                }
+                for (let i in response) { totalTramites += 1; if (response[i].status == "TERMINADO") { tramitesMes += 1;} }
                 this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
                 let tramitesTerminados = 0;
-                if (this.state.totalTramites != 0) {
-                    tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100;
-                }
+                if (this.state.totalTramites != 0) { tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100; }
                 this.setState({tramitesTerminados: tramitesTerminados});
             },
-            error:(response) => {
-                this.setState({loadingMonth: false});
-            }
+            error:(response) => { this.setState({loadingMonth: false}); }
         });
         this.setState({tramitesAcademicos: true});
         API.restCall({
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                let xy = [  {
-                    x: 'Baja de materias',
-                    y: 0,
-                },
-                    {
-                        x: 'InterCampus',
-                        y: 0,
-                    },
-                    {
-                        x: 'Cambio de carrera',
-                        y: 0,
-                    },
-                    {
-                        x: 'Baja temporal',
-                        y: 0,
-                    },
-                    {
-                        x: 'Transferencia',
-                        y: 0,
-                    }]
+                let xy = [
+                    { x: 'Baja de materias', y: 0, },
+                    { x: 'InterCampus', y: 0, },
+                    { x: 'Cambio de carrera', y: 0, },
+                    { x: 'Baja temporal', y: 0, },
+                    { x: 'Transferencia', y: 0, }]
                 for (let i in response) {
-                    if (response[i].nombre == "Intercampus") {
-                        xy[1].y += 1;
-                    }
-                    else if (response[i].nombre == "Baja de materias") {
-                        xy[0].y += 1;
-                    }
-                    else if (response[i].nombre == "Cambio de carrera") {
-                        xy[2].y += 1;
-                    }
-                    else if (response[i].nombre == "Baja temporal") {
-                        xy[3].y += 1;
-                    }
-                    else if (response[i].nombre == "Transferencia") {
-                        xy[4].y += 1;
-                    }
-                }
+                    if (response[i].nombre == "Intercampus") { xy[1].y += 1; }
+                    else if (response[i].nombre == "Baja de materias") { xy[0].y += 1;}
+                    else if (response[i].nombre == "Cambio de carrera") { xy[2].y += 1; }
+                    else if (response[i].nombre == "Baja temporal") { xy[3].y += 1; }
+                    else if (response[i].nombre == "Transferencia") { xy[4].y += 1; }
+                  }
                 this.setState({tramitesAcademicos: false, salesPieData:xy});
             },
-            error:(response) => {
-                this.setState({tramitesAcademicos: false});
-            }
+            error:(response) => { this.setState({tramitesAcademicos: false});}
         });
         this.setState({loadingWeek: true});
         let tramitesSemana = 0;
         API.restCall({
             service: 'get_tramite_alumnos_status_week',
             method:'get',
-            success:(response) => {
-                for (let i in response) {
-                    if (response[i].status == "TERMINADO") {
-                        tramitesSemana += 1;
-                    }
-                }
-                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});
-            },
-            error:(response) => {
-                this.setState({loadingWeek: false});
-            }
+            success:(response) => {for (let i in response) { if (response[i].status == "TERMINADO") { tramitesSemana += 1;} }this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});},
+            error:(response) => { this.setState({loadingWeek: false}); }
         });
 
         /*this.setState({tramiteTransferencia: true});
@@ -207,15 +132,10 @@ class DashboardView extends Component {
             success:(response) => {
                 let datos = [];
                 console.log(response)
-
-                for (let i in response) {
-                    this.getData(i, response[i]);
-                }
+                for (let i in response) { this.getData(i, response[i]); }
                 this.setState({procesos: datos, procs: response});
             },
-            error:(response) => {
-                this.setState({tramiteTransferencia: false});
-            }
+            error:(response) => { this.setState({tramiteTransferencia: false}); }
         });
     }
     getData = (key, item) => {
@@ -236,14 +156,10 @@ class DashboardView extends Component {
                         console.log(response)
                         let finished = 0;
                         let sumDays = 0;
-                        for (let i in pasos) {
-                            data[i] = {numero: pasos[i].numero, x: pasos[i].nombre_mostrar, y: 0};
-                        }
+                        for (let i in pasos) { data[i] = {numero: pasos[i].numero, x: pasos[i].nombre_mostrar, y: 0}; }
                         for (let i in response) {
                             for (let r in data){
-                                if (data[r].numero == response[i].numero_paso_actual){
-                                    data[r].y += 1;
-                                }
+                                if (data[r].numero == response[i].numero_paso_actual){ data[r].y += 1; }
                             }
                             if (response[i].Status == 2){
                                 sumDays += moment(response[i].fecha_ultima_actualizacion).diff(moment(response[i].fecha_inicio),'days');
@@ -253,35 +169,25 @@ class DashboardView extends Component {
                         console.log(sumDays);
                         this.setState({["data_"+key+"spinner"]:false, ["data_"+key+"xy"]:data,  ["data_"+key+"prom"]: (sumDays / finished)});
                     },
-                    error:(response) => {
-                        this.setState({["data_"+key+"spinner"]:false});
-                    }
+                    error:(response) => { this.setState({["data_"+key+"spinner"]:false}); }
                 });
             },
-            error:(response) => {
-                this.setState({["data_"+key+"spinner"]:false});
-            }
+            error:(response) => { this.setState({["data_"+key+"spinner"]:false}); }
         });
     };
     render() {
-
         return (
             <div className="graficas">
-
-
-                <Collapse defaultActiveKey={['1']} onChange={callback}>
-
+                <Collapse defaultActiveKey={['1']}>
                     {this.state.procs.map((item, key) => (
                         <Panel header={item.nombre} key={key}>
                             <Button onClick={()=>this.getData(key, item)} style={{float:"right", width:"100px", marginRight:5}} type={"primary"}>Consultar</Button>
-
                             <Select defaultValue="-1" onChange={(value)=> this.setState({["data_"+key+"status"]:value})}  style={{float:"right", width:"200px", marginRight:5}}>
                                 <Select.Option value="-1">Todos los status</Select.Option>
                                 <Select.Option value="0">Iniciado</Select.Option>
                                 <Select.Option value="1">En Proceso</Select.Option>
                                 <Select.Option value="2">Finalizado</Select.Option>
                             </Select>
-
                             <Select defaultValue="0"  onChange={(value)=> this.setState({["data_"+key+"month"]:value})}   style={{float:"right", width:"200px", marginRight:5}}>
                                 <Select.Option value="0">Todos los meses</Select.Option>
                                 <Select.Option value="1">Enero</Select.Option>
@@ -297,33 +203,16 @@ class DashboardView extends Component {
                                 <Select.Option value="11">Noviembre</Select.Option>
                                 <Select.Option value="12">Diciembre</Select.Option>
                             </Select>
-                            <h2>{item.nombre} </h2>
-                            <h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
-
-                            <Pie
-                                hasLegend
-                                title={item.nombre}
-                                subTitle="Total"
-                                total={() => (
-                                    <Spin spinning={this.state["data_"+key+"spinner"]}>
-                                    <span
-                                        dangerouslySetInnerHTML={{
-                                            __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))
-                                        }}
-                                    />
-                                    </Spin>
-                                )}
+                            <h2>{item.nombre} </h2><h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
+                            <Pie hasLegend title={item.nombre} subTitle="Total"
+                                total={() => (<Spin spinning={this.state["data_"+key+"spinner"]}><span dangerouslySetInnerHTML={{ __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))}}/></Spin>)}
                                 data={this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []}
                                 valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                                 height={294}
                             />
                         </Panel>)
                     )}
-
-
                 </Collapse>
-
-
             </div>
         );
     }

@@ -65,100 +65,29 @@ class Registro extends Component {
       };
 
     render() {
-
         const { getFieldDecorator } = this.props.form;
-
         return (
             <div >
                 <Row>
                     {/* Formulario de registro */}
-                <Col xs={0} sm={0} md={0} lg={12} xl={14}>
-                    <div className="login-image-container">
-                    <img className="login-image" src={loginImage} alt={''}/>
-                    </div>
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={12} xl={10}>
-                    <Form onSubmit={this.handleSubmit} className="login-form lform">
-                    <div className="logo-image-container-registro">
-                        <img className="logo-image-registro" src={logo} alt={''}/>
-                    </div>
-                    <Form.Item className="restore-title">
-                        <h2 className="admin-login-title">Registro de nueva cuenta</h2>
-                    </Form.Item>
+                <Col xs={0} sm={0} md={0} lg={12} xl={14}><div className="login-image-container"><img className="login-image" src={loginImage} alt={''}/></div></Col>
+                <Col xs={24} sm={24} md={24} lg={12} xl={10}><Form onSubmit={this.handleSubmit} className="login-form lform"><div className="logo-image-container-registro"><img className="logo-image-registro" src={logo} alt={''}/></div>
+                    <Form.Item className="restore-title"><h2 className="admin-login-title">Registro de nueva cuenta</h2></Form.Item>
                         <Row gutter={8}>
-                            <Col span={12}>
-                    <Form.Item>
-                        {getFieldDecorator('name', {
-                        rules: [{ required: true, message: 'Por favor ingresa tu nombre' }],
-                        })(
-                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Nombre" />
-                        )}
-                    </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                    <Form.Item>
-                        {getFieldDecorator('lastName', {
-                        rules: [{ required: true, message: 'Por favor ingresa tus apellidos' }],
-                        })(
-                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Apellidos" />
-                        )}
-                    </Form.Item>
-                            </Col>
+                            <Col span={12}><Form.Item>{getFieldDecorator('name', {rules: [{ required: true, message: 'Por favor ingresa tu nombre' }],})(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Nombre" />)}</Form.Item></Col>
+                            <Col span={12}><Form.Item>{getFieldDecorator('lastName', {rules: [{ required: true, message: 'Por favor ingresa tus apellidos' }],})(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Apellidos" />)}</Form.Item></Col>
                         </Row>
-                    <Form.Item>
-                        {getFieldDecorator('userName', {
-                        rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A0....@itesm.mx)' }],
-                        })(
-                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico institucional (A0...@itesm.mx)" />
-                        )}
-                    </Form.Item>
+                    <Form.Item>{getFieldDecorator('userName', {rules: [{ required: true, message: 'Por favor ingresa tu correo electrónico institucional (A0....@itesm.mx)' }],})(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Correo electrónico institucional (A0...@itesm.mx)" />)}</Form.Item>
                         <Row gutter={8}>
-                            <Col span={12}>
-                    <Form.Item>
-                        {getFieldDecorator('password', {
-                        rules: [{ required: true, message: 'Por favor ingresa la contraseña' }, ,
-                            {validator: this.validateToNextPassword,}],
-                        })(
-                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
-                        )}
-                    </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                    <Form.Item>
-                        {getFieldDecorator('passwordVerification', {
-                        rules: [{ required: true, message: 'Por favor verifica la contraseña' }, {
-                            validator: this.compareToFirstPassword,
-                        }],
-                        })(
-                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Verificar contraseña" onBlur={this.handleConfirmBlur}/>
-                        )}
-                    </Form.Item>
-                            </Col>
+                            <Col span={12}><Form.Item>{getFieldDecorator('password', {rules: [{ required: true, message: 'Por favor ingresa la contraseña' }, ,{validator: this.validateToNextPassword,}],})(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />)}</Form.Item></Col>
+                            <Col span={12}><Form.Item>{getFieldDecorator('passwordVerification', {rules: [{ required: true, message: 'Por favor verifica la contraseña' }, {validator: this.compareToFirstPassword,}],})(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Verificar contraseña" onBlur={this.handleConfirmBlur}/>)}</Form.Item></Col>
                         </Row>
-                        <Form.Item>
-                            <a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de privacidad</a>
-                            {getFieldDecorator('remember', {
-                                valuePropName: 'checked',
-                                initialValue: false,
-                                rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{
-                                    validator: (rule, value, cb) => {value === true ? cb() : cb(true)},
-                                    message: 'Para continuar tienes que aceptar términos y condiciones'}]
-                            })
-                            (
-                                <Checkbox className="aviso-privacidad" checked={this.state.rememberMe}
-                                          onChange={this.handleChangeCheck}>He leído y acepto el aviso de privacidad</Checkbox>
-                            )}
-                        </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login-form-button"
-                                loading={this.state.loading} disabled={this.state.loading}>
-                            Crear cuenta
-                        </Button> 
-                    </Form.Item>
+                      <Form.Item><a target={"_blank"} href={'https://tec.mx/es/aviso-de-privacidad-alumnos'}>Aviso de privacidad</a>{getFieldDecorator('remember', { valuePropName: 'checked', initialValue: false, rules: [{ required: true, message: 'Para continuar tienes que aceptar términos y condiciones' },{ validator: (rule, value, cb) => {value === true ? cb() : cb(true)},message: 'Para continuar tienes que aceptar términos y condiciones'}]})(<Checkbox className="aviso-privacidad" checked={this.state.rememberMe}onChange={this.handleChangeCheck}>He leído y acepto el aviso de privacidad</Checkbox>)}</Form.Item>
+                      <Form.Item><Button type="primary" htmlType="submit" className="login-form-button"loading={this.state.loading} disabled={this.state.loading}>Crear cuenta</Button> </Form.Item>
                     </Form>
                 </Col>
                 </Row>
-            </div> 
+            </div>
         );
     }
 }
