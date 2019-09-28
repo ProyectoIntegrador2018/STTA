@@ -23,7 +23,6 @@ export default class Alumnos extends Component {
         this.setState({loading:true});
         API.restCall({
             service:'return_student_list/',
-
             method: "get",
             params: "",
             success:(response) => {
@@ -58,40 +57,17 @@ export default class Alumnos extends Component {
     render() {
         {/*Tabla donde se muestra el contenido de los alumnos*/}
         let permitirBorrar
-
-        if (localStorage.getItem("tipo") == '2') {
-            permitirBorrar=false
-        }
-        else {
-            permitirBorrar=true
-        }
+        if (localStorage.getItem("tipo") == '2') {permitirBorrar=false}
+        else { permitirBorrar=true }
         return (
-
             <div>
                 <h1><Icon type="team" /> Alumnos</h1>
-                <DataTable loading={this.state.loading} data={this.state.data}
-                           deleteFunc={this.deleteStudent} rowSelection={permitirBorrar}
-                columns={[{
-                    title: 'Nombre del alumno',
-                    key: 'nombre',
-
-                }, {
-                    title: 'Apellido',
-                    key: 'apellido',
-
-                },{
-                    title: 'Email',
-                    key: 'email',
-
-                }, {
-                    title: 'Último login',
-                    key: 'last_login',
-                    render: (text, record) => (
-                        <div style={{textAlign:'center'}}>
-                            <div>{moment(text).format('DD-MMM-YYYY')}</div>
-                        </div>
-                    ),
-                }
+                <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteStudent} rowSelection={permitirBorrar}
+                columns={[
+                  { title: 'Nombre del alumno', key: 'nombre', },
+                  { title: 'Apellido', key: 'apellido', },
+                  { title: 'Email', key: 'email', },
+                  { title: 'Último login', key: 'last_login', render: (text, record) => ( <div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>),}
                 ]}/>
             </div>
         );
