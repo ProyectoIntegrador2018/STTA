@@ -68,7 +68,7 @@ urlpatterns = [
     # New API endpoints
     path('agregar_alumnos/', controller.upload_students),
     path('agregar_cartas/', controller.create_letter_template),
-    path('eliminar_cartas/', controller.delete_letter_template),
+    path('eliminar_cartas/', controller.eliminar_plantilla_carta),
     path('obtener_cartas/', controller.get_letters),
     path('obtener_alumnos/', controller.get_students),
     path('obtener_cartas_alumnos/', controller.get_students_letters),

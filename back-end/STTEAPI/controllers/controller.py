@@ -40,44 +40,142 @@ def procesos(request):
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra procesos del sistema
-@api_view(["POST"])
+
+
+#                                                           # Entrada: numero de id de alumno ; Salida: todos sus datos
+#                                                           # Se usa filter para recuperar el alumno, entonces se
+#                                                           # serializa el contenido y se regresa en formato json, se
+#                                                           # envía mediante HTTPResponse
+@api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def borrar_procesos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='procesos', required=True, is_json=True)
+def return_student(request,id_alumno):
+    stu = Alumno.objects.filter(id=id_alumno)
+    stu = serializers.serialize('json',stu)
+    return HttpResponse(stu, content_type='application/json')
 
-    print(args['procesos'])
+def eliminar_con_id(model, p):
+    '''Delete from db using id.
 
-    for p in args['procesos']:
-        try:
-            proc = Proceso.objects.get(id=p['id'])
-            proc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(
-                detail="El proceso ("+str(p['id'])+") no se puede eliminar porque hay documentos o trámites ligados a él.")
+    Args:
+    model: The mysql model object.
+    p: dictionanary of values.
+    '''
+    doc = model.objects.get(id=p['id'])
+    doc.delete()
 
+def eliminar_usuarios(model, p):
+    '''Delete from db using id, then usuario_id.
+
+    Args:
+    model: The mysql model object.
+    p: dictionanary of values.
+    '''
+    doc = model.objects.get(id=p['id'])
+    user = Usuario.objects.get(id=doc.usuario_id)
+    user.delete()
+    doc.delete()
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra un documento dado un id pasado en request
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_documentos(request):
+def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
+    '''Returns JSON response from deleting a db record.
+
+    Args:
+    request: API request.
+    model: The mysql model object.
+    key_name: Name of the key to usse.
+    '''
     args = PostParametersList(request)
-    args.check_parameter(key='documentos', required=True, is_json=True)
-    print(args['documentos'])
-    for p in args['documentos']:
+    args.check_parameter(key=key_name, required=True, is_json=True)
+    print(args[key_name])
+    for p in args[key_name]:
         try:
-            doc = Documento.objects.get(id=p['id'])
-            doc.delete()
+            deletion_func(model, p)
         except IntegrityError:
             raise APIExceptions.PermissionDenied
 
     return JsonResponse(1, safe=False)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def borrar_procesos(request):
+    '''Returns JSON response from deleting documents.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Proceso, 'procesos')
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_documentos(request):
+    '''Returns JSON response from deleting documents.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Documento, 'documentos')
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_tramites(request):
+    '''Returns JSON response from deleting tramitealumnos.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Tramitealumno, 'tramites')
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def eliminar_plantilla_carta(request):
+    '''Returns JSON response from deleting a letter template.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Carta, 'cartas')
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_alumnos(request):
+    '''Returns JSON response from deleting students.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_administradores(request):
+    '''Returns JSON response from deleting admins.
+
+    Args:
+    request: API request.
+    '''
+    return eliminar_datos(request, Administrador, 'admin', eliminar_usuarios)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_carta(request):
+    '''Returns JSON response from deleting a letter.
+
+    Args:
+    request: API request.
+    '''
+    def eliminar_con_alumno_carta(model, p):
+        # TODO utilize fecha_creacion.
+        docs = model.objects.filter(
+            id_alumno=p['id_alumno'],
+            id_carta=p['id_carta'])
+        docs.delete()
+    return eliminar_datos(request, CartaAlumno, 'documentos', eliminar_con_alumno_carta)
 
 #                                                           #Entrada: Nada ; Salida: Nada
 #                                                           #Registra los procesos nuevos en la base de datos
@@ -327,15 +425,18 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
+def return_user_list(request, user_type):
+    users = user_type.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
+    users = [dict(user) for user in users]
+    return JsonResponse(users, safe=False)
+
 #                                                           # Entrada: nada; Salida: una lista con todos los admins con
 #                                                           # su informacion de usuario
 #                                                           # Regresa la lista entera de administradores
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_admin_list(request):
-    admins = Administrador.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
-    admins = [dict(adm) for adm in admins]
-    return JsonResponse(admins, safe=False)
+    return return_user_list(request, Administrador)
 
 
 #                                                           # Entrada: nada; Salida: lista con toda la informacion de
@@ -345,78 +446,7 @@ def return_admin_list(request):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
-    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
-    stu = [dict(adm) for adm in stu]
-    return JsonResponse(stu, safe=False)
-
-#                                                           # Entrada: numero de id de alumno ; Salida: todos sus datos
-#                                                           # Se usa filter para recuperar el alumno, entonces se
-#                                                           # serializa el contenido y se regresa en formato json, se
-#                                                           # envía mediante HTTPResponse
-@api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def return_student(request,id_alumno):
-    stu = Alumno.objects.filter(id=id_alumno)
-    stu = serializers.serialize('json',stu)
-    return HttpResponse(stu, content_type='application/json')
-
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra de 1 a N alumnos
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_alumnos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='alumno', required=True, is_json=True)
-    print(args['alumno'])
-    for a in args['alumno']:
-        try:
-            doc = Alumno.objects.get(id=a['id'])
-            user = Usuario.objects.get(id=doc.usuario_id)
-            user.delete()
-            doc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(detail="No se pudo eliminar el alumno")
-
-    return JsonResponse(1, safe=False)
-
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra de 1 a N administradores
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_administradores(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='admin', required=True, is_json=True)
-    print(args['admin'])
-    for a in args['admin']:
-        try:
-            doc = Administrador.objects.get(id=a['id'])
-            user = Usuario.objects.get(id=doc.usuario_id)
-            user.delete()
-            doc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(detail="No se puede eliminar el usuario. Puede ser que el usuario tengo documentos registrados.")
-
-    return JsonResponse(1, safe=False)
-
-#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
-#                                                           #Registra un administrador
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_tramites(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='tramites', required=True, is_json=True)
-    print(args['tramites'])
-    for a in args['tramites']:
-        try:
-            doc = Tramitealumno.objects.get(id=a['id'])
-            doc.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-
-    return JsonResponse(1, safe=False)
+    return return_user_list(request, Alumno)
 
 #                                                           #Entrada: Parametro de lista POST ; Salida: Nada
 #                                                           #Registra un administrador
@@ -452,143 +482,128 @@ def dictfetchall(cursor):
     return [dict(zip([col[0] for col in desc], row))
               for row in cursor.fetchall()]
 
+def run_db_query(query):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute(query)
+    tra = dictfetchall(cursor)
+    return JsonResponse(tra, safe=False)
+
 #                                                          # Entrada: matricula; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual dada una matricula de usuario
 #                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
-def return_tramite_alumnos(request,matricula):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual,numero_paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   'where matricula =' + "'" + matricula + "'" +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+def return_tramite_alumnos(request, matricula):
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "numero_paso_actual, fecha_inicio, "
+             "fecha_ultima_actualizacion, numero_ticket, "
+             "matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso where matricula = '{0}' "
+             "group by numero_ticket;")
+    return run_db_query(query.format(matricula))
 
 #                                                          # Entrada: nada; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
 #                                                          # en formato de diccionario
 def return_tramite_transferencia(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso' +
-                   ' WHERE pr.nombre="Transferencia" ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, pr.nombre, paso_actual, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso WHERE pr.nombre='Transferencia' "
+             "group by numero_ticket;")
+    return run_db_query(query)
 
 #                                                          # Entrada: nada; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
 #                                                          # en formato de diccionario
 def return_tramite_transferencia_pasos(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT pr.nombre, p.nombre ' +
-                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
-                   ' WHERE pr.nombre="Transferencia" ')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ('SELECT pr.nombre, p.nombre '
+             'FROM Paso p join Proceso pr on p.proceso=pr.id '
+             'WHERE pr.nombre="Transferencia";')
+    return run_db_query(query)
 
 #                                                          # Entrada: month y status; Salida: Todas las columnas de ResumenTramites
 #                                                          # en formato de diccionario
 def get_tramites_resumen(request, proceso, month, status):
-    from django.db import connection
-    cursor = connection.cursor()
-    if month == "0":
-        cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                       'where proceso = {0} and status = {1};'.format(proceso, status))
-        if status == "-1":
-            cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                           'where proceso = {0};'.format(proceso))
-    else:
-        cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                       'where proceso = {0} and status = {1} and month = {2};'.format(proceso, status, month))
-        if status == "-1":
-            cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                           'where proceso = {0} and month = {1};'.format(proceso, month))
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = 'SELECT * FROM STTE.ResumenTramites WHERE proceso = {0};'.format(proceso)
+    where = ''
+    if month != "0":
+        where += ' and month = {0}'.format(month)
+    if status != "-1":
+        where += ' and status = {0}'.format(status)
+    return run_db_query(query + where + ';')
 
 #                                                          # Entrada: proceso; Salida: Todos los atributos de Paso
 #                                                          # en formato de diccionario
 def get_pasos_proceso(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM STTE.Paso '
-                   'where proceso = {0}'.format(proceso))
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ('SELECT * FROM STTE.Paso '
+             'WHERE proceso = {0};')
+    return run_db_query(query.format(proceso))
 
 #                                                          # Entrada: nada; Salida: Todos los atributos de Proceso
 #                                                          # en formato de diccionario
 def return_procesos(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT * ' +
-                   'FROM Proceso pr')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = 'SELECT * FROM Proceso pr'
+    return run_db_query(query)
 
 #                                                          # Entrada: proceso; Salida: Los atributos de nombre de proceso y nombre de paso de Paso
 #                                                          # en formato de diccionario
 def return_procesos_pasos(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT pr.nombre, p.nombre ' +
-                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
-                   ' WHERE pr.nombre=' + "'" + proceso + "'")
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT pr.nombre, p.nombre "
+             "FROM Paso p join Proceso pr "
+             "on p.proceso = pr.id "
+             "WHERE pr.nombre = '{0}';").format(proceso)
+    return run_db_query(query)
 
 #                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del proceso actual
 #                                                          # en formato de diccionario
 def return_tramite(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso' +
-                   ' WHERE pr.nombre=' + "'" + proceso + "'" +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, pr.nombre, paso_actual, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso "
+             "WHERE pr.nombre= '{0}' group by numero_ticket;")
+    return run_db_query(query.format(proceso))
 
 #                                                          # Entrada: nada; Salida: Todos los atributos del trámite actual del alumno que invoca la función
 #                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   'where year(now()) = year(fecha_ultima_actualizacion) and  month(now()) = month(fecha_ultima_actualizacion) ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso "
+             "where year(now()) = year(fecha_ultima_actualizacion) "
+             "and month(now()) = month(fecha_ultima_actualizacion) "
+             "group by numero_ticket;")
+    return run_db_query(query)
 
 #                                                          # Entrada: nada; Salida: Todos los atributos de tramite actual por semana del alumno que la invoca
 #                                                          # en formato de diccionario
 @api_view(["GET"])
 #@permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status_week(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   ' where week(now()) - 1 = week(fecha_ultima_actualizacion) ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso where "
+             "week(now()) - 1 = week(fecha_ultima_actualizacion) "
+             "group by numero_ticket;")
+    return run_db_query(query)
 
 #                                                          # Entrada: id; Salida: Datos sobre el proceso del trámite actual del alumno que invoca la función
 #                                                          # en formato de diccionario
@@ -691,32 +706,15 @@ def create_letter_template(request):
 
     return JsonResponse({'message': 'File uploaded successfully'})
 
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def delete_letter_template(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='cartas', required=True, is_json=True)
-    print(args['cartas'])
-    for p in args['cartas']:
-        try:
-            carta = Carta.objects.get(id=p['id'])
-            carta.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-
-    return JsonResponse(1, safe=False)
-
 # Get letter
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_letters(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT a.id, a.nombre as nombre_carta, a.descripcion, a.fecha_creacion, b.nombre '
-    + 'FROM Carta a INNER JOIN '
-    + 'Administrador b on a.creado_por = b.id')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ("SELECT a.id, a.nombre as nombre_carta, "
+             "a.descripcion, a.fecha_creacion, b.nombre "
+             "FROM Carta a INNER JOIN Administrador b "
+             "on a.creado_por = b.id")
+    return run_db_query(query)
 
 # Get letter
 @api_view(["GET"])
@@ -730,32 +728,13 @@ def get_students(request):
 def get_students_letters(request):
     # TODO once mysql is set up modify schema to use foreign keys
     # and django api instead of this ugliness...
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT b.id_alumno, b.id_carta, a.matricula, a.nombre as nombre_alumno, c.nombre as nombre_carta, b.fecha_creacion '
-    + 'FROM Alumno a INNER JOIN '
-    + 'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
-    + 'Carta c on c.id = b.id_carta')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    query = ('SELECT b.id_alumno, b.id_carta, a.matricula, '
+             'a.nombre as nombre_alumno, c.nombre as nombre_carta, '
+             'b.fecha_creacion FROM Alumno a INNER JOIN '
+             'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
+             'Carta c on c.id = b.id_carta')
+    return run_db_query(query)
 
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_carta(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='documentos', required=True, is_json=True)
-    print(args['documentos'])
-    for p in args['documentos']:
-        try:
-            # TODO utilize fecha_creacion.
-            docs = CartaAlumno.objects.filter(
-                id_alumno=p['id_alumno'],
-                id_carta=p['id_carta'])
-            docs.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-    return JsonResponse(1, safe=False)
 
 @api_view(["GET"])
 # @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
