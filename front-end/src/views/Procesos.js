@@ -66,14 +66,10 @@ class ProcesosForm extends Component {
                                render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>),}
                                ]}/>
                 <Modal title="Agregar proceso nuevo" visible={this.state.visible} onCancel={() => {this.setState({visible:false})}}
-                    footer={[
-                        <Button key="back" onClick={() => {this.setState({visible:false})}}>Cancelar</Button>,
-                        <Button key="submit" type="primary"  onClick={this.handleSubmit}>OK</Button>,]}
+                    footer={[<Button key="back" onClick={() => {this.setState({visible:false})}}>Cancelar</Button>,<Button key="submit" type="primary"  onClick={this.handleSubmit}>OK</Button>,]}
                 >
                     <Form layout="horizontal" className={'form-normal'}>
-                        <Form.Item label="Nombre del procesos" type="text">
-                            {getFieldDecorator('proceso', {rules: [{ required: true, message: 'Por favor escribe un nombre para el proceso' }],})(<Input />)}
-                        </Form.Item>
+                        <Form.Item label="Nombre del procesos" type="text">{getFieldDecorator('proceso', {rules: [{ required: true, message: 'Por favor escribe un nombre para el proceso' }],})(<Input />)}</Form.Item>
                     </Form>
                 </Modal>
             </div>
