@@ -87,30 +87,20 @@ def verify_post_params(request, keys, is_json=False):
     return args
 
 
-def build_borrar(model, key_name, deletion_func=eliminar_con_id, detail=None):
-    """Build function to delete given a request
+def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
+    """Returns JSON response from deleting a db record.
 
     Args:
-    model: The mysql model object.
-    key_name: Name of the key to use.
+    request: API request.
     """
-    def _borrar_datos(request):
-        """Returns JSON response from deleting a db record.
+    args = verify_post_params(request, [key_name], True)
+    for p in args[key_name]:
+        try:
+            deletion_func(model, p)
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
 
-        Args:
-        request: API request.
-        """
-        args = verify_post_params(request, [key_name], True)
-        for p in args[key_name]:
-            try:
-                deletion_func(model, p)
-            except IntegrityError:
-                raise (APIExceptions.PermissionDenied if detail is None
-                       else exceptions.PermissionDenied(detail=detail))
-
-        return JsonResponse(1, safe=False)
-
-    return _borrar_datos
+    return JsonResponse(1, safe=False)
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
@@ -121,10 +111,7 @@ def borrar_procesos(request):
     Args:
     request: API request.
     """
-    detail = ('El proceso no se puede eliminar porque hay documentos o '
-              'trámites ligados a él.')
-    borrar = build_borrar(Proceso, 'procesos', eliminar_con_id, detail)
-    return borrar(request)
+    return eliminar_datos(request, Proceso, 'procesos')
 
 
 @api_view(["POST"])
@@ -136,8 +123,7 @@ def eliminar_documentos(request):
     Args:
     request: API request.
     """
-    borrar = build_borrar(Documento, 'documentos')
-    return borrar(request)
+    return eliminar_datos(request, Documento, 'documentos')
 
 
 @api_view(["POST"])
@@ -149,8 +135,7 @@ def eliminar_tramites(request):
     Args:
     request: API request.
     """
-    borrar = build_borrar(Tramitealumno, 'tramites')
-    return borrar(request)
+    return eliminar_datos(request, Tramitealumno, 'tramites')
 
 
 @api_view(["POST"])
@@ -161,8 +146,7 @@ def eliminar_plantilla_carta(request):
     Args:
     request: API request.
     """
-    borrar = build_borrar(Carta, 'cartas')
-    return borrar(request)
+    return eliminar_datos(request, Carta, 'cartas')
 
 
 @api_view(["POST"])
@@ -174,8 +158,7 @@ def eliminar_alumnos(request):
     Args:
     request: API request.
     """
-    borrar = build_borrar(Alumno, 'alumno', eliminar_usuarios)
-    return borrar(request)
+    return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)
 
 
 @api_view(["POST"])
@@ -187,8 +170,7 @@ def eliminar_administradores(request):
     Args:
     request: API request.
     """
-    borrar = build_borrar(Administrador, 'admin', eliminar_usuarios)
-    return borrar(request)
+    return eliminar_datos(request, Administrador, 'admin', eliminar_usuarios)
 
 
 @api_view(["POST"])
@@ -208,9 +190,8 @@ def eliminar_carta(request):
             id_carta=p['id_carta'])
         docs.delete()
 
-    borrar = build_borrar(CartaAlumno, 'documentos',
+    return eliminar_datos(request, CartaAlumno, 'documentos',
                           _eliminar_con_alumno_carta)
-    return borrar(request)
 
 
 @api_view(["POST"])
@@ -222,9 +203,9 @@ def agregar_proceso(request):
     Args:
     request: API request.
     """
-    args = verify_post_params(request,['nombre', 'ticket', 'fecha_apertura',
-                                       'ultima_actualizacion', 'matricula',
-                                       'pasos'], True)
+    args = verify_post_params(request, ['nombre', 'ticket', 'fecha_apertura',
+                                        'ultima_actualizacion', 'matricula',
+                                        'pasos'], True)
     print(args['matricula'])
 
     proc = Proceso.objects.create(
@@ -395,6 +376,15 @@ def email_text_for_completed_procedure(ticket_id):
             'https://forms.gle/GzcmC4f9cmFKS2ee9').format(ticket_id)
 
 
+def check_valid_user(user, model):
+    if user is None:
+        raise exceptions.AuthenticationFailed(
+            detail="Credenciales incorrectas")
+    if ((not user.es_admin and model == Administrador) or
+            (not user.es_alumno and model == Alumno)):
+        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+
+
 def handle_login(request, model):
     """Handles generic login for user.
 
@@ -402,18 +392,10 @@ def handle_login(request, model):
     request: API request.
     model: The mysql model object.
     """
-    def _check_valid_user():
-        if user is None:
-            raise exceptions.AuthenticationFailed(
-                detail="Credenciales incorrectas")
-        if ((not user.es_admin and model == Administrador) or
-                (not user.es_alumno and model == Alumno)):
-            raise exceptions.PermissionDenied(detail="Permisos insuficientes")
-
     email = request.POST.get('email', '')
     password = request.POST.get('password', '')
     user = authenticate(username=email, password=password)
-    _check_valid_user()
+    check_valid_user(user, model)
     token, _ = Token.objects.get_or_create(user=user)
     logged_in_user = model.objects.get(usuario=user)
     user.last_login = now()
