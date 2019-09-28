@@ -58,9 +58,7 @@ class DashboardView extends Component {
             service: 'get_tramite_alumnos_status',
             method:'get',
             success:(response) => {
-                for (let i in response) { totalTramites += 1;
-                    if (response[i].status == "TERMINADO") { tramitesMes += 1;}
-                }
+                for (let i in response) { totalTramites += 1; if (response[i].status == "TERMINADO") { tramitesMes += 1;} }
                 this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
                 let tramitesTerminados = 0;
                 if (this.state.totalTramites != 0) { tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100; }
@@ -95,10 +93,7 @@ class DashboardView extends Component {
         API.restCall({
             service: 'get_tramite_alumnos_status_week',
             method:'get',
-            success:(response) => {
-                for (let i in response) { if (response[i].status == "TERMINADO") { tramitesSemana += 1;} }
-                this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});
-            },
+            success:(response) => {for (let i in response) { if (response[i].status == "TERMINADO") { tramitesSemana += 1;} }this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});},
             error:(response) => { this.setState({loadingWeek: false}); }
         });
 
@@ -208,15 +203,9 @@ class DashboardView extends Component {
                                 <Select.Option value="11">Noviembre</Select.Option>
                                 <Select.Option value="12">Diciembre</Select.Option>
                             </Select>
-                            <h2>{item.nombre} </h2>
-                            <h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
-
+                            <h2>{item.nombre} </h2><h4><br/>Duración promedio en días:<br/>{this.state["data_"+key+"prom"] ? this.state["data_"+key+"prom"] : ""}</h4>
                             <Pie hasLegend title={item.nombre} subTitle="Total"
-                                total={() => (
-                                    <Spin spinning={this.state["data_"+key+"spinner"]}>
-                                    <span dangerouslySetInnerHTML={{ __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))}}/>
-                                    </Spin>
-                                )}
+                                total={() => (<Spin spinning={this.state["data_"+key+"spinner"]}><span dangerouslySetInnerHTML={{ __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))}}/></Spin>)}
                                 data={this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []}
                                 valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
                                 height={294}
