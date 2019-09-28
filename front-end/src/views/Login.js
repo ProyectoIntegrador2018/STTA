@@ -113,60 +113,20 @@ class Login extends Component {
   render() {
 
     const { getFieldDecorator } = this.props.form;
-
     return (
       <div className="App">
         <Row>
           <Col xs={0} sm={0} md={0} lg={12} xl={14}>
-            <div className="login-image-container">
-              <img className="login-image" src={loginImage} alt={''}/>
-            </div>
+            <div className="login-image-container"><img className="login-image" src={loginImage} alt={''}/></div>
           </Col>
-
           <Col xs={24} sm={24} md={24} lg={12} xl={10}>
-            <Form onSubmit={this.handleSubmit} className="login-form">
-              <div className="logo-image-container">
-                <img className="logo-image" src={logo} alt={''}/>
-              </div>
-              <Form.Item className="restore-title">
-                <h2 className="admin-login-title">Inicio de sesión administrador</h2>
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('userName', {
-                  rules: [{ required: true, message: 'Por favor ingresa el usuario' }],
-                })(
-                  <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Usuario" />
-                )}
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('password', {
-                  rules: [{ required: true, message: 'Por favor ingresa la contraseña' }],
-                })(
-                  <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />
-                )}
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('remember', {
-                  valuePropName: 'checked',
-                  initialValue: true,
-                })(
-                  <Checkbox>Recuérdame</Checkbox>
-                )}
-                <a className="login-form-right" onClick={this.showModal}>¿Olvidaste tu contraseña?</a>
-                <br></br>
-                <Button type="primary" htmlType="submit" className="login-form-button"
-                        loading={this.state.loading} disabled={this.state.loading}>
-                  Accesar
-                </Button>
-                <br></br>
-              </Form.Item>
+            <Form onSubmit={this.handleSubmit} className="login-form"><div className="logo-image-container"><img className="logo-image" src={logo} alt={''}/></div>
+              <Form.Item className="restore-title"><h2 className="admin-login-title">Inicio de sesión administrador</h2></Form.Item>
+              <Form.Item>{getFieldDecorator('userName', {rules: [{ required: true, message: 'Por favor ingresa el usuario' }],})(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Usuario" />)}</Form.Item>
+              <Form.Item>{getFieldDecorator('password', {rules: [{ required: true, message: 'Por favor ingresa la contraseña' }],})(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Contraseña" />)}</Form.Item>
+              <Form.Item>{getFieldDecorator('remember', {valuePropName: 'checked', initialValue: true,})(<Checkbox>Recuérdame</Checkbox>)}<a className="login-form-right" onClick={this.showModal}>¿Olvidaste tu contraseña?</a><br></br><Button type="primary" htmlType="submit" className="login-form-button" loading={this.state.loading} disabled={this.state.loading}>Accesar</Button><br></br></Form.Item>
             </Form>
-            <CollectionCreateForm
-                wrappedComponentRef={this.saveFormRef}
-                visible={this.state.visible}
-                loading={this.state.loading}
-                onCancel={this.handleCancel}
-                onCreate={this.handleCreate}/>
+            <CollectionCreateForm wrappedComponentRef={this.saveFormRef} visible={this.state.visible} loading={this.state.loading} onCancel={this.handleCancel} onCreate={this.handleCreate}/>
           </Col>
         </Row>
       </div>
