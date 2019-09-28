@@ -87,27 +87,30 @@ def verify_post_params(request, keys, is_json=False):
     return args
 
 
-def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id,
-                   detail=None):
-    """Returns JSON response from deleting a db record.
+def build_borrar(model, key_name, deletion_func=eliminar_con_id, detail=None):
+    """Build function to delete given a request
 
     Args:
-    request: API request.
     model: The mysql model object.
-    key_name: Name of the key to usse.
+    key_name: Name of the key to use.
     """
-    args = verify_post_params(request, [key_name], True)
-    for p in args[key_name]:
-        try:
-            deletion_func(model, p)
-        except IntegrityError:
-            if detail is None:
-                raise APIExceptions.PermissionDenied
-            else:
-                raise exceptions.PermissionDenied(detail=detail)
+    def _borrar_datos(request):
+        """Returns JSON response from deleting a db record.
 
-    return JsonResponse(1, safe=False)
+        Args:
+        request: API request.
+        """
+        args = verify_post_params(request, [key_name], True)
+        for p in args[key_name]:
+            try:
+                deletion_func(model, p)
+            except IntegrityError:
+                raise (APIExceptions.PermissionDenied if detail is None
+                       else exceptions.PermissionDenied(detail=detail))
 
+        return JsonResponse(1, safe=False)
+
+    return _borrar_datos
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
@@ -120,8 +123,8 @@ def borrar_procesos(request):
     """
     detail = ('El proceso no se puede eliminar porque hay documentos o '
               'trámites ligados a él.')
-    return eliminar_datos(request, Proceso, 'procesos', eliminar_con_id,
-                          detail)
+    borrar = build_borrar(Proceso, 'procesos', eliminar_con_id, detail)
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -133,7 +136,8 @@ def eliminar_documentos(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Documento, 'documentos')
+    borrar = build_borrar(Documento, 'documentos')
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -145,7 +149,8 @@ def eliminar_tramites(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Tramitealumno, 'tramites')
+    borrar = build_borrar(Tramitealumno, 'tramites')
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -156,7 +161,8 @@ def eliminar_plantilla_carta(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Carta, 'cartas')
+    borrar = build_borrar(Carta, 'cartas')
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -168,7 +174,8 @@ def eliminar_alumnos(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)
+    borrar = build_borrar(Alumno, 'alumno', eliminar_usuarios)
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -180,7 +187,8 @@ def eliminar_administradores(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Administrador, 'admin', eliminar_usuarios)
+    borrar = build_borrar(Administrador, 'admin', eliminar_usuarios)
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -200,8 +208,9 @@ def eliminar_carta(request):
             id_carta=p['id_carta'])
         docs.delete()
 
-    return eliminar_datos(request, CartaAlumno, 'documentos',
+    borrar = build_borrar(CartaAlumno, 'documentos',
                           _eliminar_con_alumno_carta)
+    return borrar(request)
 
 
 @api_view(["POST"])
@@ -393,14 +402,18 @@ def handle_login(request, model):
     request: API request.
     model: The mysql model object.
     """
+    def _check_valid_user():
+        if user is None:
+            raise exceptions.AuthenticationFailed(
+                detail="Credenciales incorrectas")
+        if ((not user.es_admin and model == Administrador) or
+                (not user.es_alumno and model == Alumno)):
+            raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+
     email = request.POST.get('email', '')
     password = request.POST.get('password', '')
     user = authenticate(username=email, password=password)
-    if user is None:
-        raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
-    if ((not user.es_admin and model == Administrador) or
-            (not user.es_alumno and model == Alumno)):
-        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+    _check_valid_user()
     token, _ = Token.objects.get_or_create(user=user)
     logged_in_user = model.objects.get(usuario=user)
     user.last_login = now()
@@ -591,7 +604,8 @@ def return_tramite_alumnos(request, matricula):
              "matricula, encuesta, count(p.id) as pasos, "
              "IF(paso_actual=count(p.id),'TERMINADO', "
              "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
              "Paso p on ta.proceso=p.proceso where matricula = '{0}' "
              "group by numero_ticket;")
     return run_db_query(query.format(matricula))
@@ -612,7 +626,8 @@ def return_tramite_transferencia(request):
              "numero_ticket, pr.nombre, paso_actual, "
              "IF(paso_actual=count(p.id),'TERMINADO', "
              "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
              "Paso p on ta.proceso=p.proceso WHERE pr.nombre='Transferencia' "
              "group by numero_ticket;")
     return run_db_query(query)
@@ -644,14 +659,13 @@ def get_tramites_resumen(request, proceso, month, status):
     status: Status #.
     """
     del request
-    query = ('SELECT * FROM STTE.ResumenTramites '
-             'WHERE proceso = {0};').format(proceso)
+    query = 'SELECT * FROM STTE.ResumenTramites WHERE proceso = {0};'
     where = ''
     if month != "0":
         where += ' and month = {0}'.format(month)
     if status != "-1":
         where += ' and status = {0}'.format(status)
-    return run_db_query(query + where + ';')
+    return run_db_query(query.format(proceso) + where + ';')
 
 
 def get_pasos_proceso(request, proceso):
@@ -683,11 +697,9 @@ def return_procesos_pasos(request, proceso):
     request: API request.
     """
     del request
-    query = ("SELECT pr.nombre, p.nombre "
-             "FROM Paso p join Proceso pr "
-             "on p.proceso = pr.id "
-             "WHERE pr.nombre = '{0}';").format(proceso)
-    return run_db_query(query)
+    query = ("SELECT pr.nombre, p.nombre FROM Paso p join Proceso pr "
+             "on p.proceso = pr.id WHERE pr.nombre = '{0}';")
+    return run_db_query(query.format(proceso))
 
 
 def return_tramite(request, proceso):
@@ -745,7 +757,8 @@ def return_tramite_alumnos_status_week(request):
              "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
              "IF(paso_actual=count(p.id),'TERMINADO', "
              "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
              "Paso p on ta.proceso=p.proceso where "
              "week(now()) - 1 = week(fecha_ultima_actualizacion) "
              "group by numero_ticket;")
@@ -772,13 +785,14 @@ def get_datos_tramite_alumno(request, id):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
-    """Regresa los pasos del trámite dada la llave id en formato de diccionario.
+    """Regresa los pasos del trámite dada el id en formato de diccionario.
 
     Args:
     request: API request.
     """
     args = verify_post_params(request, ['id'])
-    tra = Paso.objects.filter(proceso_id=args['id']).order_by('numero').values()
+    tra = Paso.objects.filter(
+        proceso_id=args['id']).order_by('numero').values()
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
@@ -883,7 +897,8 @@ def create_letter_template(request):
     # Submit created letter data to db
     Carta.objects.create(creado_por=args['id_admin'], nombre=uploadedFile.name,
                          descripcion=args['descripcion'], fecha_creacion=ts,
-                         fecha_modificacion=ts, modificado_por=args['id_admin'])
+                         fecha_modificacion=ts,
+                         modificado_por=args['id_admin'])
 
     return JsonResponse({'message': 'File uploaded successfully'})
 
@@ -963,7 +978,8 @@ def get_student_letter(request, id_alumno, id_carta):
     html = loader.render_to_string(carta[0].nombre,
                                    dict(nombre=alumno[0].nombre,
                                         matricula=alumno[0].matricula,
-                                        siglas_carrera=alumno[0].siglas_carrera,
+                                        siglas_carrera=alumno[
+                                            0].siglas_carrera,
                                         carrera=alumno[0].carrera,
                                         semestre_en_progreso=alumno[
                                             0].semestre_en_progreso,
