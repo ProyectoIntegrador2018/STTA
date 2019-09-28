@@ -71,7 +71,7 @@ def eliminar_usuarios(model, p):
 
     Args:
     model: The mysql model object.
-    p: dictionanary of values.
+    p: dictionary of values.
     """
     doc = model.objects.get(id=p['id'])
     user = Usuario.objects.get(id=doc.usuario_id)
@@ -80,7 +80,15 @@ def eliminar_usuarios(model, p):
     return JsonResponse(1, safe=False)
 
 
-def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
+def verify_post_params(request, keys, is_json=False):
+    args = PostParametersList(request)
+    for key_name in keys:
+        args.check_parameter(key=key_name, required=True, is_json=is_json)
+    return args
+
+
+def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id,
+                   detail=None):
     """Returns JSON response from deleting a db record.
 
     Args:
@@ -88,14 +96,15 @@ def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
     model: The mysql model object.
     key_name: Name of the key to usse.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key=key_name, required=True, is_json=True)
-    print(args[key_name])
+    args = verify_post_params(request, [key_name], True)
     for p in args[key_name]:
         try:
             deletion_func(model, p)
         except IntegrityError:
-            raise APIExceptions.PermissionDenied
+            if detail is None:
+                raise APIExceptions.PermissionDenied
+            else:
+                raise exceptions.PermissionDenied(detail=detail)
 
     return JsonResponse(1, safe=False)
 
@@ -109,7 +118,10 @@ def borrar_procesos(request):
     Args:
     request: API request.
     """
-    return eliminar_datos(request, Proceso, 'procesos')
+    detail = ('El proceso no se puede eliminar porque hay documentos o '
+              'trámites ligados a él.')
+    return eliminar_datos(request, Proceso, 'procesos', eliminar_con_id,
+                          detail)
 
 
 @api_view(["POST"])
@@ -201,14 +213,9 @@ def agregar_proceso(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='nombre', required=True)
-    args.check_parameter(key='ticket', required=True, is_json=True)
-    args.check_parameter(key='fecha_apertura', required=True, is_json=True)
-    args.check_parameter(key='ultima_actualizacion', required=True,
-                         is_json=True)
-    args.check_parameter(key='matricula', required=True, is_json=True)
-    args.check_parameter(key='pasos', required=True, is_json=True)
+    args = verify_post_params(request,['nombre', 'ticket', 'fecha_apertura',
+                                       'ultima_actualizacion', 'matricula',
+                                       'pasos'], True)
     print(args['matricula'])
 
     proc = Proceso.objects.create(
@@ -235,27 +242,21 @@ def pasos_procesos(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='proceso', required=True)
-    args = args.__dict__()
+    args = verify_post_params(request, ['proceso'])
     pasos = Paso.objects.filter(proceso_id=args['proceso']).values()
     pasos = [dict(p) for p in pasos]
     return JsonResponse(pasos, safe=False)
 
 
 @api_view(["POST"])
-def registro_Alumnos(request):
+def registro_alumnos(request):
     """Guarda la información del alumno cuando se va a registrar.
 
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
-    args.check_parameter(key='password', required=True)
-    args.check_parameter(key='nombre', required=True)
-    args.check_parameter(key='apellido', required=True)
-    args = args.__dict__()
+    args = verify_post_params(request, ['email', 'password', 'nombre',
+                                        'apellido'])
     if not re.match(EMAIL_REGEX, args['email']):
         raise exceptions.PermissionDenied(detail="Email inválido")
     try:
@@ -278,10 +279,7 @@ def registro_administradores(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
-    args.check_parameter(key='nombre', required=True)
-    args = args.__dict__()
+    args = verify_post_params(request, ['email', 'nombre'])
     try:
         user = Usuario.objects.create_admin(email=args['email'],
                                             password=12345678,
@@ -327,9 +325,7 @@ def subir_documento(request):
         else:
             return now()
 
-    args = PostParametersList(request)
-    args.check_parameter(key='filename', required=True)
-    args.check_parameter(key='content', required=True)
+    args = verify_post_params(request, ['filename', 'content'])
     admin = Administrador.objects.get(usuario=request.user)
     doc = Documento.objects.create(nombre=args['filename'],
                                    contenido_subido=args['content'],
@@ -402,7 +398,8 @@ def handle_login(request, model):
     user = authenticate(username=email, password=password)
     if user is None:
         raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
-    if not user.es_admin:
+    if ((not user.es_admin and model == Administrador) or
+            (not user.es_alumno and model == Alumno)):
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
     token, _ = Token.objects.get_or_create(user=user)
     logged_in_user = model.objects.get(usuario=user)
@@ -460,8 +457,7 @@ def request_restore(request):
                 'mensaje.\n\nhttps://www.tramitesescolares.com.mx/'
                 'restaurar/{0}').format(data)
 
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
+    args = verify_post_params(request, ['email'])
     url_data = PasswordToken.request_uid_token(args['email'])
     try:
         send_mail('Restablece tu contraseña',
@@ -484,11 +480,7 @@ def reset_password(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='uid', required=True)
-    args.check_parameter(key='token', required=True)
-    args.check_parameter(key='password', required=True)
-
+    args = verify_post_params(request, ['uid', 'token', 'password'])
     check = PasswordToken.reset_password(args['uid'], args['token'],
                                          args['password'])
 
@@ -508,9 +500,7 @@ def validate_password_token(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='uid', required=True)
-    args.check_parameter(key='token', required=True)
+    args = verify_post_params(request, ['uid', 'token'])
     user = PasswordToken.validate_token(args['uid'], args['token'])
 
     if user is None:
@@ -787,9 +777,7 @@ def get_pasos_tramites(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='id', required=True)
-    args = args.__dict__()
+    args = verify_post_params(request, ['id'])
     tra = Paso.objects.filter(proceso_id=args['id']).order_by('numero').values()
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
@@ -805,8 +793,7 @@ def upload_students(request):
     Args:
     request: API request.
     """
-    args = PostParametersList(request)
-    args.check_parameter(key='content', required=True)
+    args = verify_post_params(request, ['content'])
     contenido = json.loads(args['content'])
 
     print(contenido['data'])
@@ -880,9 +867,7 @@ def create_letter_template(request):
     request: API request.
     """
     # Validate body parameters
-    args = PostParametersList(request)
-    args.check_parameter(key='id_admin', required=True)
-    args.check_parameter(key='descripcion', required=True)
+    args = verify_post_params(request, ['id_admin', 'descripcion'])
 
     print(args['id_admin'])
     print(args['descripcion'])
