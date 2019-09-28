@@ -225,24 +225,18 @@ class DashboardView extends Component {
         });
     };
     render() {
-
         return (
             <div className="graficas">
-
-
-                <Collapse defaultActiveKey={['1']} onChange={callback}>
-
+                <Collapse defaultActiveKey={['1']} onChange={}>
                     {this.state.procs.map((item, key) => (
                         <Panel header={item.nombre} key={key}>
                             <Button onClick={()=>this.getData(key, item)} style={{float:"right", width:"100px", marginRight:5}} type={"primary"}>Consultar</Button>
-
                             <Select defaultValue="-1" onChange={(value)=> this.setState({["data_"+key+"status"]:value})}  style={{float:"right", width:"200px", marginRight:5}}>
                                 <Select.Option value="-1">Todos los status</Select.Option>
                                 <Select.Option value="0">Iniciado</Select.Option>
                                 <Select.Option value="1">En Proceso</Select.Option>
                                 <Select.Option value="2">Finalizado</Select.Option>
                             </Select>
-
                             <Select defaultValue="0"  onChange={(value)=> this.setState({["data_"+key+"month"]:value})}   style={{float:"right", width:"200px", marginRight:5}}>
                                 <Select.Option value="0">Todos los meses</Select.Option>
                                 <Select.Option value="1">Enero</Select.Option>
@@ -267,11 +261,7 @@ class DashboardView extends Component {
                                 subTitle="Total"
                                 total={() => (
                                     <Spin spinning={this.state["data_"+key+"spinner"]}>
-                                    <span
-                                        dangerouslySetInnerHTML={{
-                                            __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))
-                                        }}
-                                    />
+                                    <span dangerouslySetInnerHTML={{ __html: ((this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []).reduce((pre, now) => now.y + pre, 0))}}/>
                                     </Spin>
                                 )}
                                 data={this.state["data_"+key+"xy"] ? this.state["data_"+key+"xy"]  : []}
@@ -280,11 +270,7 @@ class DashboardView extends Component {
                             />
                         </Panel>)
                     )}
-
-
                 </Collapse>
-
-
             </div>
         );
     }
