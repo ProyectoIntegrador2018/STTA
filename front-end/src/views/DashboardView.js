@@ -180,7 +180,6 @@ class DashboardView extends Component {
             success:(response) => {
                 let datos = [];
                 console.log(response)
-
                 for (let i in response) { this.getData(i, response[i]); }
                 this.setState({procesos: datos, procs: response});
             },
@@ -227,7 +226,7 @@ class DashboardView extends Component {
     render() {
         return (
             <div className="graficas">
-                <Collapse defaultActiveKey={['1']} onChange={}>
+                <Collapse defaultActiveKey={['1']}>
                     {this.state.procs.map((item, key) => (
                         <Panel header={item.nombre} key={key}>
                             <Button onClick={()=>this.getData(key, item)} style={{float:"right", width:"100px", marginRight:5}} type={"primary"}>Consultar</Button>
