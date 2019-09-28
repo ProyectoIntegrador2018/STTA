@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, HttpResponse
-from django.db import transaction,IntegrityError
+from django.db import transaction, IntegrityError
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, urlencode
 from rest_framework.response import Response
@@ -31,144 +31,295 @@ from weasyprint import HTML
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
-#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
-#                                                           #Cuenta los pasos de un proceso
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def procesos(request):
+    """Cuenta los pasos de un proceso."""
     procs = Proceso.objects.values().annotate(pasos=Count('paso'))
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra procesos del sistema
-@api_view(["POST"])
+
+@api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def borrar_procesos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='procesos', required=True, is_json=True)
+def return_student(request, id_alumno):
+    """Recuperar el alumno en formato json.
+    Args:
+    request: HTTP request.
+    id_alumno: Numero de id de alumno.
+    """
+    del request
+    stu = Alumno.objects.filter(id=id_alumno)
+    stu = serializers.serialize('json', stu)
+    return HttpResponse(stu, content_type='application/json')
 
-    print(args['procesos'])
 
-    for p in args['procesos']:
-        try:
-            proc = Proceso.objects.get(id=p['id'])
-            proc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(
-                detail="El proceso ("+str(p['id'])+") no se puede eliminar porque hay documentos o trámites ligados a él.")
+def eliminar_con_id(model, p):
+    """Delete from db using id.
 
+    Args:
+    model: The mysql model object.
+    p: dictionanary of values.
+    """
+    doc = model.objects.get(id=p['id'])
+    doc.delete()
+
+
+def eliminar_usuarios(model, p):
+    """Delete from db using id, then usuario_id.
+
+    Args:
+    model: The mysql model object.
+    p: dictionary of values.
+    """
+    doc = model.objects.get(id=p['id'])
+    user = Usuario.objects.get(id=doc.usuario_id)
+    user.delete()
+    doc.delete()
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra un documento dado un id pasado en request
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_documentos(request):
+
+def verify_post_params(request, keys, is_json=False):
     args = PostParametersList(request)
-    args.check_parameter(key='documentos', required=True, is_json=True)
-    print(args['documentos'])
-    for p in args['documentos']:
+    for key_name in keys:
+        args.check_parameter(key=key_name, required=True, is_json=is_json)
+    return args
+
+
+def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
+    """Returns JSON response from deleting a db record.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, [key_name], True)
+    for p in args[key_name]:
         try:
-            doc = Documento.objects.get(id=p['id'])
-            doc.delete()
+            deletion_func(model, p)
         except IntegrityError:
             raise APIExceptions.PermissionDenied
 
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Registra los procesos nuevos en la base de datos
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def borrar_procesos(request):
+    """Returns JSON response from deleting documents.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Proceso, 'procesos')
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_documentos(request):
+    """Returns JSON response from deleting documents.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Documento, 'documentos')
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_tramites(request):
+    """Returns JSON response from deleting tramitealumnos.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Tramitealumno, 'tramites')
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def eliminar_plantilla_carta(request):
+    """Returns JSON response from deleting a letter template.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Carta, 'cartas')
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_alumnos(request):
+    """Returns JSON response from deleting students.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_administradores(request):
+    """Returns JSON response from deleting admins.
+
+    Args:
+    request: API request.
+    """
+    return eliminar_datos(request, Administrador, 'admin', eliminar_usuarios)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def eliminar_carta(request):
+    """Returns JSON response from deleting a letter.
+
+    Args:
+    request: API request.
+    """
+
+    def _eliminar_con_alumno_carta(model, p):
+        # TODO utilize fecha_creacion.
+        docs = model.objects.filter(
+            id_alumno=p['id_alumno'],
+            id_carta=p['id_carta'])
+        docs.delete()
+
+    return eliminar_datos(request, CartaAlumno, 'documentos',
+                          _eliminar_con_alumno_carta)
+
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def agregar_proceso(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='nombre', required=True)
-    args.check_parameter(key='ticket', required=True, is_json=True)
-    args.check_parameter(key='fecha_apertura', required=True, is_json=True)
-    args.check_parameter(key='ultima_actualizacion', required=True, is_json=True)
-    args.check_parameter(key='matricula', required=True, is_json=True)
-    args.check_parameter(key='pasos', required=True, is_json=True)
+    """Registra los procesos nuevos en la base de datos.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['nombre', 'ticket', 'fecha_apertura',
+                                        'ultima_actualizacion', 'matricula',
+                                        'pasos'], True)
     print(args['matricula'])
 
-    proc = Proceso.objects.create(nombre=args['nombre'],
-                           columna_matricula=args['matricula']['key'],
-                           columna_ticket=args['ticket']['key'],
-                           columna_fecha_ultima_actualizacion=args['ultima_actualizacion']['key'],
-                           columna_fecha_inicio=args['fecha_apertura']['key'])
+    proc = Proceso.objects.create(
+        nombre=args['nombre'], columna_matricula=args['matricula']['key'],
+        columna_ticket=args['ticket']['key'],
+        columna_fecha_ultima_actualizacion=args['ultima_actualizacion']['key'],
+        columna_fecha_inicio=args['fecha_apertura']['key'])
 
     for p in args['pasos']:
         print(p)
-        p = Paso.objects.create(proceso=proc, nombre=p['nombre'], columna_csv=p['columna_csv'],
-                                nombre_mostrar=p['nombre_mostrar'], mostrar=p['mostrar'], numero=p['numero'])
+        p = Paso.objects.create(proceso=proc, nombre=p['nombre'],
+                                columna_csv=p['columna_csv'],
+                                nombre_mostrar=p['nombre_mostrar'],
+                                mostrar=p['mostrar'], numero=p['numero'])
 
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
-#                                                           #Regresa los pasos de un proceso
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def pasos_procesos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='proceso', required=True)
-    args = args.__dict__()
+    """Regresa los pasos de un proceso en un archivo diccinario.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['proceso'])
     pasos = Paso.objects.filter(proceso_id=args['proceso']).values()
     pasos = [dict(p) for p in pasos]
     return JsonResponse(pasos, safe=False)
 
-#                                                           # Entrada: email, password, nombre, apellido; Salida: none.
-#                                                           # Metodo para guardar en la base de datos la información del
-#                                                           # alumno cuando se va a registrar.
+
 @api_view(["POST"])
-def registro_Alumnos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
-    args.check_parameter(key='password', required=True)
-    args.check_parameter(key='nombre', required=True)
-    args.check_parameter(key='apellido', required=True)
-    args = args.__dict__()
+def registro_alumnos(request):
+    """Guarda la información del alumno cuando se va a registrar.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['email', 'password', 'nombre',
+                                        'apellido'])
     if not re.match(EMAIL_REGEX, args['email']):
         raise exceptions.PermissionDenied(detail="Email inválido")
     try:
         user = Usuario.objects.create_alumno(
-          email=args['email'],
-          password=args['password'],
-          nombre=args['nombre'],
-          apellido=args['apellido'],
-          matricula=args['email'].split('@')[0].upper()
+            email=args['email'],
+            password=args['password'],
+            nombre=args['nombre'],
+            apellido=args['apellido'],
+            matricula=args['email'].split('@')[0].upper()
         )
     except IntegrityError as e:
         raise exceptions.PermissionDenied(detail="Email ya registrado")
     return JsonResponse(1, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Un archivo diccinario
-#                                                           #Regresa el registro de archivos subidos por administradores usuario
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def registro_administradores(request):
+    """Registra un administrador.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['email', 'nombre'])
+    try:
+        user = Usuario.objects.create_admin(email=args['email'],
+                                            password=12345678,
+                                            nombre=args['nombre'])
+    except IntegrityError as e:
+        raise exceptions.PermissionDenied(detail="Email ya registrado")
+    return JsonResponse(1, safe=False)
+
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def documentos(request):
-    docs = Documento.objects.select_related('admin__usuario').values('id','nombre', 'fecha', 'contenido_subido',
-                                                                     email=F('admin__usuario__email'),
-                                                                     id_admin=F('admin_id'))
+    """Regresa el registro de archivos subidos por administradores usuario.
 
+    Args:
+    request: API request.
+    """
+    docs = Documento.objects.select_related('admin__usuario').values(
+        'id', 'nombre', 'fecha', 'contenido_subido',
+        email=F('admin__usuario__email'), id_admin=F('admin_id'))
     print(docs)
     docs = [dict(p) for p in docs]
     return JsonResponse(docs, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Sube los documentos .csv a la base de datos
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def subir_documento(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='filename', required=True)
-    args.check_parameter(key='content', required=True)
+    """Sube los documentos .csv a la base de datos.
+
+    Args:
+    request: API request.
+    """
+    def _validate_date(date_name):
+        if c[date_name]:
+            try:
+                return datetime.strptime(c[date_name], '%d/%m/%y')
+            except:
+                raise exceptions.PermissionDenied(
+                    ("El formato de la fecha [ {0} ] es inválido. "
+                     "El formato debe ser: D/M/A").format(c[date_name]))
+        else:
+            return now()
+
+    args = verify_post_params(request, ['filename', 'content'])
     admin = Administrador.objects.get(usuario=request.user)
-    doc = Documento.objects.create(nombre=args['filename'], contenido_subido=args['content'], admin=admin,
-                                proceso_id=args['proceso'])
+    doc = Documento.objects.create(nombre=args['filename'],
+                                   contenido_subido=args['content'],
+                                   admin=admin, proceso_id=args['proceso'])
 
     contenido = json.loads(args['content'])
 
@@ -176,150 +327,175 @@ def subir_documento(request):
     for c in contenido['data']:
         print(c)
 
-        fecha_1 = now()
-        fecha_2 = now()
-        if  c['fecha_apertura'] != None and c['fecha_apertura'] != "":
-            try:
-                fecha_1 = datetime.strptime(c['fecha_apertura'], '%d/%m/%y')
-            except:
-                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es inválido. El formato debe ser: D/M/A")
-        if c['fecha_ultima'] != None and c['fecha_ultima'] != "":
-            try:
-                fecha_2 = datetime.strptime(c['fecha_ultima'], '%d/%m/%y')
-            except:
-                raise exceptions.PermissionDenied("El formato de la fecha [ "+c['fecha_ultima']+" ] es inválido. El formato debe ser: D/M/A")
+        fecha_1 = _validate_date('fecha_apertura')
+        fecha_2 = _validate_date('fecha_ultima')
+
         p_ok = 0
         p = 1
-        while (('paso_' + str(p)) in c ):
+        while (('paso_' + str(p)) in c):
             if c['paso_' + str(p)] == 'ok':
                 p_ok = p
             p = p + 1
-        paso = None
-        if p_ok != -1:
-            paso = Paso.objects.filter(proceso_id=args['proceso'], numero=p_ok).first()
-        else:
-            paso = Paso.objects.filter(proceso_id=args['proceso'], numero=1).first()
 
-        num_results = Tramitealumno.objects.filter(numero_ticket=c['ticket']).count()
+        paso = Paso.objects.filter(proceso_id=args['proceso'],
+                                   numero=p_ok if p_ok != -1 else 1).first()
+
+        num_results = Tramitealumno.objects.filter(
+            numero_ticket=c['ticket']).count()
         if num_results > 0:
-            tra = Tramitealumno.objects.filter(numero_ticket=c['ticket']).first()
+            tra = Tramitealumno.objects.filter(
+                numero_ticket=c['ticket']).first()
             tra.fecha_ultima_actualizacion = fecha_2
             tra.paso_actual = paso
             tra.numero_paso_actual = p_ok
             tra.save()
         else:
-            tra = Tramitealumno.objects.create(matricula=c['matricula'],
-            numero_ticket=c['ticket'],proceso_id=args['proceso'],
-            fecha_inicio = fecha_1, fecha_ultima_actualizacion=fecha_2,
-            paso_actual=paso, numero_paso_actual=p_ok)
+            tra = Tramitealumno.objects.create(
+                matricula=c['matricula'], numero_ticket=c['ticket'],
+                proceso_id=args['proceso'], fecha_inicio=fecha_1,
+                fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
+                numero_paso_actual=p_ok)
 
-        finished_step = Paso.objects.filter(proceso_id=args['proceso']).order_by('-numero').first()
+        finished_step = Paso.objects.filter(
+            proceso_id=args['proceso']).order_by('-numero').first()
         if paso == finished_step:
-          send_mail(
-            'Tu trámite #{} ha sido completado. Evalúa los trámites escolares'.format(c['ticket']),
-            email_text_for_completed_procedure(c['ticket']),
-            'tramites.escolares@tec.mx',
-            ["{}@itesm.mx".format(c['matricula'])], fail_silently=False)
+            send_mail(('Tu trámite #{0} ha sido completado. '
+                       'Evalúa los trámites escolares').format(c['ticket']),
+                      email_text_for_completed_procedure(c['ticket']),
+                      'tramites.escolares@tec.mx',
+                      ["{}@itesm.mx".format(c['matricula'])],
+                      fail_silently=False)
 
     return JsonResponse(doc.id, safe=False)
 
 
 def email_text_for_completed_procedure(ticket_id):
-    return 'Hola,\n\nEste mensaje es para avisarte que tu trámite #{} ha sido completado el día de hoy.\n\nPor favor realiza la siguiente encuesta sobre tu experiencia https://forms.gle/GzcmC4f9cmFKS2ee9'.format(ticket_id)
+    return ('Hola,\n\nEste mensaje es para avisarte que tu trámite #{0} '
+            'ha sido completado el día de hoy.\n\nPor favor realiza la '
+            'siguiente encuesta sobre tu experiencia '
+            'https://forms.gle/GzcmC4f9cmFKS2ee9').format(ticket_id)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Corrobora las credenciales en el inicio de sesión del administrador
+
+def check_valid_user(user, model):
+    if user is None:
+        raise exceptions.AuthenticationFailed(
+            detail="Credenciales incorrectas")
+    if ((not user.es_admin and model == Administrador) or
+            (not user.es_alumno and model == Alumno)):
+        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+
+
+def handle_login(request, model):
+    """Handles generic login for user.
+
+    Args:
+    request: API request.
+    model: The mysql model object.
+    """
+    email = request.POST.get('email', '')
+    password = request.POST.get('password', '')
+    user = authenticate(username=email, password=password)
+    check_valid_user(user, model)
+    token, _ = Token.objects.get_or_create(user=user)
+    logged_in_user = model.objects.get(usuario=user)
+    user.last_login = now()
+    user.save()
+    return logged_in_user, user, token
+
 @api_view(["POST"])
 def login_admin(request):
-    email = request.POST.get('email','')
-    password = request.POST.get('password','')
-    user = authenticate(username=email, password=password)
-    if user == None:
-        raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
-    if not user.es_admin:
-        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
-    token, _ = Token.objects.get_or_create(user=user)
-    al = Administrador.objects.get(usuario=user)
-    user.last_login = now()
-    user.save()
-    return JsonResponse({'token': token.key, 'nombre': al.nombre, 'email': user.email, 'is_superuser': user.is_superuser}, safe=False)
+    """Corrobora las credenciales en el inicio de sesión del administrador.
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Corrobora las credenciales del inicio de sesión del estudiante
+    Args:
+    request: API request.
+    """
+    admin, user, token = handle_login(request, Administrador)
+    return JsonResponse({'token': token.key, 'nombre': admin.nombre,
+                         'email': user.email,
+                         'is_superuser': user.is_superuser}, safe=False)
+
+
 @api_view(["POST"])
 def login_student(request):
-    email = request.POST.get('email','')
-    password = request.POST.get('password','')
-    user = authenticate(username=email, password=password)
-    if user == None:
-        raise exceptions.AuthenticationFailed(detail="Credenciales incorrectas")
-    if not user.es_alumno:
-        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
-    token, _ = Token.objects.get_or_create(user=user)
-    al = Alumno.objects.get(usuario=user)
-    user.last_login = now()
-    user.save()
-    return JsonResponse({'token': token.key, 'matricula':user.email, 'nombre':al.nombre + " " +al.apellido}, safe=False)
+    """Corrobora las credenciales del inicio de sesión del estudiante.
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Cierra la sesión del usuario actual
+    Args:
+    request: API request.
+    """
+    al, user, token = handle_login(request, Alumno)
+    return JsonResponse({'token': token.key, 'matricula': user.email,
+                         'nombre': al.nombre + " " + al.apellido}, safe=False)
+
+
 @api_view(["POST"])
-@permission_classes((IsAuthenticated, ))
+@permission_classes((IsAuthenticated,))
 def logout(request):
+    """Cierra la sesión del usuario actuale.
+
+    Args:
+    request: API request.
+    """
     request.user.auth_token.delete()
     return JsonResponse("SESION CERRADA de " + request.user.email, safe=False)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Envía la respuesta html para restablecer la contrseña
+
 @api_view(["POST"])
 def request_restore(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
+    """Envía la respuesta html para restablecer la contraseña.
+
+    Args:
+    request: API request.
+    """
+    def _email_password_reset_plaintext(data):
+        return ('Hola,\n\nEste mensaje es para restablecer tu contraseña. '
+                'Si no solicitaste restablecer tu contraseña, ignora este '
+                'mensaje.\n\nhttps://www.tramitesescolares.com.mx/'
+                'restaurar/{0}').format(data)
+
+    args = verify_post_params(request, ['email'])
     url_data = PasswordToken.request_uid_token(args['email'])
     try:
-        send_mail(
-            'Restablece tu contraseña',
-            email_password_reset_plaintext(url_data.uid + '/' + url_data.token),
-            'tramites.escolares@tec.mx',
-            [request.data['email']],
-            fail_silently=False)
+        send_mail('Restablece tu contraseña',
+                  _email_password_reset_plaintext(url_data.uid + '/' +
+                                                  url_data.token),
+                  'tramites.escolares@tec.mx', [request.data['email']],
+                  fail_silently=False)
     except:
         raise APIExceptions.SendMailError
 
     return JsonResponse(1, safe=False)
 
-#def email_password_reset_html(url_data):
-#    return loader.render_to_string('../templates/mailTemplate.html', {'token' : url_data})
 
-def email_password_reset_plaintext(url_data):
-    return 'Hola,\n\nEste mensaje es para restablecer tu contraseña. Si no solicitaste restablecer tu contraseña, ignora este mensaje.\n\nhttps://www.tramitesescolares.com.mx/restaurar/{}'.format(url_data)
-
-#                                                           #Entrada: Nada ; Salida: check
-#                                                           #Procedimiento almacenado que se encarga de verificar que el reseteo
-#                                                           # de la contraseña sea válido, si es así entonces manda un check, si no manda una excepción
 @api_view(["POST"])
 def reset_password(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='uid', required=True)
-    args.check_parameter(key='token', required=True)
-    args.check_parameter(key='password', required=True)
+    """Verificar que el reseteo de la contraseña sea válido.
 
-    check = PasswordToken.reset_password(args['uid'], args['token'],args['password'])
+    Si es así entonces manda un check, si no manda una excepción.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['uid', 'token', 'password'])
+    check = PasswordToken.reset_password(args['uid'], args['token'],
+                                         args['password'])
 
     if check:
         check.is_active = True
         check.save()
         return JsonResponse(1 if check and check.es_admin else 2, safe=False)
     else:
-        raise APIExceptions.InvalidToken.set(detail="Reseteo de contraseña inválido")
+        raise APIExceptions.InvalidToken.set(
+            detail="Reseteo de contraseña inválido")
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Valida que los tokens de contraseña proporcionados sean válidos
+
 @api_view(["POST"])
 def validate_password_token(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='uid', required=True)
-    args.check_parameter(key='token', required=True)
+    """Valida los tokens de contraseña proporcionados.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['uid', 'token'])
     user = PasswordToken.validate_token(args['uid'], args['token'])
 
     if user is None:
@@ -327,302 +503,293 @@ def validate_password_token(request):
     else:
         return JsonResponse(1, safe=False)
 
-#                                                           # Entrada: nada; Salida: una lista con todos los admins con
-#                                                           # su informacion de usuario
-#                                                           # Regresa la lista entera de administradores
+
+def return_user_list(user_type):
+    users = user_type.objects.select_related('usuario').values(
+        'id', 'nombre', 'usuario__id', email=F('usuario__email'),
+        last_login=F('usuario__last_login'))
+    users = [dict(user) for user in users]
+    return JsonResponse(users, safe=False)
+
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_admin_list(request):
-    admins = Administrador.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
-    admins = [dict(adm) for adm in admins]
-    return JsonResponse(admins, safe=False)
+    """Regresa la lista entera de administradores.
+
+    Args:
+    request: API request.
+    """
+    del request
+    return return_user_list(Administrador)
 
 
-#                                                           # Entrada: nada; Salida: lista con toda la informacion de
-#                                                           # usuario de de los alumnos
-#                                                           # Se recuperan los datos de todos los alumnos y se envían en
-#                                                           # formato json
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
-    stu = Alumno.objects.select_related('usuario').values('id','nombre','usuario__id', email=F('usuario__email'), last_login=F('usuario__last_login'))
-    stu = [dict(adm) for adm in stu]
-    return JsonResponse(stu, safe=False)
+    """Regresa la lista entera de alumnos.
 
-#                                                           # Entrada: numero de id de alumno ; Salida: todos sus datos
-#                                                           # Se usa filter para recuperar el alumno, entonces se
-#                                                           # serializa el contenido y se regresa en formato json, se
-#                                                           # envía mediante HTTPResponse
-@api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def return_student(request,id_alumno):
-    stu = Alumno.objects.filter(id=id_alumno)
-    stu = serializers.serialize('json',stu)
-    return HttpResponse(stu, content_type='application/json')
+    Args:
+    request: API request.
+    """
+    del request
+    return return_user_list(Alumno)
 
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra de 1 a N alumnos
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_alumnos(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='alumno', required=True, is_json=True)
-    print(args['alumno'])
-    for a in args['alumno']:
-        try:
-            doc = Alumno.objects.get(id=a['id'])
-            user = Usuario.objects.get(id=doc.usuario_id)
-            user.delete()
-            doc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(detail="No se pudo eliminar el alumno")
 
-    return JsonResponse(1, safe=False)
-
-#                                                           #Entrada: Nada ; Salida: Nada
-#                                                           #Borra de 1 a N administradores
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_administradores(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='admin', required=True, is_json=True)
-    print(args['admin'])
-    for a in args['admin']:
-        try:
-            doc = Administrador.objects.get(id=a['id'])
-            user = Usuario.objects.get(id=doc.usuario_id)
-            user.delete()
-            doc.delete()
-        except IntegrityError:
-            raise exceptions.PermissionDenied(detail="No se puede eliminar el usuario. Puede ser que el usuario tengo documentos registrados.")
-
-    return JsonResponse(1, safe=False)
-
-#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
-#                                                           #Registra un administrador
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_tramites(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='tramites', required=True, is_json=True)
-    print(args['tramites'])
-    for a in args['tramites']:
-        try:
-            doc = Tramitealumno.objects.get(id=a['id'])
-            doc.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-
-    return JsonResponse(1, safe=False)
-
-#                                                           #Entrada: Parametro de lista POST ; Salida: Nada
-#                                                           #Registra un administrador
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def registro_administradores(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='email', required=True)
-    args.check_parameter(key='nombre', required=True)
-    args = args.__dict__()
-    try:
-        user = Usuario.objects.create_admin(email=args['email'], password=12345678, nombre=args['nombre'])
-    except IntegrityError as e:
-        raise exceptions.PermissionDenied(detail="Email ya registrado")
-    return JsonResponse(1, safe=False)
-
-#                                                           # Entrada: nada; Salida: lista con toda la informacion de
-#                                                           # tramites de alumnos
-#                                                           # Se recuperan los datos del tramite y se envían en formato
-#                                                           # json
 @api_view(["GET", "POST"])
-#@permission_classes((IsAuthenticated, EsAdmin))
+# @permission_classes((IsAuthenticated, EsAdmin))
 def return_datos_tramite(request):
-    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket', 'fecha_inicio', 'numero_paso_actual','proceso__nombre',
-                                                                                          'fecha_ultima_actualizacion')
+    """Recupera los datos del tramite y se envían en formato json.
+
+    Args:
+    request: API request.
+    """
+    del request
+    tra = Tramitealumno.objects.select_related('proceso').values(
+        'id', 'matricula', 'numero_ticket', 'fecha_inicio',
+        'numero_paso_actual', 'proceso__nombre', 'fecha_ultima_actualizacion')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: cursos; Salida: Los atributos pasados en la entrada
-#                                                          # en formato de diccionario
-def dictfetchall(cursor):
-    desc = cursor.description
-    return [dict(zip([col[0] for col in desc], row))
-              for row in cursor.fetchall()]
 
-#                                                          # Entrada: matricula; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual dada una matricula de usuario
-#                                                          # en formato de diccionario
-@api_view(["GET"])
-#@permission_classes((IsAuthenticated, EsAdmin))
-def return_tramite_alumnos(request,matricula):
+def run_db_query(query):
+    """Helper function to run a sql query.
+
+    Args:
+    query: Query string.
+    """
     from django.db import connection
     cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual,numero_paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   'where matricula =' + "'" + matricula + "'" +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
+    cursor.execute(query)
+    tra = [dict(zip([col[0] for col in cursor.description], row))
+           for row in cursor.fetchall()]
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: nada; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del trámite actual donde el nombre del proceso se llame Transferencia
-#                                                          # en formato de diccionario
+
+@api_view(["GET"])
+# @permission_classes((IsAuthenticated, EsAdmin))
+def return_tramite_alumnos(request, matricula):
+    """Regresa los tramites de alumnos.
+
+    Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de
+    proceso, paso actual del trámite actual dada una matricula de usuario en
+    formato de diccionario.
+
+    Args:
+    request: API request.
+    matricula: Student ID.
+    """
+    del request
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "numero_paso_actual, fecha_inicio, "
+             "fecha_ultima_actualizacion, numero_ticket, "
+             "matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso where matricula = '{0}' "
+             "group by numero_ticket;")
+    return run_db_query(query.format(matricula))
+
+
 def return_tramite_transferencia(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso' +
-                   ' WHERE pr.nombre="Transferencia" ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa los tramites de transferencia.
 
-#                                                          # Entrada: nada; Salida: Los nombres de los pasos y proceso donde el nombre del proceso se llame Transferencia
-#                                                          # en formato de diccionario
+    Los atributos de fecha de inicio, fecha de ultima actualizacion,
+    nombre de proceso,paso actual del trámite actual donde el nombre del
+    proceso se llame Transferencia en formato de diccionario.
+
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, pr.nombre, paso_actual, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso WHERE pr.nombre='Transferencia' "
+             "group by numero_ticket;")
+    return run_db_query(query)
+
+
 def return_tramite_transferencia_pasos(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT pr.nombre, p.nombre ' +
-                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
-                   ' WHERE pr.nombre="Transferencia" ')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa los pasos de tramites de transferencia.
 
-#                                                          # Entrada: month y status; Salida: Todas las columnas de ResumenTramites
-#                                                          # en formato de diccionario
+    Los nombres de los pasos y proceso donde el nombre del
+    proceso se llame Transferencia en formato de diccionario
+
+    Args:
+    request: API request.
+    """
+    del request
+    query = ('SELECT pr.nombre, p.nombre '
+             'FROM Paso p join Proceso pr on p.proceso=pr.id '
+             'WHERE pr.nombre="Transferencia";')
+    return run_db_query(query)
+
+
 def get_tramites_resumen(request, proceso, month, status):
-    from django.db import connection
-    cursor = connection.cursor()
-    if month == "0":
-        cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                       'where proceso = {0} and status = {1};'.format(proceso, status))
-        if status == "-1":
-            cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                           'where proceso = {0};'.format(proceso))
-    else:
-        cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                       'where proceso = {0} and status = {1} and month = {2};'.format(proceso, status, month))
-        if status == "-1":
-            cursor.execute('SELECT * FROM STTE.ResumenTramites '
-                           'where proceso = {0} and month = {1};'.format(proceso, month))
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa todas las columnas de ResumenTramites en formato de diccionario.
 
-#                                                          # Entrada: proceso; Salida: Todos los atributos de Paso
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    proceso: Process #.
+    month: Month #.
+    status: Status #.
+    """
+    del request
+    query = 'SELECT * FROM STTE.ResumenTramites WHERE proceso = {0};'
+    where = ''
+    if month != "0":
+        where += ' and month = {0}'.format(month)
+    if status != "-1":
+        where += ' and status = {0}'.format(status)
+    return run_db_query(query.format(proceso) + where + ';')
+
+
 def get_pasos_proceso(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM STTE.Paso '
-                   'where proceso = {0}'.format(proceso))
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa todos los atributos de Paso en formato de diccionario.
 
-#                                                          # Entrada: nada; Salida: Todos los atributos de Proceso
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = 'SELECT * FROM STTE.Paso WHERE proceso = {0};'
+    return run_db_query(query.format(proceso))
+
+
 def return_procesos(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT * ' +
-                   'FROM Proceso pr')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa todos los atributos de Proceso en formato de diccionario.
 
-#                                                          # Entrada: proceso; Salida: Los atributos de nombre de proceso y nombre de paso de Paso
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = 'SELECT * FROM Proceso pr'
+    return run_db_query(query)
+
+
 def return_procesos_pasos(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT pr.nombre, p.nombre ' +
-                   'FROM Paso p join Proceso pr on p.proceso=pr.id' +
-                   ' WHERE pr.nombre=' + "'" + proceso + "'")
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa nombre de proceso y de paso en formato de diccionario.
 
-#                                                          # Entrada: proceso; Salida: Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de proceso, paso actual del proceso actual
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT pr.nombre, p.nombre FROM Paso p join Proceso pr "
+             "on p.proceso = pr.id WHERE pr.nombre = '{0}';")
+    return run_db_query(query.format(proceso))
+
+
 def return_tramite(request, proceso):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "pr.nombre, paso_actual, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso' +
-                   ' WHERE pr.nombre=' + "'" + proceso + "'" +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa tramites en formato de diccionario.
 
-#                                                          # Entrada: nada; Salida: Todos los atributos del trámite actual del alumno que invoca la función
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, pr.nombre, paso_actual, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso "
+             "WHERE pr.nombre= '{0}' group by numero_ticket;")
+    return run_db_query(query.format(proceso))
+
+
 @api_view(["GET"])
-#@permission_classes((IsAuthenticated, EsAdmin))
+# @permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   'where year(now()) = year(fecha_ultima_actualizacion) and  month(now()) = month(fecha_ultima_actualizacion) ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa todos los atributos del trámite actual del alumno.
 
-#                                                          # Entrada: nada; Salida: Todos los atributos de tramite actual por semana del alumno que la invoca
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso "
+             "where year(now()) = year(fecha_ultima_actualizacion) "
+             "and month(now()) = month(fecha_ultima_actualizacion) "
+             "group by numero_ticket;")
+    return run_db_query(query)
+
+
 @api_view(["GET"])
-#@permission_classes((IsAuthenticated, EsAdmin))
+# @permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status_week(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT ta.id, pr.nombre, alumno, paso_actual, fecha_inicio, fecha_ultima_actualizacion, numero_ticket, ' +
-                   "matricula, encuesta, count(p.id) as pasos, IF(paso_actual=count(p.id),'TERMINADO',IF(paso_actual=0,'INICIADO','ENPROCESO')) as status " +
-                   'FROM TramiteAlumno ta join Proceso pr on ta.proceso = pr.id join'+
-                   ' Paso p on ta.proceso=p.proceso ' +
-                   ' where week(now()) - 1 = week(fecha_ultima_actualizacion) ' +
-                   ' group by numero_ticket')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Regresa todos los atributos de tramite actual por semana.
 
-#                                                          # Entrada: id; Salida: Datos sobre el proceso del trámite actual del alumno que invoca la función
-#                                                          # en formato de diccionario
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
+             "fecha_inicio, fecha_ultima_actualizacion, "
+             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
+             "IF(paso_actual=count(p.id),'TERMINADO', "
+             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+             "FROM TramiteAlumno ta join Proceso pr "
+             "on ta.proceso = pr.id join "
+             "Paso p on ta.proceso=p.proceso where "
+             "week(now()) - 1 = week(fecha_ultima_actualizacion) "
+             "group by numero_ticket;")
+    return run_db_query(query)
+
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
-def get_datos_tramite_alumno(request,id):
+def get_datos_tramite_alumno(request, id):
+    """Regresa datos sobre el proceso del trámite actual.
 
-    tra = Tramitealumno.objects.select_related('proceso').values('id','matricula', 'numero_ticket',
-                                                                 'proceso__nombre', 'proceso_id',
-                                                                 'fecha_inicio', 'paso_actual', 'numero_paso_actual',
-                                                                 'fecha_ultima_actualizacion').filter(
-                                                                 id=id)
+    Args:
+    request: API request.
+    """
+    del request
+    tra = Tramitealumno.objects.select_related('proceso').values(
+        'id', 'matricula', 'numero_ticket', 'proceso__nombre', 'proceso_id',
+        'fecha_inicio', 'paso_actual', 'numero_paso_actual',
+        'fecha_ultima_actualizacion').filter(id=id)
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
-#                                                          # Entrada: nada; Salida: Los pasoa del trámite dada la llave id
-#                                                          # en formato de diccionario
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_pasos_tramites(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='id', required=True)
-    args = args.__dict__()
-    tra = Paso.objects.filter(proceso_id=args['id']).order_by('numero').values()
+    """Regresa los pasos del trámite dada el id en formato de diccionario.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['id'])
+    tra = Paso.objects.filter(
+        proceso_id=args['id']).order_by('numero').values()
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
+
 
 # New API functions LBRL
 
 # Database handler - Alumnos
 @api_view(["POST"])
 def upload_students(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='content', required=True)
+    """Creates or updates a student.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['content'])
     contenido = json.loads(args['content'])
 
     print(contenido['data'])
@@ -631,17 +798,28 @@ def upload_students(request):
 
     for alumno in alumnosJson:
         # Dando de alta información en la tabla de alumnos
-        counter = Alumno.objects.filter(matricula = alumno['Matricula']).count()
+        counter = Alumno.objects.filter(matricula=alumno['Matricula']).count()
         if counter == 0:
             # Crear nuevo usuario en la base de datos
-            usuario = Usuario.objects.create(email = alumno['Email'], password = alumno['Contraseña'], is_staff=True, is_superuser=True, es_alumno=True)
+            usuario = Usuario.objects.create(email=alumno['Email'],
+                                             password=alumno['Contraseña'],
+                                             is_staff=True, is_superuser=True,
+                                             es_alumno=True)
             # Crear nuevo alumno en la base de datos
-            Alumno.objects.create(nombre = alumno['Nombre'], usuario = usuario, matricula = alumno['Matricula'], siglas_carrera = alumno['Siglas Carrera'], carrera = alumno['Carrera'],
-            semestre_en_progreso = alumno['Semestre en Progreso'], periodo_de_aceptacion = alumno['Periodo de Aceptacion'],
-            posible_graduacion = alumno['Posible Graduacion'], fecha_de_nacimiento = alumno['Fecha de Nacimiento'], nacionalidad = alumno['Nacionalidad'])
+            Alumno.objects.create(
+                nombre=alumno['Nombre'], usuario=usuario,
+                matricula=alumno['Matricula'],
+                siglas_carrera=alumno['Siglas Carrera'],
+                carrera=alumno['Carrera'],
+                semestre_en_progreso=alumno['Semestre en Progreso'],
+                periodo_de_aceptacion=alumno['Periodo de Aceptacion'],
+                posible_graduacion=alumno['Posible Graduacion'],
+                fecha_de_nacimiento=alumno['Fecha de Nacimiento'],
+                nacionalidad=alumno['Nacionalidad'])
         else:
-            #Actualizar alumno existente
-            alumno_db = Alumno.objects.filter(matricula = alumno['Matricula']).first()
+            # Actualizar alumno existente
+            alumno_db = Alumno.objects.filter(
+                matricula=alumno['Matricula']).first()
             alumno_db.nombre = alumno['Nombre']
             alumno_db.siglas_carrera = alumno['Siglas Carrera']
             alumno_db.carrera = alumno['Carrera']
@@ -654,25 +832,38 @@ def upload_students(request):
 
     return JsonResponse({'message': 'File uploaded successfully'})
 
+
 # Letters
 
 # Helper funcitons
 def handle_uploaded_file(uploadedFile):
-    templateFolder = '/Users/luisrosales/Documents/School/Junio2019/ProyectoIntegrador/Desarrollo/Proyectos/SistemaDeTrazabilidad/Codigo/autoservicio-cartas-back/STTEAPI/templates/'
-    #templateFolder = '../templates/'
-    with open(templateFolder + uploadedFile.name , 'wb+') as destination:
+    """Handles file upload.
+
+    Args:
+    uploadedFile: file.
+    """
+    # Local Directory ??? ಠ_ಠ
+    templateFolder = ('/Users/luisrosales/Documents/School/Junio2019/'
+                      'ProyectoIntegrador/Desarrollo/Proyectos/'
+                      'SistemaDeTrazabilidad/Codigo/autoservicio-cartas-back/'
+                      'STTEAPI/templates/')
+    # templateFolder = '../templates/'
+    with open(templateFolder + uploadedFile.name, 'wb+') as destination:
         for chunk in uploadedFile.chunks():
             destination.write(chunk)
+
 
 # API functions
 @api_view(["POST"])
 # @permission_classes((IsAuthenticated, EsAdmin))
 def create_letter_template(request):
+    """Create letter template in db.
 
+    Args:
+    request: API request.
+    """
     # Validate body parameters
-    args = PostParametersList(request)
-    args.check_parameter(key='id_admin', required=True)
-    args.check_parameter(key='descripcion', required=True)
+    args = verify_post_params(request, ['id_admin', 'descripcion'])
 
     print(args['id_admin'])
     print(args['descripcion'])
@@ -685,86 +876,80 @@ def create_letter_template(request):
 
     ts = datetime.now().timestamp()
 
-    # Sumbmit created letter data to db
-    carta = Carta.objects.create(creado_por = args['id_admin'], nombre = uploadedFile.name,
-        descripcion = args['descripcion'], fecha_creacion = ts, fecha_modificacion = ts, modificado_por = args['id_admin'])
+    # Submit created letter data to db
+    Carta.objects.create(creado_por=args['id_admin'], nombre=uploadedFile.name,
+                         descripcion=args['descripcion'], fecha_creacion=ts,
+                         fecha_modificacion=ts,
+                         modificado_por=args['id_admin'])
 
     return JsonResponse({'message': 'File uploaded successfully'})
 
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def delete_letter_template(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='cartas', required=True, is_json=True)
-    print(args['cartas'])
-    for p in args['cartas']:
-        try:
-            carta = Carta.objects.get(id=p['id'])
-            carta.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-
-    return JsonResponse(1, safe=False)
 
 # Get letter
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_letters(request):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT a.id, a.nombre as nombre_carta, a.descripcion, a.fecha_creacion, b.nombre '
-    + 'FROM Carta a INNER JOIN '
-    + 'Administrador b on a.creado_por = b.id')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Get all letters created by administrator.
+
+    Args:
+    request: API request.
+    """
+    del request
+    query = ("SELECT a.id, a.nombre as nombre_carta, "
+             "a.descripcion, a.fecha_creacion, b.nombre "
+             "FROM Carta a INNER JOIN Administrador b "
+             "on a.creado_por = b.id")
+    return run_db_query(query)
+
 
 # Get letter
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students(request):
+    """Get all students.
+
+    Args:
+    request: API request.
+    """
+    del request
     tra = list(Alumno.objects.all().values('id', 'matricula'))
     return JsonResponse(tra, safe=False)
+
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students_letters(request):
-    # TODO once mysql is set up modify schema to use foreign keys
-    # and django api instead of this ugliness...
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute('SELECT b.id_alumno, b.id_carta, a.matricula, a.nombre as nombre_alumno, c.nombre as nombre_carta, b.fecha_creacion '
-    + 'FROM Alumno a INNER JOIN '
-    + 'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
-    + 'Carta c on c.id = b.id_carta')
-    tra = dictfetchall(cursor)
-    return JsonResponse(tra, safe=False)
+    """Get all student letters.
 
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-@transaction.atomic
-def eliminar_carta(request):
-    args = PostParametersList(request)
-    args.check_parameter(key='documentos', required=True, is_json=True)
-    print(args['documentos'])
-    for p in args['documentos']:
-        try:
-            # TODO utilize fecha_creacion.
-            docs = CartaAlumno.objects.filter(
-                id_alumno=p['id_alumno'],
-                id_carta=p['id_carta'])
-            docs.delete()
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
-    return JsonResponse(1, safe=False)
+    Args:
+    request: API request.
+    """
+    del request
+    # TODO once mysql use foreign keys & django api instead of this ugliness...
+    query = ('SELECT b.id_alumno, b.id_carta, a.matricula, '
+             'a.nombre as nombre_alumno, c.nombre as nombre_carta, '
+             'b.fecha_creacion FROM Alumno a INNER JOIN '
+             'CartaAlumno b on a.id = b.id_alumno INNER JOIN '
+             'Carta c on c.id = b.id_carta')
+    return run_db_query(query)
+
 
 @api_view(["GET"])
 # @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_student_letter(request, id_alumno, id_carta):
+    """Get a student letter.
+
+    Args:
+    request: API request.
+    id_alumno: Student ID.
+    id_carta: Letter ID.
+    """
+    del request
     # Get letter by id_carta
-    carta = Carta.objects.filter(id = id_carta)
+    carta = Carta.objects.filter(id=id_carta)
 
     # Get student by id_student
-    alumno = Alumno.objects.filter(id = id_alumno)
+    alumno = Alumno.objects.filter(id=id_alumno)
 
     # Calculated data
     today = datetime.today()
@@ -773,33 +958,36 @@ def get_student_letter(request, id_alumno, id_carta):
 
     # Send parameters student data to letter
     html = loader.render_to_string(carta[0].nombre,
-        {
-            'nombre': alumno[0].nombre,
-            'matricula': alumno[0].matricula,
-            'siglas_carrera': alumno[0].siglas_carrera,
-            'carrera': alumno[0].carrera,
-            'semestre_en_progreso': alumno[0].semestre_en_progreso,
-            'periodo_de_aceptacion': alumno[0].periodo_de_aceptacion,
-            'posible_graduacion': alumno[0].posible_graduacion,
-            'fecha_de_nacimiento': alumno[0].fecha_de_nacimiento,
-            'nacionalidad': alumno[0].nacionalidad,
-            'fecha_actual' : current_date
-        })
+                                   dict(nombre=alumno[0].nombre,
+                                        matricula=alumno[0].matricula,
+                                        siglas_carrera=alumno[
+                                            0].siglas_carrera,
+                                        carrera=alumno[0].carrera,
+                                        semestre_en_progreso=alumno[
+                                            0].semestre_en_progreso,
+                                        periodo_de_aceptacion=alumno[
+                                            0].periodo_de_aceptacion,
+                                        posible_graduacion=alumno[
+                                            0].posible_graduacion,
+                                        fecha_de_nacimiento=alumno[
+                                            0].fecha_de_nacimiento,
+                                        nacionalidad=alumno[0].nacionalidad,
+                                        fecha_actual=current_date))
 
     # Create carta alumno
     ts = datetime.now().timestamp()
 
-    CartaAlumno.objects.create(id_carta = id_carta,
-        id_alumno = id_alumno,
-        fecha_creacion = ts,
-        fecha_modificacion = ts,
-        creado_por = id_alumno,
-        modificado_por = id_alumno)
+    CartaAlumno.objects.create(id_carta=id_carta,
+                               id_alumno=id_alumno,
+                               fecha_creacion=ts,
+                               fecha_modificacion=ts,
+                               creado_por=id_alumno,
+                               modificado_por=id_alumno)
 
     # Create response
     pdf_file = HTML(string=html).write_pdf()
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    # Response: inline to open pdf reader on browser | attachment to dowload .
+    # Response: inline to open pdf reader on browser | attachment to download .
     response['Content-Disposition'] = 'filename=output.pdf'
 
     return response
