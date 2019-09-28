@@ -74,11 +74,11 @@ class DashboardView extends Component {
             method:'get',
             success:(response) => {
                 let xy = [
-                    {x: 'Baja de materias', y: 0, },
+                    { x: 'Baja de materias', y: 0, },
                     { x: 'InterCampus', y: 0, },
-                    { x: 'Cambio de carrera', y: 0,},
+                    { x: 'Cambio de carrera', y: 0, },
                     { x: 'Baja temporal', y: 0, },
-                    { x: 'Transferencia', y: 0,}]
+                    { x: 'Transferencia', y: 0, }]
                 for (let i in response) {
                     if (response[i].nombre == "Intercampus") { xy[1].y += 1; }
                     else if (response[i].nombre == "Baja de materias") { xy[0].y += 1;}
