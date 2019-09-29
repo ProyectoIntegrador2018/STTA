@@ -62,8 +62,9 @@ def check_valid_user(user, model):
     if user is None:
         raise exceptions.AuthenticationFailed(
             detail="Credenciales incorrectas")
-    if ((not user.es_admin and model == Administrador) or
-            (not user.es_alumno and model == Alumno)):
+    if not user.es_admin and model == Administrador:
+        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
+    if not user.es_alumno and model == Alumno:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
 
 

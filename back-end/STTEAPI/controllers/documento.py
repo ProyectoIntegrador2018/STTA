@@ -16,6 +16,48 @@ def email_text_for_completed_procedure(ticket_id):
             'https://forms.gle/GzcmC4f9cmFKS2ee9').format(ticket_id)
 
 
+def _validate_date(contenido, date_name):
+    if contenido[date_name]:
+        try:
+            return datetime.strptime(contenido[date_name], '%d/%m/%y')
+        except Exception as e:
+            raise exceptions.PermissionDenied(
+                ("El formato de la fecha [ {0} ] es inválido. "
+                 "El formato debe ser: D/M/A").format(
+                    contenido[date_name]))
+    else:
+        return now()
+
+def handle_update_tramite(paso, args, contenido, p_ok):
+    fecha_1 = _validate_date(contenido, 'fecha_apertura')
+    fecha_2 = _validate_date(contenido, 'fecha_ultima')
+    num_results = Tramitealumno.objects.filter(
+        numero_ticket=contenido['ticket']).count()
+    if num_results > 0:
+        tra = Tramitealumno.objects.filter(
+            numero_ticket=contenido['ticket']).first()
+        tra.fecha_ultima_actualizacion = fecha_2
+        tra.paso_actual = paso
+        tra.numero_paso_actual = p_ok
+        tra.save()
+    else:
+        tra = Tramitealumno.objects.create(
+            matricula=contenido['matricula'],
+            numero_ticket=contenido['ticket'],
+            proceso_id=args['proceso'], fecha_inicio=fecha_1,
+            fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
+            numero_paso_actual=p_ok)
+
+
+def get_last_valid_pass(contenido):
+    p_ok = 0
+    p = 1
+    while (('paso_' + str(p)) in contenido):
+        if contenido['paso_' + str(p)] == 'ok':
+            p_ok = p
+        p = p + 1
+    return p_ok
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -25,16 +67,6 @@ def subir_documento(request):
     Args:
     request: API request.
     """
-    def _validate_date(date_name):
-        if c[date_name]:
-            try:
-                return datetime.strptime(c[date_name], '%d/%m/%y')
-            except Exception as e:
-                raise exceptions.PermissionDenied(
-                    ("El formato de la fecha [ {0} ] es inválido. "
-                     "El formato debe ser: D/M/A").format(c[date_name]))
-        else:
-            return now()
 
     args = verify_post_params(request, ['filename', 'content'])
     admin = Administrador.objects.get(usuario=request.user)
@@ -47,36 +79,11 @@ def subir_documento(request):
     print(contenido['data'])
     for c in contenido['data']:
         print(c)
-
-        fecha_1 = _validate_date('fecha_apertura')
-        fecha_2 = _validate_date('fecha_ultima')
-
-        p_ok = 0
-        p = 1
-        while (('paso_' + str(p)) in c):
-            if c['paso_' + str(p)] == 'ok':
-                p_ok = p
-            p = p + 1
-
+        p_ok = get_last_valid_pass(c)
         paso = Paso.objects.filter(proceso_id=args['proceso'],
                                    numero=p_ok if p_ok != -1 else 1).first()
 
-        num_results = Tramitealumno.objects.filter(
-            numero_ticket=c['ticket']).count()
-        if num_results > 0:
-            tra = Tramitealumno.objects.filter(
-                numero_ticket=c['ticket']).first()
-            tra.fecha_ultima_actualizacion = fecha_2
-            tra.paso_actual = paso
-            tra.numero_paso_actual = p_ok
-            tra.save()
-        else:
-            tra = Tramitealumno.objects.create(
-                matricula=c['matricula'], numero_ticket=c['ticket'],
-                proceso_id=args['proceso'], fecha_inicio=fecha_1,
-                fecha_ultima_actualizacion=fecha_2, paso_actual=paso,
-                numero_paso_actual=p_ok)
-
+        handle_update_tramite(paso, args, c, p_ok)
         finished_step = Paso.objects.filter(
             proceso_id=args['proceso']).order_by('-numero').first()
         if paso == finished_step:
