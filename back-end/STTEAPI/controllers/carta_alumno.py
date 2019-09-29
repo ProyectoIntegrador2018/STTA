@@ -72,7 +72,7 @@ def get_student_letter(request, id_alumno, id_carta):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_letters(request):
-    """Get all letters created by administrator.
+    """Queries administrator created letters.
 
     Args:
     request: API request.

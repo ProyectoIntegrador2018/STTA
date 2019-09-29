@@ -127,7 +127,7 @@ def get_tramites_resumen(request, proceso, month, status):
 @api_view(["GET"])
 # @permission_classes((IsAuthenticated, EsAdmin))
 def return_tramite_alumnos_status(request):
-    """Regresa todos los atributos del trámite actual del alumno.
+    """Esta funcion regresa atributos del trámite actual del alumno.
 
     Args:
     request: API request.

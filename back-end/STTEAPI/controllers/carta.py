@@ -61,7 +61,7 @@ def create_letter_template(request):
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def eliminar_plantilla_carta(request):
-    """Returns JSON response from deleting a letter template.
+    """Finds and deletes a letter template.
 
     Args:
     request: API request.

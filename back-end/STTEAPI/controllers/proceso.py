@@ -76,7 +76,7 @@ def return_procesos_pasos(request, proceso):
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def borrar_procesos(request):
-    """Returns JSON response from deleting documents.
+    """Deletes documents, subsequently a JSON response.
 
     Args:
     request: API request.

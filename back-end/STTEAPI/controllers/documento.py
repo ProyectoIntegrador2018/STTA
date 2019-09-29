@@ -123,7 +123,7 @@ def documentos(request):
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def eliminar_documentos(request):
-    """Returns JSON response from deleting documents.
+    """Receives documents in request and deletes them.
 
     Args:
     request: API request.

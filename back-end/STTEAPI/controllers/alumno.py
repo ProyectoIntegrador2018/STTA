@@ -63,7 +63,7 @@ def return_student(request, id_alumno):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def return_student_list(request):
-    """Regresa la lista entera de alumnos.
+    """La funcion regresa un la lista entera de todos los alumnos.
 
     Args:
     request: API request.
@@ -142,7 +142,7 @@ def upload_students(request):
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
 def eliminar_alumnos(request):
-    """Returns JSON response from deleting students.
+    """Deletes students and then returns a JSON response.
 
     Args:
     request: API request.
