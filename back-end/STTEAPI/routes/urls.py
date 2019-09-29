@@ -15,62 +15,69 @@ Including another URLconf
 """
 
 from django.urls import path
-from STTEAPI.controllers import controller
+from STTEAPI.controllers.controller  import *
+from STTEAPI.controllers.administrador import *
+from STTEAPI.controllers.alumno import *
+from STTEAPI.controllers.carta import *
+from STTEAPI.controllers.carta_alumno import *
+from STTEAPI.controllers.documento import *
+from STTEAPI.controllers.paso import *
+from STTEAPI.controllers.proceso import *
+from STTEAPI.controllers.tramite import *
 from django.contrib import admin
 from django.conf.urls import url, include
 
-#admin.site.register(Usuario, UserAdmin)
+# admin.site.register(Usuario, UserAdmin)
 # admin.site.unregister(Group)
 
-#                                                          #Guarda los paths asociados a cada procedimiento del controller
+# Guarda los paths asociados a cada procedimiento del controller
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login-admin/', controller.login_admin),
-    path('login-estudiante/', controller.login_student),
-    path('registro-estudiante/', controller.registro_alumnos),
-    path('procesos/', controller.procesos),
-    path('documentos/', controller.documentos),
-    path('pasos-procesos/', controller.pasos_procesos),
-    path('subir-documento/', controller.subir_documento),
-    path('logout/', controller.logout),
-    path('mostrar_alumnos/', controller.return_student_list),
-    path('agregar-proceso/', controller.agregar_proceso),
-    path('borrar-procesos/', controller.borrar_procesos),
-    path('eliminar-documentos/', controller.eliminar_documentos),
-    path('request_restore/', controller.request_restore),
-    path('reset_password/', controller.reset_password),
-    path('validate_password_token/', controller.validate_password_token),
-    path('return_admins/', controller.return_admin_list),
-    path('return_student_list/', controller.return_student_list),
-    path('get_alumno/<id_alumno>/', controller.return_student),
-    path('eliminar_alumnos/', controller.eliminar_alumnos),
-    path('eliminar_tramites/', controller.eliminar_tramites),
-    path('eliminar_carta/', controller.eliminar_carta),
-    path('eliminar_administradores/', controller.eliminar_administradores),
-    path('agregar_administrador/', controller.registro_administradores),
-    path('get_tramites/', controller.return_datos_tramite),
-    path('get_datos_tramite_alumno/<id>', controller.get_datos_tramite_alumno),
-    path('get_pasos_tramites/', controller.get_pasos_tramites),
-    path('get_tramites_alumno/<matricula>', controller.return_tramite_alumnos),
-    path('get_tramite_alumnos_status', controller.return_tramite_alumnos_status),
+    path('login-admin/', login_admin),
+    path('login-estudiante/', login_student),
+    path('registro-estudiante/', registro_alumnos),
+    path('procesos/', procesos),
+    path('documentos/', documentos),
+    path('pasos-procesos/', pasos_procesos),
+    path('subir-documento/', subir_documento),
+    path('logout/', logout),
+    path('mostrar_alumnos/', return_student_list),
+    path('agregar-proceso/', agregar_proceso),
+    path('borrar-procesos/', borrar_procesos),
+    path('eliminar-documentos/', eliminar_documentos),
+    path('request_restore/', request_restore),
+    path('reset_password/', reset_password),
+    path('validate_password_token/', validate_password_token),
+    path('return_admins/', return_admin_list),
+    path('return_student_list/', return_student_list),
+    path('get_alumno/<id_alumno>/', return_student),
+    path('eliminar_alumnos/', eliminar_alumnos),
+    path('eliminar_tramites/', eliminar_tramites),
+    path('eliminar_carta/', eliminar_carta),
+    path('eliminar_administradores/', eliminar_administradores),
+    path('agregar_administrador/', registro_administradores),
+    path('get_tramites/', return_datos_tramite),
+    path('get_datos_tramite_alumno/<id>', get_datos_tramite_alumno),
+    path('get_pasos_tramites/', get_pasos_tramites),
+    path('get_tramites_alumno/<matricula>', return_tramite_alumnos),
+    path('get_tramite_alumnos_status', return_tramite_alumnos_status),
     path('get_tramite_alumnos_status_week',
-         controller.return_tramite_alumnos_status_week),
-    path('get_tramite_alumnos_transferencia',
-         controller.return_tramite_transferencia),
+         return_tramite_alumnos_status_week),
+    path('get_tramite_alumnos_transferencia', return_tramite_transferencia),
     path('get_tramite_alumnos_transferencia_pasos',
-         controller.return_tramite_transferencia_pasos),
-    path('get_procesos', controller.return_procesos),
-    path('get_procesos_pasos/<proceso>/', controller.return_procesos_pasos),
-    path('get_tramite/<proceso>/', controller.return_tramite),
+         return_tramite_transferencia_pasos),
+    path('get_procesos', return_procesos),
+    path('get_procesos_pasos/<proceso>/', return_procesos_pasos),
+    path('get_tramite/<proceso>/', return_tramite),
     path('get_tramites_resumen/<proceso>/<month>/<status>',
-         controller.get_tramites_resumen),
-    path('get_pasos_proceso/<proceso>', controller.get_pasos_proceso),
+         get_tramites_resumen),
+    path('get_pasos_proceso/<proceso>', get_pasos_proceso),
     # New API endpoints
-    path('agregar_alumnos/', controller.upload_students),
-    path('agregar_cartas/', controller.create_letter_template),
-    path('eliminar_cartas/', controller.eliminar_plantilla_carta),
-    path('obtener_cartas/', controller.get_letters),
-    path('obtener_alumnos/', controller.get_students),
-    path('obtener_cartas_alumnos/', controller.get_students_letters),
-    path('obtener_carta/<id_alumno>/<id_carta>', controller.get_student_letter)
+    path('agregar_alumnos/', upload_students),
+    path('agregar_cartas/', create_letter_template),
+    path('eliminar_cartas/', eliminar_plantilla_carta),
+    path('obtener_cartas/', get_letters),
+    path('obtener_alumnos/', get_students),
+    path('obtener_cartas_alumnos/', get_students_letters),
+    path('obtener_carta/<id_alumno>/<id_carta>', get_student_letter)
 ]
