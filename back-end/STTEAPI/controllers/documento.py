@@ -28,6 +28,7 @@ def _validate_date(contenido, date_name):
     else:
         return now()
 
+
 def handle_update_tramite(paso, args, contenido, p_ok):
     fecha_1 = _validate_date(contenido, 'fecha_apertura')
     fecha_2 = _validate_date(contenido, 'fecha_ultima')
@@ -57,6 +58,7 @@ def get_last_valid_pass(contenido):
             p_ok = p
         p = p + 1
     return p_ok
+
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))

@@ -58,13 +58,11 @@ def eliminar_datos(request, model, key_name, deletion_func=eliminar_con_id):
     return JsonResponse(1, safe=False)
 
 
-def check_valid_user(user, model):
+def check_valid_user(user, valid):
     if user is None:
         raise exceptions.AuthenticationFailed(
             detail="Credenciales incorrectas")
-    if not user.es_admin and model == Administrador:
-        raise exceptions.PermissionDenied(detail="Permisos insuficientes")
-    if not user.es_alumno and model == Alumno:
+    if not valid:
         raise exceptions.PermissionDenied(detail="Permisos insuficientes")
 
 
@@ -78,7 +76,11 @@ def handle_login(request, model):
     email = request.POST.get('email', '')
     password = request.POST.get('password', '')
     user = authenticate(username=email, password=password)
-    check_valid_user(user, model)
+
+    valid_admin = user.es_admin and model == Administrador
+    valid_student = user.es_alumno and model == Alumno
+
+    check_valid_user(user, valid_admin or valid_student)
     token, _ = Token.objects.get_or_create(user=user)
     logged_in_user = model.objects.get(usuario=user)
     user.last_login = now()
