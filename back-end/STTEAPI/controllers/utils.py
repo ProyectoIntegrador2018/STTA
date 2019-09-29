@@ -9,6 +9,7 @@ from STTEAPI.tools.parameters_list import PostParametersList
 
 EMAIL_REGEX = r"^(a|A)[0-9]{8}@(itesm.mx|tec.mx)$"
 
+
 def verify_post_params(request, keys, is_json=False):
     args = PostParametersList(request)
     for key_name in keys:

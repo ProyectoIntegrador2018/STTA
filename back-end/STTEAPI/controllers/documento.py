@@ -29,7 +29,7 @@ def subir_documento(request):
         if c[date_name]:
             try:
                 return datetime.strptime(c[date_name], '%d/%m/%y')
-            except:
+            except Exception as e:
                 raise exceptions.PermissionDenied(
                     ("El formato de la fecha [ {0} ] es inválido. "
                      "El formato debe ser: D/M/A").format(c[date_name]))

@@ -17,7 +17,6 @@ def handle_uploaded_file(uploadedFile):
                       'ProyectoIntegrador/Desarrollo/Proyectos/'
                       'SistemaDeTrazabilidad/Codigo/autoservicio-cartas-back/'
                       'STTEAPI/templates/')
-    # templateFolder = '../templates/'
     with open(templateFolder + uploadedFile.name, 'wb+') as destination:
         for chunk in uploadedFile.chunks():
             destination.write(chunk)

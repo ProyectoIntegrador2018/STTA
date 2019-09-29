@@ -7,6 +7,7 @@ from STTEAPI.controllers.utils import *
 from STTEAPI.settings.authentication import IsAuthenticated
 from weasyprint import HTML
 
+
 # CREATE
 @api_view(["GET"])
 # @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
@@ -66,6 +67,7 @@ def get_student_letter(request, id_alumno, id_carta):
 
     return response
 
+
 # READ
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
@@ -81,6 +83,7 @@ def get_letters(request):
              "FROM Carta a INNER JOIN Administrador b "
              "on a.creado_por = b.id")
     return run_db_query(query)
+
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
@@ -99,8 +102,8 @@ def get_students_letters(request):
              'Carta c on c.id = b.id_carta')
     return run_db_query(query)
 
-# UPDATE
 
+# UPDATE
 # DELETE
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
