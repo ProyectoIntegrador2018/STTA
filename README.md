@@ -71,93 +71,30 @@ Back-End:
 Base de datos:
 * [MySQL](https://www.mysql.com) - Es un sistema de gestión de bases de datos relacional 
 
-### Requerimientos de la maquina
-Instalar cairo
-
-```sh
-$ brew install cairo
-```
-
-Instalar pango
-```sh
-$ brew install pango
-```
-
 ### Instalacion del Proyecto
+
+Se recomienda utilizar Docker para correr la aplicación. Es necesario instalar docker y docker-compose.
 
 Cambiar al directorio meta
 ```
 cd back-end
 ```
 
-Pasos para instalar dependencias de proyecto Back-End:
-
-Instalar virtualenv 
-```sh
-$ pip install virtualenv
+Poner las variables de ambiente necesarias (contactar al equipo de desarrollo para obtenerlas)
+```
+STTA/back-end ~ cat web-variables.env
+DB_NAME=STTE
+DB_USER=root
+DB_PASSWORD=3x4mPl3P4sSW0rD!
+DB_HOST=localhost
+DB_PORT=3306
+SENDGRID_API_KEY=valid_sendgrid_key
 ```
 
-Crear ambiente virtual
-```sh
-$ virtualenv -p /usr/bin/python3.6 venv
+Iniciar la aplicación
 ```
-
-Activar ambiente virtual
-```sh
-$ source venv/bin/activate
+docker-compose up
 ```
-
-Instalar todas las dependencias automaticamente:
-
-```sh
-$ pip install -r requirements.txt
-```
-
-Instalar las dependencias manualmente:
-
-Instalar Django rest framework
-```sh
-$ pip install djangorestframework
-```
-
-Instalar Django cors headers
-```sh
-$ pip install django-cors-headers
-```
-
-Instalar weasyprint
-```sh
-$ pip install weasyprint
-```
-
-Instalar Werkzeug
-```sh
-$ pip install -U Werkzeug
-```
-
-Instalar PyMySQL
-```sh
-$ pip install PyMySQL
-```
-
-Es sugerido actualizar las depencias con el siguiente commando:
-
-Guardar dependencias
-
-```sh
-$ pip freeze > requirements.txt
-```
-
-### Ejecución del Proyecto
-
-Ejecucion de proyecto Back-End:
-```
-$ python manage.py runserver
-```
-
-### Posibles excepciones
-
-* [mysqlclient 1.3.13 or newer is required](https://stackoverflow.com/questions/55657752/django-installing-mysqlclient-error-mysqlclient-1-3-13-or-newer-is-required)
 
 ### Lanzamiento
 
