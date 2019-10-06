@@ -33,9 +33,9 @@ def return_datos_tramite(request):
     request: API request.
     """
     del request
-    tra = Tramitealumno.objects.select_related('proceso').values(
-        'id', 'matricula', 'numero_ticket', 'fecha_inicio',
-        'numero_paso_actual', 'proceso__nombre', 'fecha_ultima_actualizacion')
+    tra = Tramitealumno.objects.select_related('proceso', 'paso').values(
+        'id', 'alumno', 'fecha_creacion',
+        'paso__numero', 'proceso__nombre', 'fecha_modificacion')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 

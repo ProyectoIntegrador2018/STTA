@@ -12,17 +12,12 @@ def handle_uploaded_file(uploadedFile):
     Args:
     uploadedFile: file.
     """
-    # Local Directory ??? ಠ_ಠ
-    templateFolder = ('/Users/luisrosales/Documents/School/Junio2019/'
-                      'ProyectoIntegrador/Desarrollo/Proyectos/'
-                      'SistemaDeTrazabilidad/Codigo/autoservicio-cartas-back/'
-                      'STTEAPI/templates/')
+    templateFolder = 'STTEAPI/templates/'
     with open(templateFolder + uploadedFile.name, 'wb+') as destination:
         for chunk in uploadedFile.chunks():
             destination.write(chunk)
 
 
-# API functions
 @api_view(["POST"])
 # @permission_classes((IsAuthenticated, EsAdmin))
 def create_letter_template(request):
@@ -34,22 +29,15 @@ def create_letter_template(request):
     # Validate body parameters
     args = verify_post_params(request, ['id_admin', 'descripcion'])
 
-    print(args['id_admin'])
-    print(args['descripcion'])
-
     # Save file to templates
     uploadedFile = request.FILES['file']
     handle_uploaded_file(uploadedFile)
-
     args = args.__dict__()
-
-    ts = datetime.now().timestamp()
-
+    admin = Administrador.objects.get(id=args['id_admin'])
     # Submit created letter data to db
-    Carta.objects.create(creado_por=args['id_admin'], nombre=uploadedFile.name,
-                         descripcion=args['descripcion'], fecha_creacion=ts,
-                         fecha_modificacion=ts,
-                         modificado_por=args['id_admin'])
+    Carta.objects.create(nombre=uploadedFile.name,
+                         descripcion=args['descripcion'],
+                         administrador=admin)
 
     return JsonResponse({'message': 'File uploaded successfully'})
 

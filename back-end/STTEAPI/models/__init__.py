@@ -1,8 +1,6 @@
-from .models import *
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.utils.timezone import now
 from rest_framework.permissions import BasePermission
+from .models import *
 
 
 class MyUserManager(BaseUserManager):
@@ -48,24 +46,29 @@ class EsAdmin(BasePermission):
         return request.user.es_admin
 
 
+class EsSuperAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
+
+
 class Usuario(AbstractBaseUser):
     username = None
     email = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
     last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.IntegerField(default=False)
-    is_staff = models.IntegerField(default=False)
-    is_active = models.IntegerField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=now)
 
-    es_admin = models.IntegerField(default=False)
-    es_alumno = models.IntegerField(default=False)
+    es_admin = models.BooleanField(default=False)
+    es_alumno = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     objects = MyUserManager()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Usuario'
 
     def has_perm(self, perm, obj=None):
@@ -74,3 +77,4 @@ class Usuario(AbstractBaseUser):
     # this methods are require to login super user from admin panel
     def has_module_perms(self, app_label):
         return self.is_staff
+

@@ -3,59 +3,46 @@ from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from STTEAPI.controllers.utils import *
 from STTEAPI.settings.authentication import IsAuthenticated
+from datetime import datetime
 
 
 # CREATE
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
-def agregar_proceso(request):
-    """Registra los procesos nuevos en la base de datos.
-
-    Args:
-    request: API request.
-    """
-    args = verify_post_params(request, ['nombre', 'ticket', 'fecha_apertura',
-                                        'ultima_actualizacion', 'matricula',
-                                        'pasos'], True)
-    print(args['matricula'])
-
-    proc = Proceso.objects.create(
-        nombre=args['nombre'], columna_matricula=args['matricula']['key'],
-        columna_ticket=args['ticket']['key'],
-        columna_fecha_ultima_actualizacion=args['ultima_actualizacion']['key'],
-        columna_fecha_inicio=args['fecha_apertura']['key'])
-
-    for p in args['pasos']:
-        print(p)
-        p = Paso.objects.create(proceso=proc, nombre=p['nombre'],
-                                columna_csv=p['columna_csv'],
-                                nombre_mostrar=p['nombre_mostrar'],
-                                mostrar=p['mostrar'], numero=p['numero'])
-
+def create_proceso(request):
+    args = PostParametersList(request)
+    args.check_parameter(key='nombre', required=True)
+    args.check_parameter(key='pasos', required=True, is_json=True)
+    proceso = Proceso.objects.create(nombre=args['nombre'])
+    for paso in args['pasos']:
+        handle_create_paso(paso, proceso)
     return JsonResponse(1, safe=False)
 
+
+def handle_create_paso(paso, proceso):
+    Paso.objects.create(nombre=paso['nombre'],
+                        numero=paso['numero'],
+                        mostrar=paso['mostrar'],
+                        proceso=proceso)
 
 # READ
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
-def procesos(request):
-    """Cuenta los pasos de un proceso."""
+def get_procesos(request):
     del request
-    procs = Proceso.objects.values().annotate(pasos=Count('paso'))
+    procs = Proceso.objects.values()
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
 
-def return_procesos(request):
-    """Regresa todos los atributos de Proceso en formato de diccionario.
-
-    Args:
-    request: API request.
-    """
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def get_proceso(request, id):
     del request
-    query = 'SELECT * FROM Proceso pr'
-    return run_db_query(query)
+    procs = Proceso.objects.filter(id=id).values()
+    procs = [dict(p) for p in procs]
+    return JsonResponse(procs, safe=False)
 
 
 def return_procesos_pasos(request, proceso):
@@ -71,14 +58,30 @@ def return_procesos_pasos(request, proceso):
 
 
 # UPDATE
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def update_proceso(request):
+    args = verify_post_params(request, ['id', 'nombre'], True)
+    proc = Proceso.objects.get(id=args['id'])
+    proc.nombre = args['nombre']
+    proc.fecha_modificacion = datetime.now()
+    proc.save()
+
+
 # DELETE
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
-def borrar_procesos(request):
-    """Deletes documents, subsequently a JSON response.
+def delete_procesos(request):
+    args = verify_post_params(request, ['procesos'], True)
+    for p in args['procesos']:
+        try:
+            pasos = Paso.objects.filter(proceso=p['id'])
+            for paso in pasos:
+                paso.delete()
+            doc = Proceso.objects.get(id=p['id'])
+            doc.delete()
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
 
-    Args:
-    request: API request.
-    """
-    return eliminar_datos(request, Proceso, 'procesos')
+    return JsonResponse(1, safe=False)

@@ -97,6 +97,7 @@ class Login extends Component {
             this.setState({ loading: false });
             Notifications.openNotificationWithIcon("success", "Inicio de sesión exitoso", "");
             localStorage.setItem('token', response.token);
+            localStorage.setItem('id', response.id)
             localStorage.setItem('email', response.email);
             localStorage.setItem('esAdmin', true);
             localStorage.setItem('is_superuser', response.is_superuser);

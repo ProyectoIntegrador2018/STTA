@@ -33,7 +33,7 @@ def login_admin(request):
     """
     admin, user, token = handle_login(request, Administrador)
     return JsonResponse({'token': token.key, 'nombre': admin.nombre,
-                         'email': user.email,
+                         'email': user.email, 'id': admin.id,
                          'is_superuser': user.is_superuser}, safe=False)
 
 

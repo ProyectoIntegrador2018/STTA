@@ -24,8 +24,7 @@ def registro_alumnos(request):
         user = Usuario.objects.create_alumno(
             email=args['email'],
             password=args['password'],
-            nombre=args['nombre'],
-            apellido=args['apellido'],
+            nombre=args['nombre'] + ' ' + args['apellido'],
             matricula=args['email'].split('@')[0].upper()
         )
     except IntegrityError as e:
@@ -43,12 +42,12 @@ def login_student(request):
     """
     al, user, token = handle_login(request, Alumno)
     return JsonResponse({'token': token.key, 'matricula': user.email,
-                         'nombre': al.nombre + " " + al.apellido}, safe=False)
+                         'nombre': al.nombre}, safe=False)
 
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAdmin))
-def return_student(request, id_alumno):
+def get_student(request, id_alumno):
     """Recuperar el alumno en formato json.
     Args:
     request: HTTP request.
@@ -61,18 +60,6 @@ def return_student(request, id_alumno):
 
 
 @api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def return_student_list(request):
-    """La funcion regresa un la lista entera de todos los alumnos.
-
-    Args:
-    request: API request.
-    """
-    del request
-    return return_user_list(Alumno)
-
-
-@api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students(request):
     """Get all students.
@@ -81,7 +68,7 @@ def get_students(request):
     request: API request.
     """
     del request
-    tra = list(Alumno.objects.all().values('id', 'matricula'))
+    tra = list(Alumno.objects.all().values('id', 'nombre', 'matricula'))
     return JsonResponse(tra, safe=False)
 
 
