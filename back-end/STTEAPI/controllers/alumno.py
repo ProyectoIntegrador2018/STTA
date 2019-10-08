@@ -134,4 +134,18 @@ def eliminar_alumnos(request):
     Args:
     request: API request.
     """
+    args = verify_post_params(request, ['alumno'], True)
+    for p in args['alumno']:
+        try:
+            carta_alumnos = CartaAlumno.objects.filter(alumno=p['id'])
+            for carta_alumno in carta_alumnos:
+                carta_alumno.delete()
+
+            tramites = Tramitealumno.objects.filter(alumno=p['id'])
+            for tramite in tramites:
+                tramite.delete()
+
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
+
     return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)

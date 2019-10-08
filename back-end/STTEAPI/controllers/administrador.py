@@ -60,4 +60,19 @@ def eliminar_administradores(request):
     Args:
     request: API request.
     """
+    def _set_to_none(model):
+        objects = model.objects.filter(administrador=p['id'])
+        for obj in objects:
+            obj.administrador = None
+            obj.save()
+
+    args = verify_post_params(request, ['admin'], True)
+    for p in args['admin']:
+        try:
+            _set_to_none(Carta)
+            _set_to_none(CartaAlumno)
+            _set_to_none(Tramitealumno)
+            _set_to_none(Documento)
+        except IntegrityError:
+            raise APIExceptions.PermissionDenied
     return eliminar_datos(request, Administrador, 'admin', eliminar_usuarios)

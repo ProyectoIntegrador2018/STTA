@@ -13,8 +13,10 @@ from datetime import datetime
 def create_proceso(request):
     args = PostParametersList(request)
     args.check_parameter(key='nombre', required=True)
+    args.check_parameter(key='num_pasos', required=True)
     args.check_parameter(key='pasos', required=True, is_json=True)
-    proceso = Proceso.objects.create(nombre=args['nombre'])
+    proceso = Proceso.objects.create(nombre=args['nombre'],
+                                     num_pasos=args['num_pasos'])
     for paso in args['pasos']:
         handle_create_paso(paso, proceso)
     return JsonResponse(1, safe=False)
@@ -27,20 +29,11 @@ def handle_create_paso(paso, proceso):
                         proceso=proceso)
 
 # READ
-@api_view(["POST"])
+@api_view(["Get"])
 @permission_classes((IsAuthenticated, EsAdmin))
 def get_procesos(request):
     del request
     procs = Proceso.objects.values()
-    procs = [dict(p) for p in procs]
-    return JsonResponse(procs, safe=False)
-
-
-@api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def get_proceso(request, id):
-    del request
-    procs = Proceso.objects.filter(id=id).values()
     procs = [dict(p) for p in procs]
     return JsonResponse(procs, safe=False)
 
@@ -58,16 +51,6 @@ def return_procesos_pasos(request, proceso):
 
 
 # UPDATE
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def update_proceso(request):
-    args = verify_post_params(request, ['id', 'nombre'], True)
-    proc = Proceso.objects.get(id=args['id'])
-    proc.nombre = args['nombre']
-    proc.fecha_modificacion = datetime.now()
-    proc.save()
-
-
 # DELETE
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
@@ -79,6 +62,9 @@ def delete_procesos(request):
             pasos = Paso.objects.filter(proceso=p['id'])
             for paso in pasos:
                 paso.delete()
+            tramites = Tramitealumno.filter(proceso=p['id'])
+            for tramite in tramites:
+                tramite.delete()
             doc = Proceso.objects.get(id=p['id'])
             doc.delete()
         except IntegrityError:

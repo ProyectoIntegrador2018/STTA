@@ -53,6 +53,7 @@ export default class ProcesoNuevo extends Component {
                 onOk: () => {
                     params = {
                         nombre: this.state.nombre,
+                        num_pasos: this.state.pasos.length,
                         pasos:JSON.stringify(this.state.pasos)
                     };
                     this.setState({loading:true});

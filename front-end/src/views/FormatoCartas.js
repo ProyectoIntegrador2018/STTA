@@ -73,7 +73,7 @@ export default class FormatoCartas extends Component {
                 <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} rowSelection={permitirBorrar}
                 columns={[
                     {title: 'Nombre del documento', key: 'nombre_carta', },
-                    {title: 'Usuario', key: 'nombre', },
+                    {title: 'Admin', key: 'nombre', },
                     {title: 'Fecha', key: 'fecha_creacion', },
                     {title: 'Descripcion', key: 'descripcion', }
                 ]}/>

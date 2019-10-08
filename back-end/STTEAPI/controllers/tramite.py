@@ -33,9 +33,10 @@ def return_datos_tramite(request):
     request: API request.
     """
     del request
-    tra = Tramitealumno.objects.select_related('proceso', 'paso').values(
-        'id', 'alumno', 'fecha_creacion',
-        'paso__numero', 'proceso__nombre', 'fecha_modificacion')
+    tra = Tramitealumno.objects.select_related('proceso', 'alumno',
+                                               'paso').values(
+        'id', 'fecha_creacion', 'fecha_modificacion', 'alumno__matricula',
+        'paso__numero', 'proceso__nombre')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
@@ -133,17 +134,17 @@ def return_tramite_alumnos_status(request):
     request: API request.
     """
     del request
-    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
-             "fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+    query = ("SELECT ta.id, pr.id, pr.nombre, alumno, paso, "
+             "ta.fecha_creacion, ta.fecha_modificacion, "
+             "encuesta, pr.num_pasos as pasos, "
+             "IF(p.numero=pr.num_pasos,'TERMINADO', "
+             "IF(p.numero=0,'INICIADO','ENPROCESO')) as status "
              "FROM TramiteAlumno ta join Proceso pr "
              "on ta.proceso = pr.id join "
              "Paso p on ta.proceso=p.proceso "
-             "where year(now()) = year(fecha_ultima_actualizacion) "
-             "and month(now()) = month(fecha_ultima_actualizacion) "
-             "group by numero_ticket;")
+             "where year(now()) = year(ta.fecha_modificacion) "
+             "and month(now()) = month(ta.fecha_modificacion) "
+             "group by pr.id;")
     return run_db_query(query)
 
 
@@ -156,16 +157,16 @@ def return_tramite_alumnos_status_week(request):
     request: API request.
     """
     del request
-    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
-             "fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
+    query = ("SELECT ta.id, pr.id, pr.nombre, alumno, paso, "
+             "ta.fecha_creacion, ta.fecha_modificacion, "
+             "encuesta, pr.num_pasos as pasos, "
+             "IF(p.numero=pr.num_pasos,'TERMINADO', "
+             "IF(p.numero=0,'INICIADO','ENPROCESO')) as status "
              "FROM TramiteAlumno ta join Proceso pr "
              "on ta.proceso = pr.id join "
              "Paso p on ta.proceso=p.proceso where "
-             "week(now()) - 1 = week(fecha_ultima_actualizacion) "
-             "group by numero_ticket;")
+             "week(now()) - 1 = week(ta.fecha_modificacion) "
+             "group by pr.id;")
     return run_db_query(query)
 
 
@@ -178,10 +179,12 @@ def get_datos_tramite_alumno(request, id):
     request: API request.
     """
     del request
-    tra = Tramitealumno.objects.select_related('proceso').values(
-        'id', 'matricula', 'numero_ticket', 'proceso__nombre', 'proceso_id',
-        'fecha_inicio', 'paso_actual', 'numero_paso_actual',
-        'fecha_ultima_actualizacion').filter(id=id)
+
+    tra = Tramitealumno.objects.select_related('proceso', 'alumno',
+                                               'paso').values(
+        'id', 'proceso__id', 'alumno__matricula', 'numero_ticket',
+        'fecha_creacion', 'paso__id', 'paso__numero', 'proceso__nombre',
+        'fecha_modificacion').filter(id=id)
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 

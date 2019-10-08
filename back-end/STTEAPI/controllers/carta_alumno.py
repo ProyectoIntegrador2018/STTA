@@ -60,22 +60,6 @@ def get_student_letter(request, alumno, carta, admin):
 # READ
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
-def get_letters(request):
-    """Queries administrator created letters.
-
-    Args:
-    request: API request.
-    """
-    del request
-    query = ("SELECT a.id, a.nombre as nombre_carta, "
-             "a.descripcion, a.fecha_creacion, b.nombre "
-             "FROM Carta a INNER JOIN Administrador b "
-             "on a.administrador = b.id")
-    return run_db_query(query)
-
-
-@api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students_letters(request):
     """Get all student letters.
 

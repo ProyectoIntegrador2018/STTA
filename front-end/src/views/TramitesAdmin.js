@@ -53,11 +53,11 @@ export default class TramitesAdmin extends Component {
             <div>
                 <h1><Icon type="solution" /> Trámites</h1>
                 <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} rowSelection={permitirBorrar}
-                columns={[{title: 'Matrícula', key: 'matricula',},
-                 { title: '# De ticket', key: 'numero_ticket', render: (text, record) => (<div style={{textAlign:'center'}}><a onClick={() => {localStorage.setItem("matAlumno", record.matricula);API.redirectTo("/tramite/"+record.id)}}> #{text}</a></div>)},
-                 { title: 'Fecha de inicio', key: 'fecha_inicio', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)},
-                 { title: 'Fecha de última actualización', key: 'fecha_ultima_actualizacion', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)},
-                 { title: 'Paso actual', key: 'numero_paso_actual',},
+                columns={[{title: 'Matrícula', key: 'alumno__matricula',},
+                 { title: '# De ticket', key: 'numero_ticket', render: (text, record) => (<div style={{textAlign:'center'}}><a onClick={() => {localStorage.setItem("matAlumno", record.alumno__matricula);API.redirectTo("/tramite/"+record.id)}}> #{text}</a></div>)},
+                 { title: 'Fecha de inicio', key: 'fecha_creacion', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)},
+                 { title: 'Fecha de última actualización', key: 'fecha_modificacion', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)},
+                 { title: 'Paso actual', key: 'paso__numero',},
                  { title: 'Paso actual', key: 'proceso__nombre', }
                 ]}/>
                 <Modal width={1300} title={this.state.record.nombre} visible={this.state.visible} onCancel={() => {this.setState({visible:false})}}

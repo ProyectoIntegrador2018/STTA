@@ -50,7 +50,8 @@ class Documento(models.Model):
     actualizar_tramites = models.BooleanField(default=False)
     administrador = models.ForeignKey(Administrador,
                                       on_delete=models.DO_NOTHING,
-                                      db_column='administrador')
+                                      db_column='administrador',
+                                      null=True)
 
     class Meta:
         managed = True
@@ -59,10 +60,15 @@ class Documento(models.Model):
 
 class Proceso(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
+    num_pasos = models.IntegerField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True, blank=True,
                                           null=True)
     fecha_modificacion = models.DateTimeField(auto_now_add=True, blank=True,
                                               null=True)
+    administrador = models.ForeignKey(Administrador,
+                                      on_delete=models.DO_NOTHING,
+                                      db_column='administrador',
+                                      null=True)
 
     class Meta:
         managed = True
@@ -73,7 +79,6 @@ class Paso(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     numero = models.IntegerField(blank=True, null=True)
     mostrar = models.BooleanField(blank=True, null=True)
-    columna_csv = models.IntegerField(blank=True, null=True)
     proceso = models.ForeignKey(Proceso, on_delete=models.DO_NOTHING,
                                 db_column='proceso')
 
@@ -87,7 +92,7 @@ class Tramitealumno(models.Model):
                                           null=True)
     fecha_modificacion = models.DateTimeField(auto_now_add=True, blank=True,
                                               null=True)
-
+    numero_ticket = models.IntegerField(default=0, null=False, unique=True)
     encuesta = models.IntegerField(default=0, null=False)
 
     proceso = models.ForeignKey(Proceso, models.DO_NOTHING,
@@ -95,7 +100,7 @@ class Tramitealumno(models.Model):
     paso = models.ForeignKey(Paso, models.DO_NOTHING, db_column='paso')
     alumno = models.ForeignKey(Alumno, models.DO_NOTHING, db_column='alumno')
     administrador = models.ForeignKey(Administrador, models.DO_NOTHING,
-                                      db_column='administrador')
+                                      db_column='administrador', null=True)
 
     class Meta:
         managed = True
@@ -112,7 +117,8 @@ class Carta(models.Model):
                                               null=True)
     administrador = models.ForeignKey(Administrador,
                                       on_delete=models.DO_NOTHING,
-                                      db_column='administrador')
+                                      db_column='administrador',
+                                      null=True)
    
     class Meta:
         managed = True
@@ -127,7 +133,8 @@ class CartaAlumno(models.Model):
     carta = models.ForeignKey(Carta, models.DO_NOTHING, db_column='carta')
     alumno = models.ForeignKey(Alumno, models.DO_NOTHING, db_column='alumno')
     administrador = models.ForeignKey(Administrador, models.DO_NOTHING,
-                                      db_column='administrador')
+                                      db_column='administrador',
+                                      null=True)
 
     class Meta:
         managed = True
