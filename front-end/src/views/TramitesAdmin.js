@@ -23,13 +23,9 @@ export default class TramitesAdmin extends Component {
         this.setState({loading:true});
         API.restCall({
             service:'get_tramites/',
-            success:(response) => {
-                console.log(response);
-                this.setState({data: response, loading:false});
-            },
-            error:(response) => {
-                this.setState({loading:false});
-            }
+            method:'get',
+            success:(response) => {this.setState({data: response, loading:false});},
+            error:(response) => {this.setState({loading:false});}
         })
     };
 

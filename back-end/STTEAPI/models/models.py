@@ -46,8 +46,6 @@ class Documento(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     fecha = models.DateTimeField(default=now, blank=True, null=True)
     contenido = models.TextField(blank=True, null=True)
-    actualizar_alumnos = models.BooleanField(default=False)
-    actualizar_tramites = models.BooleanField(default=False)
     administrador = models.ForeignKey(Administrador,
                                       on_delete=models.DO_NOTHING,
                                       db_column='administrador',

@@ -23,7 +23,7 @@ export default class AppLayoutUser extends Component {
     }
 
     Despliega = (props) => {
-        API.redirectTo('/alumnos/tramite/'+props.id)
+        API.redirectTo('/alumnos/tramite/'+ props.id)
     };
 
     componentWillMount() {
@@ -33,9 +33,8 @@ export default class AppLayoutUser extends Component {
             success:(response) => {
                 let data1 = [];
                 let data2 = [];
-                console.log(response)
                 response.map((item) => {
-                        if(item.pasos == item.numero_paso_actual) {
+                        if(item.proceso__num_pasos == item.paso__numero) {
                             data2.push(item);
                         } else {
                             data1.push(item);
@@ -61,7 +60,7 @@ export default class AppLayoutUser extends Component {
                         <SubMenu key="subMenuTramitesActuales" title={<span><Icon type="profile" /><span>Trámites Actuales</span></span>}>
                             {
                                 this.state.data1.map((objectToMap,index) => {
-                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.proceso__nombre}</Menu.Item>)})
                             }
                         </SubMenu>
                         <SubMenu key="subMenuTramitesPasados" title={<span><Icon type="user" />
@@ -69,7 +68,7 @@ export default class AppLayoutUser extends Component {
                         </span>}>
                             {
                                 this.state.data2.map((objectToMap,index) => {
-                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.nombre}</Menu.Item>)})
+                                    return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.proceso__nombre}</Menu.Item>)})
                             }
                         </SubMenu>
                         <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
