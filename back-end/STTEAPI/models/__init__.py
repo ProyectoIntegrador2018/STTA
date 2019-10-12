@@ -77,4 +77,3 @@ class Usuario(AbstractBaseUser):
     # this methods are require to login super user from admin panel
     def has_module_perms(self, app_label):
         return self.is_staff
-

@@ -7,6 +7,7 @@ import os
 
 templateFolder = 'STTEAPI/templates/'
 
+
 # CREATE
 def handle_uploaded_file(uploadedFile):
     """Handles file upload.

@@ -54,10 +54,10 @@ def return_procesos_pasos(request, proceso):
 # UPDATE
 # DELETE
 def handle_delete_dependants(id):
-    pasos = Paso.objects.filter(proceso='id')
+    pasos = Paso.objects.filter(proceso=id)
     for paso in pasos:
         paso.delete()
-    tramites = Tramitealumno.filter(proceso='id')
+    tramites = Tramitealumno.objects.filter(proceso=id)
     for tramite in tramites:
         tramite.delete()
 
