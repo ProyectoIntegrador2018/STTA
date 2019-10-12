@@ -125,6 +125,20 @@ def upload_students(request):
 
 
 # DELETE
+def handle_delete_student_dependents(id):
+    try:
+        carta_alumnos = CartaAlumno.objects.filter(alumno=id)
+        for carta_alumno in carta_alumnos:
+            carta_alumno.delete()
+
+        tramites = Tramitealumno.objects.filter(alumno=id)
+        for tramite in tramites:
+            tramite.delete()
+
+    except IntegrityError:
+        raise APIExceptions.PermissionDenied
+
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -136,16 +150,6 @@ def eliminar_alumnos(request):
     """
     args = verify_post_params(request, ['alumno'], True)
     for p in args['alumno']:
-        try:
-            carta_alumnos = CartaAlumno.objects.filter(alumno=p['id'])
-            for carta_alumno in carta_alumnos:
-                carta_alumno.delete()
-
-            tramites = Tramitealumno.objects.filter(alumno=p['id'])
-            for tramite in tramites:
-                tramite.delete()
-
-        except IntegrityError:
-            raise APIExceptions.PermissionDenied
+        handle_delete_student_dependents(p['id'])
 
     return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)

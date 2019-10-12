@@ -28,6 +28,7 @@ def handle_create_paso(paso, proceso):
                         mostrar=paso['mostrar'],
                         proceso=proceso)
 
+
 # READ
 @api_view(["Get"])
 @permission_classes((IsAuthenticated, EsAdmin))
@@ -52,6 +53,15 @@ def return_procesos_pasos(request, proceso):
 
 # UPDATE
 # DELETE
+def handle_delete_dependants(id):
+    pasos = Paso.objects.filter(proceso='id')
+    for paso in pasos:
+        paso.delete()
+    tramites = Tramitealumno.filter(proceso='id')
+    for tramite in tramites:
+        tramite.delete()
+
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, EsAdmin))
 @transaction.atomic
@@ -59,12 +69,7 @@ def delete_procesos(request):
     args = verify_post_params(request, ['procesos'], True)
     for p in args['procesos']:
         try:
-            pasos = Paso.objects.filter(proceso=p['id'])
-            for paso in pasos:
-                paso.delete()
-            tramites = Tramitealumno.filter(proceso=p['id'])
-            for tramite in tramites:
-                tramite.delete()
+            handle_delete_dependants(p['id'])
             doc = Proceso.objects.get(id=p['id'])
             doc.delete()
         except IntegrityError:

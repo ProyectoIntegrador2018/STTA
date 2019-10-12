@@ -59,6 +59,7 @@ def get_letters(request):
              "on a.administrador = b.id")
     return run_db_query(query)
 
+
 # UPDATE
 # DELETE
 def handle_delete_local_file(file_name):
