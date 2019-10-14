@@ -16,8 +16,6 @@ export default class Tramite extends Component {
             columns: [],
             disabled: true,
             step:0,
-            ultima_actualizacion:"",
-            fecha_apertura:"",
             pasos:[],
             proceso:"",
             ticket:"",
@@ -43,10 +41,11 @@ export default class Tramite extends Component {
     getPasos = (id) => {
         this.setState({loading:true});
         API.restCall({
-            service:'get_pasos_tramites/',
-            params:{id:id},
-            method:'post',
-            success:(response) => {this.setState({ pasos: response, loading:false, status:this.state.n_paso==response.length ? "Terminado" : this.state.n_paso == 0 ? "Iniciado":"En proceso" });},
+            service:'get_pasos_proceso/' + id,
+            method:'get',
+            success:(response) => {this.setState({ pasos: response, loading:false, status:this.state.n_paso==response.length ? "Terminado" : this.state.n_paso == 1 ? "Iniciado":"En proceso" });
+        
+        },
             error:(response) => {this.setState({loading:false});}
         })
     }
@@ -58,35 +57,16 @@ export default class Tramite extends Component {
         la fecha de inicio, la fecha de última actualización,
         los días transcurridos*/}
         API.restCall({
-            service:'get_datos_tramite_alumno/' + this.props.id ,
+            service:'get_tramite/' + this.props.id ,
             success:(response) => {
-                this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
-                n_paso:response[0].numero_paso_actual });
-                this.getPasos(response[0].proceso_id)
+                this.setState({step: response[0].paso__id, proceso: response[0].proceso__nombre,
+                ticket:response[0].numero_ticket, fecha1: response[0].fecha_creacion, fecha2:response[0].fecha_modificacion,
+                n_paso:response[0].paso__numero });
+                this.getPasos(response[0].proceso__id)
                 },
             error:(response) => {this.setState({loading:false});}
         })
     };
-
-    /*
-    refreshData = () => {
-        this.setState({loading:true});
-        API.restCall({
-            service:'get_datos_tramite_alumno/' + this.props.id ,
-            success:(response) => {
-
-                this.setState({step: response[0].paso_actual, proceso: response[0].proceso__nombre,
-                ticket:response[0].numero_ticket, fecha1: response[0].fecha_inicio, fecha2:response[0].fecha_ultima_actualizacion,
-                n_paso:response[0].numero_paso_actual });
-                this.getPasos(response[0].proceso_id)
-                },
-            error:(response) => {
-                this.setState({loading:false});
-            }
-        })
-    };
-    */
 
     /*Layout de los trámites*/
 
@@ -97,12 +77,12 @@ export default class Tramite extends Component {
                 <h1>{ localStorage.getItem("esAdmin") ? "Trámite del alumno" : "Mi trámite" }</h1>
                 <Divider/>
                 <Row style={{float:'right'}} gutter={8}>
-                    <Col span={12}><Statistic title="Días transcurridos" groupSeparator={""} value={moment().diff(moment(this.state.fecha1),'days')} /></Col>
+                    <Col span={12}><Statistic title="Días transcurridos" groupSeparator={""} value={moment(this.state.fecha2).diff(moment(this.state.fecha1),'days')} /></Col>
                     <Col span={12}><Statistic title="Estatus" groupSeparator={""} value={this.state.status} /></Col>
                 </Row>
                 <h2 style={{marginBottom:50}}>{this.state.proceso}</h2>
-                <MediaQuery query="(min-device-width: 1224px)"><Steps labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>{this.state.pasos.map(value => {return (<Steps.Step title={value.nombre_mostrar} />)})}</Steps></MediaQuery>
-                <MediaQuery query="(max-device-width: 1223px)"><Steps direction="vertical" labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>{this.state.pasos.map(value => {return (<Steps.Step title={value.nombre_mostrar} />)})}</Steps></MediaQuery>
+                <MediaQuery query="(min-device-width: 1224px)"><Steps labelPlacement={'vertical'} current={this.state.n_paso - 1} style={{marginBottom:50}}>{this.state.pasos.map(value => {return (<Steps.Step title={value.nombre} />)})}</Steps></MediaQuery>
+                <MediaQuery query="(max-device-width: 1223px)"><Steps direction="vertical" labelPlacement={'vertical'} current={this.state.n_paso} style={{marginBottom:50}}>{this.state.pasos.map(value => {return (<Steps.Step title={value.nombre} />)})}</Steps></MediaQuery>
                 {this.state.n_paso==this.state.pasos.length  && !localStorage.getItem("esAdmin")  ?  <Row style={{textAlign:'center', }} gutter={8}><h2><a href={"https://forms.gle/GzcmC4f9cmFKS2ee9"} target={"_blank"}>Evalúa los trámites escolares</a></h2></Row> : <div></div>}
                 <Row gutter={8}>
                     <Col span={12}><Statistic title="Ticket" groupSeparator={""} value={this.state.ticket} prefix={'#'} /></Col>

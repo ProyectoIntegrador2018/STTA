@@ -28,7 +28,7 @@ export default class Documentos extends Component {
         const axios = require('axios');
         const data = new FormData()
 
-        data.append('id_admin', 6)
+        data.append('id_admin', localStorage.getItem('id'))
         data.append('descripcion', this.state.descripcion)
         data.append('file', this.state.file)
 

@@ -61,12 +61,10 @@ export default class CartaSolicitar extends Component {
   };
 
   printLetter = () => {
-    console.log(this.state.idAlumno)
-    console.log(this.state.idCarta)
 
     const axios = require('axios');
 
-    axios(API.apiLocal + 'obtener_carta/' + this.state.idAlumno + "/" + this.state.idCarta, {
+    axios(API.apiLocal + 'obtener_carta/' + this.state.idAlumno + "/" + this.state.idCarta + "/" + localStorage.getItem('id'), {
       method: 'GET',
       responseType: 'blob' //Force to receive data in a Blob Format
     })

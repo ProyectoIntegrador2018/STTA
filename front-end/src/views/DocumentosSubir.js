@@ -25,9 +25,12 @@ export default class Documentos extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.call('procesos/',[], (response) => {
-
-            this.setState({data: response, loading:false});
+        API.restCall({
+            service: 'get_procesos',
+            method:'get',
+            success:(response) => {
+                this.setState({data: response, loading:false});
+            }
         });
     };
 
@@ -81,16 +84,18 @@ export default class Documentos extends Component {
         if (value != null) {
             let cols = [];
             this.setState({disabled: false, proceso: this.state.data[value], loadingTable: false});
-            cols.push({key:"ticket",title:'# Ticket',llave:this.state.data[value].columna_ticket});
-            cols.push({key:"matricula",title:'Matrícula',llave:this.state.data[value].columna_matricula});
-            cols.push({key:"fecha_apertura",title:'Fecha de apertura',llave:this.state.data[value].columna_fecha_inicio});
-            cols.push({key:"fecha_ultima",title:'Fecha de última actualización',llave:this.state.data[value].columna_fecha_ultima_actualizacion});
+            cols.push({key:"ticket",title:'# Ticket', llave:0});
+            cols.push({key:"matricula",title:'Matrícula', llave:0});
             this.setState({id_proceso: this.state.data[value].id});
-            API.call('pasos-procesos/',{proceso: this.state.data[value].id}, (resposne) => {
-                resposne.map((val) => {
-                    cols.push({key:"paso_" + val.numero, title:val.nombre_mostrar, llave:val.columna_csv});
-                });
-                this.setState({columns: cols});
+            API.restCall({
+                service: 'get_pasos_proceso/' + this.state.data[value].id,
+                method:'get',
+                success:(response) => {
+                    response.map((val) => {
+                        cols.push({key:"paso_" + val.numero, title:val.nombre, llave:val.id});
+                    });
+                    this.setState({columns: cols});
+                }
             });
         }
     };

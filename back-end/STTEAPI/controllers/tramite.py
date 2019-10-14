@@ -6,105 +6,61 @@ from STTEAPI.settings.authentication import IsAuthenticated
 
 # CREATE
 # READ
-def return_tramite(request, proceso):
-    """Regresa tramites en formato de diccionario.
-
-    Args:
-    request: API request.
-    """
-    del request
-    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, pr.nombre, paso_actual, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr "
-             "on ta.proceso = pr.id join "
-             "Paso p on ta.proceso=p.proceso "
-             "WHERE pr.nombre= '{0}' group by numero_ticket;")
-    return run_db_query(query.format(proceso))
-
-
-@api_view(["GET", "POST"])
-# @permission_classes((IsAuthenticated, EsAdmin))
-def return_datos_tramite(request):
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def get_tramites(request):
     """Recupera los datos del tramite y se envían en formato json.
 
     Args:
     request: API request.
     """
     del request
-    tra = Tramitealumno.objects.select_related('proceso').values(
-        'id', 'matricula', 'numero_ticket', 'fecha_inicio',
-        'numero_paso_actual', 'proceso__nombre', 'fecha_ultima_actualizacion')
+    tra = Tramitealumno.objects.select_related('proceso', 'alumno',
+                                               'paso').values(
+        'id', 'fecha_creacion', 'fecha_modificacion', 'alumno__matricula',
+        'paso__numero', 'proceso__nombre', 'numero_ticket')
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
 
 @api_view(["GET"])
-# @permission_classes((IsAuthenticated, EsAdmin))
-def return_tramite_alumnos(request, matricula):
-    """Regresa los tramites de alumnos.
-
-    Los atributos de fecha de inicio, fecha de ultima actualizacion, nombre de
-    proceso, paso actual del trámite actual dada una matricula de usuario en
-    formato de diccionario.
-
-    Args:
-    request: API request.
-    matricula: Student ID.
-    """
-    del request
-    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
-             "numero_paso_actual, fecha_inicio, "
-             "fecha_ultima_actualizacion, numero_ticket, "
-             "matricula, encuesta, count(p.id) as pasos, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr "
-             "on ta.proceso = pr.id join "
-             "Paso p on ta.proceso=p.proceso where matricula = '{0}' "
-             "group by numero_ticket;")
-    return run_db_query(query.format(matricula))
-
-
-def return_tramite_transferencia(request):
-    """Regresa los tramites de transferencia.
-
-    Los atributos de fecha de inicio, fecha de ultima actualizacion,
-    nombre de proceso,paso actual del trámite actual donde el nombre del
-    proceso se llame Transferencia en formato de diccionario.
+@permission_classes((IsAuthenticated, EsAlumno))
+def get_tramites_by_student_id(request, student_id):
+    """Recupera los datos del tramite y se envían en formato json.
 
     Args:
     request: API request.
     """
     del request
-    query = ("SELECT ta.id, fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, pr.nombre, paso_actual, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr "
-             "on ta.proceso = pr.id join "
-             "Paso p on ta.proceso=p.proceso WHERE pr.nombre='Transferencia' "
-             "group by numero_ticket;")
-    return run_db_query(query)
+    tra = Tramitealumno.objects.select_related('proceso', 'paso',
+                                               'alumno').values(
+        'id', 'fecha_creacion', 'fecha_modificacion',
+        'proceso__num_pasos', 'paso__numero', 'proceso__nombre',
+        'numero_ticket').filter(alumno__matricula=student_id)
+    tra = [dict(t) for t in tra]
+    return JsonResponse(tra, safe=False)
 
 
-def return_tramite_transferencia_pasos(request):
-    """Regresa los pasos de tramites de transferencia.
-
-    Los nombres de los pasos y proceso donde el nombre del
-    proceso se llame Transferencia en formato de diccionario
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
+def get_tramite_by_proceso(request, proceso_id):
+    """Regresa datos sobre el proceso del trámite actual.
 
     Args:
     request: API request.
     """
     del request
-    query = ('SELECT pr.nombre, p.nombre '
-             'FROM Paso p join Proceso pr on p.proceso=pr.id '
-             'WHERE pr.nombre="Transferencia";')
-    return run_db_query(query)
+    tra = Tramitealumno.objects.select_related('proceso', 'alumno',
+                                               'paso').values(
+        'id', 'proceso__id', 'alumno__matricula', 'numero_ticket',
+        'fecha_creacion', 'paso__id', 'paso__numero', 'proceso__nombre',
+        'fecha_modificacion').filter(id=proceso_id)
+    tra = [dict(t) for t in tra]
+    return JsonResponse(tra, safe=False)
 
 
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
 def get_tramites_resumen(request, proceso, month, status):
     """Regresa todas las columnas de ResumenTramites en formato de diccionario.
 
@@ -115,75 +71,29 @@ def get_tramites_resumen(request, proceso, month, status):
     status: Status #.
     """
     del request
-    query = 'SELECT * FROM STTE.ResumenTramites WHERE proceso = {0};'
-    where = ''
+
+    query = ("SELECT t.paso, p.numero, Count(*) as num_tramites, "
+             "SUM(DATEDIFF(t.fecha_modificacion, t.fecha_creacion)) as "
+             "num_days, "
+             "IF(p.numero = pr.num_pasos, 2, "
+             "IF(p.numero = 0, 0, 1)) AS status "
+             "FROM TramiteAlumno t JOIN Paso p ON t.paso = p.id "
+             "JOIN Proceso pr ON t.proceso = pr.id "
+             "WHERE t.proceso = {0} "
+             "GROUP BY t.paso, p.numero "
+             "ORDER BY p.numero;")
+
+    status_clause = {'0': ' and p.numero = 0 ',
+                     '1': ' and p.numero > 0 and p.numero < pr.num_pasos ',
+                     '2': ' and p.numero = pr.num_pasos '}
     if month != "0":
-        where += ' and month = {0}'.format(month)
-    if status != "-1":
-        where += ' and status = {0}'.format(status)
-    return run_db_query(query.format(proceso) + where + ';')
+        month_clause = ' and month(t.fecha_modificacion) = {0} '.format(month)
+    else:
+        month_clause = ''
 
+    where = month_clause + status_clause.get(status, '')
 
-@api_view(["GET"])
-# @permission_classes((IsAuthenticated, EsAdmin))
-def return_tramite_alumnos_status(request):
-    """Esta funcion regresa atributos del trámite actual del alumno.
-
-    Args:
-    request: API request.
-    """
-    del request
-    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
-             "fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr "
-             "on ta.proceso = pr.id join "
-             "Paso p on ta.proceso=p.proceso "
-             "where year(now()) = year(fecha_ultima_actualizacion) "
-             "and month(now()) = month(fecha_ultima_actualizacion) "
-             "group by numero_ticket;")
-    return run_db_query(query)
-
-
-@api_view(["GET"])
-# @permission_classes((IsAuthenticated, EsAdmin))
-def return_tramite_alumnos_status_week(request):
-    """Regresa todos los atributos de tramite actual por semana.
-
-    Args:
-    request: API request.
-    """
-    del request
-    query = ("SELECT ta.id, pr.nombre, alumno, paso_actual, "
-             "fecha_inicio, fecha_ultima_actualizacion, "
-             "numero_ticket, matricula, encuesta, count(p.id) as pasos, "
-             "IF(paso_actual=count(p.id),'TERMINADO', "
-             "IF(paso_actual=0,'INICIADO','ENPROCESO')) as status "
-             "FROM TramiteAlumno ta join Proceso pr "
-             "on ta.proceso = pr.id join "
-             "Paso p on ta.proceso=p.proceso where "
-             "week(now()) - 1 = week(fecha_ultima_actualizacion) "
-             "group by numero_ticket;")
-    return run_db_query(query)
-
-
-@api_view(["GET"])
-@permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
-def get_datos_tramite_alumno(request, id):
-    """Regresa datos sobre el proceso del trámite actual.
-
-    Args:
-    request: API request.
-    """
-    del request
-    tra = Tramitealumno.objects.select_related('proceso').values(
-        'id', 'matricula', 'numero_ticket', 'proceso__nombre', 'proceso_id',
-        'fecha_inicio', 'paso_actual', 'numero_paso_actual',
-        'fecha_ultima_actualizacion').filter(id=id)
-    tra = [dict(t) for t in tra]
-    return JsonResponse(tra, safe=False)
+    return run_db_query(query.format(proceso + where))
 
 
 # UPDATE

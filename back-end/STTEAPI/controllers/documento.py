@@ -109,9 +109,10 @@ def documentos(request):
     request: API request.
     """
     del request
-    docs = Documento.objects.select_related('admin__usuario').values(
-        'id', 'nombre', 'fecha', 'contenido_subido',
-        email=F('admin__usuario__email'), id_admin=F('admin_id'))
+    docs = Documento.objects.select_related('administrador__usuario').values(
+        'id', 'nombre', 'fecha', 'contenido',
+        email=F('administrador__usuario__email'),
+        id_admin=F('administrador'))
     print(docs)
     docs = [dict(p) for p in docs]
     return JsonResponse(docs, safe=False)

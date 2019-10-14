@@ -90,7 +90,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'STTE',
+        'NAME': 'STTE_DEV',
         'USER': 'tramitestec',
         'PASSWORD': 'Ingser19&',
         'HOST': 'mysql-stte.cpmhc4vavlgx.us-east-2.rds.amazonaws.com',

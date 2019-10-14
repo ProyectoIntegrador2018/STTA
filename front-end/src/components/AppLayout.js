@@ -39,7 +39,7 @@ export default class AppLayout extends Component {
                             <Link to={"/dashboard"}><Icon type="pie-chart" />
                                 <span className="nav-text">Dashboard</span></Link>
                         </Menu.Item>
-                        {superUser === '1' &&
+                        {superUser &&
                         <Menu.Item key="1">
                             <Link to={"/administradores"}><Icon type="user" />
                                 <span className="nav-text">Administradores</span></Link>
@@ -70,14 +70,14 @@ export default class AppLayout extends Component {
                                 <span className="nav-text">Procesos</span></Link>
                         </Menu.Item>
                         
-                        {superUser === '1' &&
+                        {superUser &&
                         <Menu.Item  key="4">
                         <Link to={"/documentos"}><Icon type="file-excel" />
                         <span className="nav-text">Documentos CSV</span></Link>
                         </Menu.Item>
                         }
                         
-                        {superUser === '1' &&
+                        {superUser &&
                         <Menu.Item  key="10">
                             <Link to={"/adminBD"}><Icon type="file-excel" />
                             <span className="nav-text">Administrar BD</span></Link>

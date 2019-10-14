@@ -20,7 +20,14 @@ class ProcesosForm extends Component {
 
     refreshData = () => {
         this.setState({loading:true});
-        API.call('procesos/',[], (response) => {this.setState({data: response, loading:false});});
+        API.restCall({
+            service: 'get_procesos',
+            method:'get',
+            success:(response) => {
+                this.setState({data: response, loading:false});
+            },
+            error:(response) => { this.setState({data: [], loading:false}); }
+        });
     };
 
     componentWillMount() {
@@ -61,7 +68,7 @@ class ProcesosForm extends Component {
                     <DataTable data={this.state.data} loading={this.state.loading} deleteFunc={this.deleteProcs} rowSelection={permitirBorrar}
                            columns={[
                                {title: 'Nombre del proceso',key: 'nombre', },
-                               {title: 'Pasos',key: 'pasos',},
+                               {title: 'Pasos',key: 'num_pasos',},
                                {title: 'Fecha de creación',key: 'fecha',
                                render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>),}
                                ]}/>

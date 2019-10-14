@@ -10,141 +10,35 @@ import Select from "antd/lib/select";
 
 const Panel = Collapse.Panel;
 
-// Transferencia otro campus    QUITAR
-const salesPieData3 = [
-    { x: 'Director de programa autoriza', y: 100, },
-    { x: 'Escolar origen autoriza', y: 220, },
-    { x: 'Tesorería', y: 40, },
-    { x: 'Escolar destino autoriza', y: 40, },
-    { x: 'Trámite terminado', y: 40, },
-];
-
-// Baja de materias    QUITAR
-const salesPieData4 = [
-    { x: 'Escolar inicia trámite', y: 40, },
-    { x: 'Becas autoriza', y: 30, },
-    { x: 'DC autoriza', y: 10, },
-    { x: 'Trámite terminado', y: 5, },
-];
-
-
 
 class DashboardView extends Component {
 
     constructor(props){
         super(props);
-
         this.state = {
-            tramitesMes: 0,
-            tramitesSemana: 0,
-            loadingMonth: false,
-            loadingWeek: false,
-            tramitesAcademicos: false,
-            salesPieData:[],
-            totalTramites: 0,
-            tramitesTerminados: 0,
-            salesPieData2: [],
             tramiteTransferencia: false,
-            pasosTransferencia: [],
             procs:[]
         }
     }
 
     componentWillMount() {
-        this.setState({loadingMonth: true});
-        let tramitesMes = 0;
-        let totalTramites = 0;
-        API.restCall({
-            service: 'get_tramite_alumnos_status',
-            method:'get',
-            success:(response) => {
-                for (let i in response) { totalTramites += 1; if (response[i].status == "TERMINADO") { tramitesMes += 1;} }
-                this.setState({tramitesMes: tramitesMes, totalTramites: totalTramites, loadingMonth: false});
-                let tramitesTerminados = 0;
-                if (this.state.totalTramites != 0) { tramitesTerminados = this.state.tramitesMes / this.state.totalTramites * 100; }
-                this.setState({tramitesTerminados: tramitesTerminados});
-            },
-            error:(response) => { this.setState({loadingMonth: false}); }
-        });
-        this.setState({tramitesAcademicos: true});
-        API.restCall({
-            service: 'get_tramite_alumnos_status',
-            method:'get',
-            success:(response) => {
-                let xy = [
-                    { x: 'Baja de materias', y: 0, },
-                    { x: 'InterCampus', y: 0, },
-                    { x: 'Cambio de carrera', y: 0, },
-                    { x: 'Baja temporal', y: 0, },
-                    { x: 'Transferencia', y: 0, }]
-                for (let i in response) {
-                    if (response[i].nombre == "Intercampus") { xy[1].y += 1; }
-                    else if (response[i].nombre == "Baja de materias") { xy[0].y += 1;}
-                    else if (response[i].nombre == "Cambio de carrera") { xy[2].y += 1; }
-                    else if (response[i].nombre == "Baja temporal") { xy[3].y += 1; }
-                    else if (response[i].nombre == "Transferencia") { xy[4].y += 1; }
-                  }
-                this.setState({tramitesAcademicos: false, salesPieData:xy});
-            },
-            error:(response) => { this.setState({tramitesAcademicos: false});}
-        });
-        this.setState({loadingWeek: true});
-        let tramitesSemana = 0;
-        API.restCall({
-            service: 'get_tramite_alumnos_status_week',
-            method:'get',
-            success:(response) => {for (let i in response) { if (response[i].status == "TERMINADO") { tramitesSemana += 1;} }this.setState({tramitesSemana: tramitesSemana, loadingWeek: false});},
-            error:(response) => { this.setState({loadingWeek: false}); }
-        });
-
-        /*this.setState({tramiteTransferencia: true});
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia_pasos',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in response) {
-                    xy[i] = response[i].nombre;
-                }
-                this.setState({pasosTransferencia: xy});
-            },
-        });
-        API.restCall({
-            service: 'get_tramite_alumnos_transferencia',
-            method:'get',
-            success:(response) => {
-                let xy = [];
-                for (let i in this.state.pasosTransferencia) {
-                    xy[i] = {x: this.state.pasosTransferencia[i], y: 0};
-                }
-                for (let i in response) {
-                    xy[response[i].paso_actual - 1].y += 1;
-                }
-                this.setState({tramiteTransferencia: false, salesPieData2: xy});
-            },
-            error:(response) => {
-                this.setState({tramiteTransferencia: false});
-            }
-        });*/
         API.restCall({
             service: 'get_procesos',
             method:'get',
             success:(response) => {
-                let datos = [];
-                console.log(response)
                 for (let i in response) { this.getData(i, response[i]); }
-                this.setState({procesos: datos, procs: response});
+                this.setState({procs: response});
             },
             error:(response) => { this.setState({tramiteTransferencia: false}); }
         });
     }
+
     getData = (key, item) => {
         this.setState({["data_"+key+"spinner"]:true});
         API.restCall({
             service: 'get_pasos_proceso/' + item.id,
             method:'get',
             success:(response) => {
-                console.log(response);
                 let pasos = response;
                 API.restCall({
                     service: 'get_tramites_resumen/' + item.id + "/" + (this.state["data_"+key+"month"] != undefined ?
@@ -153,20 +47,17 @@ class DashboardView extends Component {
                     method:'get',
                     success:(response) => {
                         let data = [];
-                        console.log(response)
                         let finished = 0;
                         let sumDays = 0;
-                        for (let i in pasos) { data[i] = {numero: pasos[i].numero, x: pasos[i].nombre_mostrar, y: 0}; }
+                        // pasos are ordered by paso.numero
+                        for (let i in pasos) { data[i] = {numero: pasos[i].numero, x: pasos[i].nombre, y: 0}; }
                         for (let i in response) {
-                            for (let r in data){
-                                if (data[r].numero == response[i].numero_paso_actual){ data[r].y += 1; }
-                            }
-                            if (response[i].Status == 2){
-                                sumDays += moment(response[i].fecha_ultima_actualizacion).diff(moment(response[i].fecha_inicio),'days');
-                                finished += 1;
+                            data[response[i].numero - 1].y = response[i].num_tramites;
+                            if (response[i].status == 2){
+                                sumDays += response[i].num_days;
+                                finished += response[i].num_tramites;
                             }
                         }
-                        console.log(sumDays);
                         this.setState({["data_"+key+"spinner"]:false, ["data_"+key+"xy"]:data,  ["data_"+key+"prom"]: (sumDays / finished)});
                     },
                     error:(response) => { this.setState({["data_"+key+"spinner"]:false}); }

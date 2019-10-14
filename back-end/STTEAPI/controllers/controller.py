@@ -6,20 +6,6 @@ from STTEAPI.settings.password_token import PasswordToken
 
 
 @api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def pasos_procesos(request):
-    """Regresa los pasos de un proceso en un archivo diccinario.
-
-    Args:
-    request: API request.
-    """
-    args = verify_post_params(request, ['proceso'])
-    pasos = Paso.objects.filter(proceso_id=args['proceso']).values()
-    pasos = [dict(p) for p in pasos]
-    return JsonResponse(pasos, safe=False)
-
-
-@api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def logout(request):
     """Cierra la sesión del usuario actuale.
