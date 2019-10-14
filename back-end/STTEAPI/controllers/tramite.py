@@ -25,7 +25,7 @@ def get_tramites(request):
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno))
-def get_tramites_by_student_id(request, student_id):
+def get_tramites_by_student_id(request, id):
     """Recupera los datos del tramite y se envían en formato json.
 
     Args:
@@ -36,7 +36,7 @@ def get_tramites_by_student_id(request, student_id):
                                                'alumno').values(
         'id', 'fecha_creacion', 'fecha_modificacion',
         'proceso__num_pasos', 'paso__numero', 'proceso__nombre',
-        'numero_ticket').filter(alumno__matricula=student_id)
+        'numero_ticket').filter(alumno__matricula=id)
     tra = [dict(t) for t in tra]
     return JsonResponse(tra, safe=False)
 
