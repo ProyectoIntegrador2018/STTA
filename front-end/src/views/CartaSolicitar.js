@@ -89,8 +89,9 @@ export default class CartaSolicitar extends Component {
     );
 
     let alumnosItems = this.state.alumnos.map((alumno) =>
-      <Select.Option key={alumno.id}>{alumno.matricula}</Select.Option>
+      <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}{}</Select.Option>
     );
+
 
     return (
       <div>
@@ -120,6 +121,11 @@ export default class CartaSolicitar extends Component {
         {/* Alumnos select */}
         <div style={{ maxWidth: "550px", margin: "0 auto" }}>
           <Select defaultValue="Seleccionar alumno"
+          showSearch
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          optionFilterProp="children"
             onChange={(value) => {
               this.setState({ idAlumno: value });
             }}
