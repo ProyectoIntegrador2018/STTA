@@ -91,9 +91,15 @@ def get_tramites_resumen(request, proceso, month, status):
     else:
         month_clause = ''
 
-    where = month_clause + status_clause.get(status, '')
+    proc = Proceso.objects.filter(id=proceso)
 
-    return run_db_query(query.format(proceso + where))
+    if proc:
+
+        where = month_clause + status_clause.get(status, '')
+
+        return run_db_query(query.format(proceso + where))
+    else:
+        return None
 
 
 # UPDATE

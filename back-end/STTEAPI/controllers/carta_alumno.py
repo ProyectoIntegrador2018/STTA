@@ -67,13 +67,11 @@ def get_students_letters(request):
     request: API request.
     """
     del request
-    # TODO once mysql use foreign keys & django api instead of this ugliness...
-    query = ('SELECT b.alumno, b.carta, a.matricula, '
-             'a.nombre as nombre_alumno, c.nombre as nombre_carta, '
-             'b.fecha_creacion FROM Alumno a INNER JOIN '
-             'CartaAlumno b on a.id = b.alumno INNER JOIN '
-             'Carta c on c.id = b.carta')
-    return run_db_query(query)
+    carta = CartaAlumno.objects.select_related('carta', 'alumno').values(
+        'id', 'alumno__matricula', 'alumno__nombre', 'carta__nombre',
+        'fecha_creacion')
+    carta = [dict(c) for c in carta]
+    return JsonResponse(carta, safe=False)
 
 
 # UPDATE
