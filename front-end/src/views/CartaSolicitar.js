@@ -92,7 +92,6 @@ export default class CartaSolicitar extends Component {
       <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>
     );
 
-
     return (
       <div>
         <Button style={{ float: 'right' }}
