@@ -34,6 +34,8 @@ def get_student_letter(request, alumno, carta, admin):
     current_date = today.strftime("%d/%m/%Y")
 
     # Send parameters student data to letter
+    primer_dia, ultimo_dia = alumno.fechas_de_periodo.split('al')
+    primer_dia_v, ultimo_dia_v = alumno.periodo_de_vacaciones.split('al')
     html = loader.render_to_string(
         carta.nombre,
         {'nombre': alumno.nombre, 'matricula': alumno.matricula,
@@ -42,7 +44,13 @@ def get_student_letter(request, alumno, carta, admin):
          'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
          'posible_graduacion': alumno.posible_graduacion,
          'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date})
+         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date,
+         'primer_dia_de_clases_semestre_actual': primer_dia,
+         'ultimo_dia_de_clases_semestre_actual': ultimo_dia,
+         'materias_cursando': alumno.nombre_materias_inscritas,
+         'fecha_comienza_vaciones_semestre_actual': primer_dia_v,
+         'fecha_ultimo_dia_vacaciones_semestre_actual': ultimo_dia_v
+         })
 
     # Create carta alumno
     CartaAlumno.objects.create(carta=carta,
