@@ -59,51 +59,6 @@ def get_student(request, id_alumno):
     return HttpResponse(stu, content_type='application/json')
 
 
-@api_view(["POST"])
-@permission_classes((IsAuthenticated, EsAdmin))
-def bulk_upload_student(request):
-    """Procesamiento bulk de un archivo csv.
-    Args:
-    request: HTTP request.
-    id_alumno: Numero de id de alumno.
-    """
-    with open(request.data.file, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        for i, row in enumerate(reader):
-            if i == 0 or not row[1]:
-                continue
-            a = Alumno()
-            a.term = row[0]
-            a.matricula = row[1]
-            a.nombre = row[2]
-            a.fecha_de_nacimiento = row[3]
-            a.nacionalidad = row[4]
-            a.siglas_carrera = row[5]
-            a.carrera = row[6]
-            a.semestre = row[7]
-            a.periodo_actual = row[8]
-            a.term_admitido = row[9]
-            a.periodo_de_aceptacion = row[10]
-            a.fechas_de_inscripcion = row[11]
-            a.fechas_de_periodo = row[12]
-            a.fechas_de_inicio_de_clases = row[13]
-            a.periodo_de_vacaciones = row[14]
-            a.promedio_acumulado = row[15]
-            a.promedio_semestre_anterior = row[16]
-            a.promedio_de_certificado = row[17]
-            a.total_de_materias_de_carrera = row[18]
-            a.mes_anio_de_terminacion = row[19]
-            a.mes_anio_de_graduacion = row[20]
-            a.materias_aprobadas = row[21]
-            a.nombre_materias_inscritas = row[22]
-            a.lugar_en_ranking = row[23]
-            a.total_alumnos_en_la_generacion = row[23]
-            a.documentos_instituto = row[24]
-            a.posible_graduacion = 0
-            a.save()
-    return HttpResponse({"status": "ok"}, content_type='application/json')
-
-
 @api_view(["GET"])
 @permission_classes((IsAuthenticated, EsAlumno | EsAdmin))
 def get_students(request):
@@ -134,37 +89,37 @@ def upload_students(request):
 
     for alumno in alumnosJson:
         # Dando de alta información en la tabla de alumnos
-        counter = Alumno.objects.filter(matricula=alumno['Matricula']).count()
-        if counter == 0:
-            # Crear nuevo usuario en la base de datos
-            usuario = Usuario.objects.create(email=alumno['Email'],
-                                             password=alumno['Contraseña'],
-                                             is_staff=True, is_superuser=True,
-                                             es_alumno=True)
-            # Crear nuevo alumno en la base de datos
-            Alumno.objects.create(
-                nombre=alumno['Nombre'], usuario=usuario,
-                matricula=alumno['Matricula'],
-                siglas_carrera=alumno['Siglas Carrera'],
-                carrera=alumno['Carrera'],
-                semestre_en_progreso=alumno['Semestre en Progreso'],
-                periodo_de_aceptacion=alumno['Periodo de Aceptacion'],
-                posible_graduacion=alumno['Posible Graduacion'],
-                fecha_de_nacimiento=alumno['Fecha de Nacimiento'],
-                nacionalidad=alumno['Nacionalidad'])
+        if Alumno.objects.filter(matricula=alumno['Matrícula']).exists():
+            a = Alumno.objects.get(matricula=alumno['Matrícula'])
         else:
-            # Actualizar alumno existente
-            alumno_db = Alumno.objects.filter(
-                matricula=alumno['Matricula']).first()
-            alumno_db.nombre = alumno['Nombre']
-            alumno_db.siglas_carrera = alumno['Siglas Carrera']
-            alumno_db.carrera = alumno['Carrera']
-            alumno_db.semestre_en_progreso = alumno['Semestre en Progreso']
-            alumno_db.periodo_de_aceptacion = alumno['Periodo de Aceptacion']
-            alumno_db.posible_graduacion = alumno['Posible Graduacion']
-            alumno_db.fecha_de_nacimiento = alumno['Fecha de Nacimiento']
-            alumno_db.nacionalidad = alumno['Nacionalidad']
-            alumno_db.save()
+            a = Alumno()
+        a.term = alumno['Term']
+        a.matricula = alumno['Matrícula']
+        a.nombre = alumno['Nombre Completo']
+        a.fecha_de_nacimiento = alumno['Fecha de nacimiento']
+        a.nacionalidad = alumno['Nacionalidad']
+        a.siglas_carrera = alumno['Abreviaturas Carrera']
+        a.carrera = alumno['Carrera']
+        a.semestre = alumno['Semestre']
+        a.periodo_actual = alumno['Perido actual']
+        a.term_admitido = alumno['Term Admitido']
+        a.periodo_de_aceptacion = alumno['Periodo de aceptación']
+        a.fechas_de_inscripcion = alumno['Fechas de inscripción']
+        a.fechas_de_periodo = alumno['Fechas del periodo']
+        a.fechas_de_inicio_de_clases = alumno['Fecha de inicio de clases']
+        a.periodo_de_vacaciones = alumno['Periodo de vacaciones']
+        a.promedio_acumulado = alumno['Promedio acumulado']
+        a.promedio_semestre_anterior = alumno['Promedio del semestre anterior']
+        a.promedio_de_certificado = alumno['Promedio de certificado']
+        a.total_de_materias_de_carrera = alumno['Total de materias de la carrera']
+        a.mes_anio_de_terminacion = alumno['Mes y año de terminación']
+        a.mes_anio_de_graduacion = alumno['Mes y año de graduación']
+        a.materias_aprobadas = alumno['# materias aprobadas']
+        a.nombre_materias_inscritas = alumno['Nombre de materias inscritas']
+        a.lugar_en_ranking = alumno['Lugar en el ranking']
+        a.total_alumnos_en_la_generacion = alumno['Total alumnos en la generación']
+        a.documentos_instituto = alumno['Documentos en el Instituto']
+        a.save()
 
     return JsonResponse({'message': 'File uploaded successfully'})
 
@@ -197,4 +152,4 @@ def eliminar_alumnos(request):
     for p in args['alumno']:
         handle_delete_student_dependents(p['id'])
 
-    return eliminar_datos(request, Alumno, 'alumno', eliminar_usuarios)
+    return eliminar_datos(request, Alumno, 'alumno')
