@@ -68,11 +68,11 @@ export default class Documentos extends Component {
 
                 columns={[{
                     title: 'Matrícula del alumno',
-                    key: 'matricula',
+                    key: 'alumno__matricula',
 
                 }, {
                     title: 'Nombre',
-                    key: 'nombre_alumno',
+                    key: 'alumno__nombre',
 
                 }, {
                     title: 'Fecha solicitada',
@@ -80,7 +80,7 @@ export default class Documentos extends Component {
 
                 }, {
                     title: 'Tipo de carta',
-                    key: 'nombre_carta',
+                    key: 'carta__nombre',
                 }
               ]}/>
               </div>

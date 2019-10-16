@@ -39,18 +39,6 @@ def get_procesos(request):
     return JsonResponse(procs, safe=False)
 
 
-def return_procesos_pasos(request, proceso):
-    """Regresa nombre de proceso y de paso en formato de diccionario.
-
-    Args:
-    request: API request.
-    """
-    del request
-    query = ("SELECT pr.nombre, p.nombre FROM Paso p join Proceso pr "
-             "on p.proceso = pr.id WHERE pr.nombre = '{0}';")
-    return run_db_query(query.format(proceso))
-
-
 # UPDATE
 # DELETE
 def handle_delete_dependants(id):
