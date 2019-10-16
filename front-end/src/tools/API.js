@@ -55,7 +55,7 @@ export default class API {
     let client = new FetchHttpClient(this.apiLocal);
     client.addMiddleware(form());
     client.addMiddleware(json());
-    if (op.wToken) { client.addMiddleware(header({ 'Authorization': 'Token ' + localStorage.getItem('token')}));}
+    if (op.wToken) { client.addMiddleware(header({ 'Authorization': 'Token ' + localStorage.getItem('token') })); }
     client[op.method](op.service, { form: op.params }).then(response => {
       if (response.status === 200) {
         if (op.pdf) { return op.success(response) }
@@ -64,8 +64,8 @@ export default class API {
         Notifications.openNotificationWithIcon('error', response.status + ' ' + response.statusText, "");
         return op.error(response);
       } else {
-        if (response.jsonData) { Notifications.openNotificationWithIcon('error', response.status + ' ' + response.statusText, response.jsonData.detail);}
-        else { Notifications.openNotificationWithIcon('error', response.status + ' ' + response.statusText, "");}
+        if (response.jsonData) { Notifications.openNotificationWithIcon('error', response.status + ' ' + response.statusText, response.jsonData.detail); }
+        else { Notifications.openNotificationWithIcon('error', response.status + ' ' + response.statusText, ""); }
         return op.error(response);
       }
     });
