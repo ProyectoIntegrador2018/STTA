@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from STTEAPI.controllers.utils import *
 from STTEAPI.settings.authentication import IsAuthenticated
 
+
 # CREATE
 @api_view(["POST"])
 def registro_alumnos(request):
