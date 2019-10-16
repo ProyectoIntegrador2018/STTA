@@ -57,7 +57,6 @@ urlpatterns = [
     path('get_tramite/<id>', get_tramite_by_proceso),
     path('get_procesos', get_procesos),
     path('get_tramites_alumno/<id>', get_tramites_by_student_id),
-    path('get_procesos_pasos/<proceso>/', return_procesos_pasos),
     path('get_tramites_resumen/<proceso>/<month>/<status>',
          get_tramites_resumen),
     path('get_pasos_proceso/<proceso>', get_pasos_proceso),
