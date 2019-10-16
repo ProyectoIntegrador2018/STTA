@@ -22,20 +22,52 @@ class Administrador(models.Model):
 
 
 class Alumno(models.Model):
+    term = models.CharField(max_length=8, blank=True, null=True)
+    term_admitido = models.CharField(max_length=8, blank=True, null=True)
+    periodo_actual = models.CharField(max_length=100, blank=True, null=True)
+    periodo_de_aceptacion = models.CharField(
+        max_length=100, blank=True, null=True)
     matricula = models.CharField(max_length=100, blank=True, null=False)
     nombre = models.CharField(max_length=100, blank=True, null=True)
     siglas_carrera = models.CharField(max_length=100, blank=True, null=True)
     carrera = models.CharField(max_length=100, blank=True, null=True)
     semestre = models.IntegerField(blank=True, null=True)
-    periodo_de_aceptacion = models.CharField(max_length=100, blank=True,
-                                             null=True)
     posible_graduacion = models.CharField(max_length=100, blank=True,
                                           null=True)
     fecha_de_nacimiento = models.CharField(max_length=100, blank=True,
                                            null=True)
+    fechas_de_inscripcion = models.CharField(
+        max_length=100, blank=True, null=True)
+    fechas_de_periodo = models.CharField(
+        max_length=100, blank=True, null=True)
+    fechas_de_inicio_de_clases = models.CharField(
+        max_length=100, blank=True, null=True)
+    periodo_de_vacaciones = models.CharField(
+        max_length=100, blank=True, null=True)
+    promedio_acumulado = models.CharField(max_length=8, blank=True, null=True)
+    promedio_semestre_anterior = models.CharField(
+        max_length=8, blank=True, null=True)
+    promedio_de_certificado = models.CharField(
+        max_length=8, blank=True, null=True)
+    total_de_materias_de_carrera = models.CharField(
+        max_length=8, blank=True, null=True)
+    mes_anio_de_terminacion = models.CharField(
+        max_length=100, blank=True, null=True)
+    mes_anio_de_graduacion = models.CharField(
+        max_length=100, blank=True, null=True)
+    materias_aprobadas = models.CharField(
+        max_length=8, blank=True, null=True)
+    lugar_en_ranking = models.CharField(
+        max_length=10, blank=True, null=True)
+    total_alumnos_en_la_generacion = models.CharField(
+        max_length=8, blank=True, null=True)
+    documentos_instituto = models.CharField(
+        max_length=800, blank=True, null=True)
+    nombre_materias_inscritas = models.CharField(
+        max_length=800, blank=True, null=True)
     nacionalidad = models.CharField(max_length=100, blank=True, null=True)
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE,
-                                db_column='usuario')
+                                db_column='usuario', blank=True, null=True)
 
     class Meta:
         managed = True
@@ -117,7 +149,7 @@ class Carta(models.Model):
                                       on_delete=models.DO_NOTHING,
                                       db_column='administrador',
                                       null=True)
-   
+
     class Meta:
         managed = True
         db_table = 'Carta'
