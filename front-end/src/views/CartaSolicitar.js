@@ -89,7 +89,7 @@ export default class CartaSolicitar extends Component {
     );
 
     let alumnosItems = this.state.alumnos.map((alumno) =>
-      <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}{}</Select.Option>
+      <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>
     );
 
 
