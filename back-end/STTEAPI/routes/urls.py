@@ -64,6 +64,7 @@ urlpatterns = [
     path('agregar_alumnos/', upload_students),
     path('agregar_cartas/', create_letter_template),
     path('eliminar_cartas/', eliminar_plantilla_carta),
+    path('editar_cartas/', editar_carta),
     path('obtener_cartas/', get_letters),
     path('obtener_alumnos/', get_students),
     path('obtener_cartas_alumnos/', get_students_letters),
