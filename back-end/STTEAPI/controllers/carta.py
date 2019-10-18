@@ -90,3 +90,25 @@ def eliminar_plantilla_carta(request):
             raise APIExceptions.PermissionDenied
 
     return JsonResponse(1, safe=False)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated, EsAdmin))
+@transaction.atomic
+def editar_carta(request):
+    """Finds and updates a letter template with new description.
+
+    Args:
+    request: API request.
+    """
+    args = verify_post_params(request, ['carta'], True)
+    carta_id = int(args['carta']['id'])
+    carta_description = args['carta']['descripcion']
+    carta = Carta.objects.get(id=carta_id)
+    try:
+        carta.descripcion = carta_description
+        carta.save()
+    except IntegrityError:
+        raise APIExceptions.PermissionDenied
+
+    return JsonResponse(1, safe=False)
