@@ -92,7 +92,7 @@ export default class DataTable extends Component {
                 <b>{'Total ' + this.state.dataSource.length}</b>
               </span>
 
-              <span hidden={!(this.state.selectedRows.length > 1)}>
+              <span hidden={this.state.selectedRows.length >= 1}>
                 <Button type="info" className={'button-info'} icon={'edit'} onClick={() => { this.props.editFunc(this.state.selectedRows); this.setState({ selectedRows: [], selectedRowKeys: [] }); }} />
                 <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
                   okText="Sí" cancelText="No"
@@ -101,18 +101,6 @@ export default class DataTable extends Component {
                   <Button type="danger" className={'button-danger'} icon={'delete'} />
                 </Popconfirm>
                 &nbsp; &nbsp;{'  ' + this.state.selectedRows.length + ' elementos seleccionados de un total de ' + this.state.dataSource.length}
-
-
-              </span>
-              <span hidden={!(this.state.selectedRows.length === 1)}>
-                <Button type="info" className={'button-info'} icon={'edit'} onClick={() => { this.props.editFunc(this.state.selectedRows); this.setState({ selectedRows: [], selectedRowKeys: [] }); }} />
-                <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
-                  okText="Sí" cancelText="No"
-                  onConfirm={() => { this.props.deleteFunc(this.state.selectedRows); this.setState({ selectedRows: [], selectedRowKeys: [] }); }}
-                >
-                  <Button type="danger" className={'button-danger'} icon={'delete'} />
-                </Popconfirm>
-                &nbsp; &nbsp;{'  ' + this.state.selectedRows.length + ' elemento seleccionado de un total de ' + this.state.dataSource.length}
               </span>
 
             </div>
