@@ -92,8 +92,11 @@ export default class DataTable extends Component {
                 <b>{'Total ' + this.state.dataSource.length}</b>
               </span>
 
-              <span hidden={this.state.selectedRows.length >= 1}>
+              <span hidden={this.state.selectedRows.length != 1 || !(this.props.canEdit || false)}>
                 <Button type="info" className={'button-info'} icon={'edit'} onClick={() => { this.props.editFunc(this.state.selectedRows); this.setState({ selectedRows: [], selectedRowKeys: [] }); }} />
+              </span>
+
+              <span hidden={this.state.selectedRows.length < 1}>
                 <Popconfirm title="¿Estás seguro que deseas eliminar los elementos seleccionados? "
                   okText="Sí" cancelText="No"
                   onConfirm={() => { this.props.deleteFunc(this.state.selectedRows); this.setState({ selectedRows: [], selectedRowKeys: [] }); }}

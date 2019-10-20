@@ -73,7 +73,7 @@ export default class FormatoCartas extends Component {
         <Collapse defaultActiveKey={['0']} onChange={callback}>
           <Panel header="Instrucciones" key="1"> <p>{"Si quiere saber mas sobre como crear una carta presione este link copie este link en su navegador : https://docs.google.com/document/d/15ReAuFoavQNVQSqVvKKkB6zbbe79Tt57OqfHdfQ5eeQ/edit?usp=sharing"}</p> </Panel>
         </Collapse>
-        <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} editFunc={this.editFiles} rowSelection={permitirBorrar}
+        <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} editFunc={this.editFiles} canEdit={true} rowSelection={permitirBorrar}
           columns={[
             { title: 'Nombre', key: 'descripcion', },
             { title: 'Archivo', key: 'nombre_carta', },
