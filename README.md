@@ -91,6 +91,16 @@ DB_PORT=3306
 SENDGRID_API_KEY=valid_sendgrid_key
 ```
 
+Crear la base de datos y correr las migraciones
+```
+$ docker-compose exec mysql mysql -u root -p
+Enter password: 3x4mPl3P4sSW0rD!
+mysql> CREATE DATABASE STTE;
+mysql> \quit
+$ docker-compose exec web python manage.py migrate STTEAPI
+$ docker-compose exec web python manage.py migrate
+```
+
 Iniciar la aplicación
 ```
 docker-compose up
