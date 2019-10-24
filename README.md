@@ -45,7 +45,7 @@ Aplicación web que permite visualizar el estatus de los trámites escolares en 
 
 ### Librerías Front End:
 * ReactJS
-* Ant Desing
+* Ant Design
 
 ### Librerias Back End:
 * Django(Framework de Python)
@@ -162,7 +162,7 @@ Crear paquete de aplicación en React.
 npm run build
 ```
 
-Sincornizar directorio de construcción con S3
+Sincronizar directorio de construcción con S3
 ```
 aws s3 sync build/ s3://www.tramitesescolares.com.mx
 ```
