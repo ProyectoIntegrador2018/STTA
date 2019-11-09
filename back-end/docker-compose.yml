@@ -33,3 +33,4 @@ services:
       DATABASE_USERNAME: root
       DATABASE_NAME: STTE
       DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
