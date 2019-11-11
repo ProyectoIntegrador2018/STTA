@@ -29,9 +29,9 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['localhost', 'site-back.us-east-1.elasticbeanstalk.com',
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'site-back.us-east-1.elasticbeanstalk.com',
                  'api.tramitesescolares.com.mx',
-                 'https://www.tramitesescolares.com.mx']
+                 'https://www.tramitesescolares.com.mx', '127.0.0.1']
 
 # Application definition
 
@@ -88,7 +88,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'STTEAPI.settings.wsgi.application'
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
