@@ -30,9 +30,13 @@ class MyUserManager(BaseUserManager):
 
     # python manage.py createsuperuser
     def create_superuser(self, email, password):
-        user = self.model(email=email, is_staff=True, is_superuser=True)
+        user = self.model(email=email, is_staff=True, is_superuser=True,
+                          es_admin=True)
         user.set_password(password)
         user.save(using=self._db)
+        admin = Administrador.objects.create(usuario=user)
+        admin.nombre = 'TramitesTec'
+        admin.save()
         return user
 
 
