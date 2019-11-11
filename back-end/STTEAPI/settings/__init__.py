@@ -29,7 +29,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['localhost', 'site-back.us-east-1.elasticbeanstalk.com',
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'site-back.us-east-1.elasticbeanstalk.com',
                  'api.tramitesescolares.com.mx',
                  'https://www.tramitesescolares.com.mx', '127.0.0.1']
 
