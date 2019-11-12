@@ -86,11 +86,9 @@ export default class EditarFormatoCartas extends Component {
               value={this.state.content}
               rows={17}
               size="large"
-              autoSize
               onChange={event =>
                 this.handleChange(event.target.value)
-              }
-            />
+              } />
           </Form.Item>
           <Form.Item>
             <Button onClick={this.printLetter} type="primary" htmlType="submit" className="login-form-button">

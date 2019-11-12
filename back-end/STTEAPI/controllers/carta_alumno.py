@@ -24,27 +24,11 @@ def get_student_letter(request, alumno, carta, admin):
     del request
     # Get letter by id_carta
     carta = Carta.objects.get(id=carta)
-
     # Get student by id_student
     alumno = Alumno.objects.get(id=alumno)
-
     admin = Administrador.objects.get(id=admin)
 
-    # Calculated data
-    today = datetime.today()
-    # dd/mm/YY
-    current_date = today.strftime("%d/%m/%Y")
-
-    # Send parameters student data to letter
-    html = loader.render_to_string(
-        carta.nombre,
-        {'nombre': alumno.nombre, 'matricula': alumno.matricula,
-         'siglas_carrera': alumno.siglas_carrera, 'carrera': alumno.carrera,
-         'semestre': alumno.semestre,
-         'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
-         'posible_graduacion': alumno.posible_graduacion,
-         'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date})
+    html = carta_html_to_string(carta, alumno, admin)
 
     # Create carta alumno
     CartaAlumno.objects.create(carta=carta,
@@ -115,31 +99,17 @@ def get_student_letter_to_edit(request, alumno, carta, admin):
     del request
     # Get letter by id_carta
     carta = Carta.objects.get(id=carta)
-
     # Get student by id_student
     alumno = Alumno.objects.get(id=alumno)
-
     admin = Administrador.objects.get(id=admin)
 
     # Calculated data
-    today = datetime.today()
-    # dd/mm/YY
-    current_date = today.strftime("%d/%m/%Y")
-
-    # Send parameters student data to letter
-    html = loader.render_to_string(
-        carta.nombre,
-        {'nombre': alumno.nombre, 'matricula': alumno.matricula,
-         'siglas_carrera': alumno.siglas_carrera, 'carrera': alumno.carrera,
-         'semestre': alumno.semestre,
-         'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
-         'posible_graduacion': alumno.posible_graduacion,
-         'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date})
+    html = carta_html_to_string(carta, alumno, admin)
 
     # Create response
     response_data = {'carta': html}
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return HttpResponse(json.dumps(response_data),
+                        content_type="application/json")
 
 
 # READ
@@ -180,3 +150,22 @@ def eliminar_carta(request):
 
     return eliminar_datos(request, CartaAlumno, 'documentos',
                           _eliminar_con_alumno_carta)
+
+
+def carta_html_to_string(carta, alumno, admin):
+    today = datetime.today()
+    # dd/mm/YY
+    current_date = today.strftime("%d/%m/%Y")
+
+    # Send parameters student data to letter
+    html = loader.render_to_string(
+        carta.nombre,
+        {'nombre': alumno.nombre, 'matricula': alumno.matricula,
+         'siglas_carrera': alumno.siglas_carrera, 'carrera': alumno.carrera,
+         'semestre': alumno.semestre,
+         'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
+         'posible_graduacion': alumno.posible_graduacion,
+         'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
+         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date})
+
+    return html
