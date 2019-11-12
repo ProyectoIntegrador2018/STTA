@@ -68,5 +68,8 @@ urlpatterns = [
     path('obtener_cartas/', get_letters),
     path('obtener_alumnos/', get_students),
     path('obtener_cartas_alumnos/', get_students_letters),
-    path('obtener_carta/<alumno>/<carta>/<admin>', get_student_letter)
+    path('obtener_carta/<alumno>/<carta>/<admin>', get_student_letter),
+    path('html_to_pdf', html_to_pdf),
+    path('obtener_carta_para_editar/<alumno>/<carta>/<admin>',
+         get_student_letter_to_edit)
 ]
