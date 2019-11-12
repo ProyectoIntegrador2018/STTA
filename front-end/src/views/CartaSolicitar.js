@@ -8,6 +8,7 @@ import moment from 'moment';
 import Select from "antd/lib/select";
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
+import { toFileBlob } from '../tools/common';
 
 export default class CartaSolicitar extends Component {
 
@@ -67,14 +68,7 @@ export default class CartaSolicitar extends Component {
       responseType: 'blob' //Force to receive data in a Blob Format
     })
       .then(response => {
-        //Create a Blob from the PDF Stream
-        const file = new Blob(
-          [response.data],
-          { type: 'application/pdf' });
-        //Build a URL from the file
-        const fileURL = URL.createObjectURL(file);
-        //Open the URL on new Window
-        window.open(fileURL);
+        toFileBlob(response);
       })
       .catch(error => {
         console.log(error);

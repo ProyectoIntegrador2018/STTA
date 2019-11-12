@@ -5,6 +5,7 @@ import {
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
 import axios from 'axios'
+import { toFileBlob } from '../tools/common';
 
 const Panel = Collapse.Panel;
 
@@ -54,13 +55,7 @@ export default class EditarFormatoCartas extends Component {
       })
       .then(response => {
         //Create a Blob from the PDF Stream
-        const file = new Blob(
-          [response.data],
-          { type: 'application/pdf' });
-        //Build a URL from the file
-        const fileURL = URL.createObjectURL(file);
-        //Open the URL on new Window
-        window.open(fileURL);
+        toFileBlob(response);
       })
       .catch(error => {
         console.log(error);
