@@ -129,6 +129,22 @@ def get_students_letters(request):
     return JsonResponse(carta, safe=False)
 
 
+@api_view(["GET"])
+@permission_classes((IsAuthenticated, EsAdmin))
+def get_student_letter_stats(request, month):
+    del request
+    query = ("SELECT c.id, c.nombre, Count(ca.carta) as num_cartas "
+             "FROM Carta c LEFT JOIN CartaAlumno ca ON c.id = ca.carta {0} "
+             "GROUP BY c.id, c.nombre "
+             "ORDER BY num_cartas;")
+
+    where = 'WHERE YEAR(ca.fecha_creacion) = YEAR(NOW()) '
+    if month in [str(i) for i in range(1, 13)]:
+        where += 'and MONTH(ca.fecha_creacion) = {0} '.format(month)
+
+    return run_db_query(query.format(where))
+
+
 # UPDATE
 # DELETE
 @api_view(["POST"])
