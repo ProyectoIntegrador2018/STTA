@@ -8,6 +8,7 @@ import moment from 'moment';
 import Select from "antd/lib/select";
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
+import { toFileBlob } from '../tools/common';
 
 export default class CartaSolicitar extends Component {
 
@@ -61,27 +62,22 @@ export default class CartaSolicitar extends Component {
   };
 
   printLetter = () => {
-
     const axios = require('axios');
-
     axios(API.apiLocal + 'obtener_carta/' + this.state.idAlumno + "/" + this.state.idCarta + "/" + localStorage.getItem('id'), {
       method: 'GET',
       responseType: 'blob' //Force to receive data in a Blob Format
     })
       .then(response => {
-        //Create a Blob from the PDF Stream
-        const file = new Blob(
-          [response.data],
-          { type: 'application/pdf' });
-        //Build a URL from the file
-        const fileURL = URL.createObjectURL(file);
-        //Open the URL on new Window
-        window.open(fileURL);
+        toFileBlob(response);
       })
       .catch(error => {
         console.log(error);
       });
   };
+
+  editarCarta = () => {
+    window.location.href = '/cartas/editar/' + this.state.idCarta + '/' + this.state.idAlumno
+  }
 
   render() {
     let cartasItems = this.state.cartas.map((carta) =>
@@ -99,7 +95,13 @@ export default class CartaSolicitar extends Component {
           type="secondary"
           icon="printer">
           Imprimir
-                </Button>
+        </Button>
+        <Button style={{ float: 'right', 'marginRight': '10px' }}
+          onClick={this.editarCarta}
+          type="secondary"
+          icon="edit">
+          Editar
+        </Button>
         <h1><Icon type="solution" /> Cartas y Constancias</h1>
 
         <br></br>
@@ -120,11 +122,11 @@ export default class CartaSolicitar extends Component {
         {/* Alumnos select */}
         <div style={{ maxWidth: "550px", margin: "0 auto" }}>
           <Select defaultValue="Seleccionar alumno"
-          showSearch
-          filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          optionFilterProp="children"
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            optionFilterProp="children"
             onChange={(value) => {
               this.setState({ idAlumno: value });
             }}

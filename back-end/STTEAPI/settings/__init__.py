@@ -10,22 +10,28 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 import os
+import environ
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+ROOT = environ.Path(__file__) - 3  # get root of the project
+env = environ.Env()
+# reading .env file
+environ.Env.read_env(env_file=os.path.join(ROOT, 'web-variables.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '^#%yvtl1b)l$mrw4pp_!jr3*f8@ea71_!vn%*oh18vr3yq%lz('
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'site-back.us-east-1.elasticbeanstalk.com',
-                 'api.tramitesescolares.com.mx', '127.0.0.1', 'https://www.tramitesescolares.com.mx']
+                 'api.tramitesescolares.com.mx',
+                 'https://www.tramitesescolares.com.mx', '127.0.0.1']
 
 # Application definition
 
@@ -60,7 +66,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'STTEAPI.routes.urls'
 
-SENDGRID_API_KEY = os.environ["SENDGRID_API_KEY"]
+SENDGRID_API_KEY = env.str('SENDGRID_API_KEY', default='')
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
@@ -90,11 +96,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'PORT': '3306',
+        'NAME': env.str('DATABASE_NAME', default=''),
+        'USER': env.str('DATABASE_USER', default=''),
+        'PASSWORD': env.str('DATABASE_PASSWORD', default=''),
+        'HOST': env.str('DATABASE_HOST', default=''),
+        'PORT': env.str('DATABASE_PORT', default=''),
     }
 }
 
@@ -108,12 +114,6 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 
 AUTH_USER_MODEL = 'STTEAPI.Usuario'
-
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'tramitesescolarestec2019@gmail.com'
-# EMAIL_HOST_PASSWORD = 'Ingser19&'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
