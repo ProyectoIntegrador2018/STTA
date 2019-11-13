@@ -18,8 +18,7 @@ export default class AppLayout extends Component {
     }
 
     Basic = () => {
-        let superUser = localStorage.getItem('is_superuser')
-        console.log(superUser)
+        let superUser = localStorage.getItem('is_superuser') === 'true';
 
         return (
             <Layout className={'layout'}>
@@ -49,43 +48,25 @@ export default class AppLayout extends Component {
                             <Link to={"/alumnos"}><Icon type="team" />
                                 <span className="nav-text">Alumnos</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="6">
-                            <Link to={"/tramites"}><Icon type="solution" />
-                                <span className="nav-text">Trámites</span></Link>
-                        </Menu.Item>
-                        <Menu.Item  key="9">
+                        <Menu.Item  key="3">
                         <Link to={"/cartas"}><Icon type="file-text" />
                            <span className="nav-text">Cartas y Contancias</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="7">
+                        <Menu.Item key="4">
                             <Link to={"/cartasSolicitadas"}><Icon type="solution" />
                                 <span className="nav-text">Cartas Solicitadas</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="8">
+                        <Menu.Item key="5">
                             <Link to={"/formatoCartas"}><Icon type="file-text" />
                                 <span className="nav-text">Formato Cartas</span></Link>
                         </Menu.Item>
-                        <Menu.Item  key="3">
-                            <Link to={"/procesos"}><Icon type="cluster" />
-                                <span className="nav-text">Procesos</span></Link>
-                        </Menu.Item>
-                        
                         {superUser &&
-                        <Menu.Item  key="4">
-                        <Link to={"/documentos"}><Icon type="file-excel" />
-                        <span className="nav-text">Documentos CSV</span></Link>
-                        </Menu.Item>
-                        }
-                        
-                        {superUser &&
-                        <Menu.Item  key="10">
+                        <Menu.Item  key="6">
                             <Link to={"/adminBD"}><Icon type="file-excel" />
                             <span className="nav-text">Administrar BD</span></Link>
                         </Menu.Item>
                         }
-                        
-                        
-                        <Menu.Item key="5" onClick={(e) => {API.logout();}}>
+                        <Menu.Item key="7" onClick={(e) => {API.logout();}}>
                             <Icon type="logout" />
                             <span>Salir</span>
                         </Menu.Item>

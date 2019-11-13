@@ -46,7 +46,7 @@ class App extends Component {
     return (
       <Router className="App" ref={API.bodySiteRef}>
         <div>
-          <Route exact path="/" component={this.LoginUserView} />
+          <Route exact path="/" component={this.LoginView} />
           <Route exact path="/dashboard" component={this.DashboardView} />
           <Route exact path="/procesos" component={this.ProcesosView} />
           <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
@@ -57,7 +57,6 @@ class App extends Component {
           <Route exact path="/documentos" component={this.DocumentosView} />
           <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
           <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
-          <Route exact path="/login" component={this.LoginView} />
           <Route exact path="/registro" component={this.RegisterView} />
           <Route exact path="/tramite" component={this.StudentView} />
           <Route exact path="/tramite/:id" component={this.AlumnosAdminTramiteView} />

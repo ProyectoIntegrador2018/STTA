@@ -71,7 +71,7 @@ export default class AppLayoutUser extends Component {
                                     return (<Menu.Item onClick={() =>this.Despliega(objectToMap)}>{objectToMap.proceso__nombre}</Menu.Item>)})
                             }
                         </SubMenu>
-                        <Menu.Item key="3" onClick={(e) => {API.logoutUser();}}>
+                        <Menu.Item key="3" onClick={(e) => {API.logout();}}>
                             <Icon type="logout" />
                             <span>Salir</span>
                         </Menu.Item>
