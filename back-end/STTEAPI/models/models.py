@@ -68,6 +68,7 @@ class Alumno(models.Model):
     nacionalidad = models.CharField(max_length=100, blank=True, null=True)
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE,
                                 db_column='usuario', blank=True, null=True)
+    fechas_de_semestre_anterior = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = True
