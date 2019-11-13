@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from STTEAPI.controllers.utils import *
 from STTEAPI.settings.authentication import IsAuthenticated
 from weasyprint import HTML
+from datetime import date
 
 
 # CREATE
@@ -176,12 +177,21 @@ def carta_html_to_string(carta, alumno, admin):
     # Send parameters student data to letter
     html = loader.render_to_string(
         carta.nombre,
-        {'nombre': alumno.nombre, 'matricula': alumno.matricula,
-         'siglas_carrera': alumno.siglas_carrera, 'carrera': alumno.carrera,
+        {'nombre': alumno.nombre,
+         'matricula': alumno.matricula,
+         'siglas_carrera': alumno.siglas_carrera,
+         'carrera': alumno.carrera,
          'semestre': alumno.semestre,
          'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
          'posible_graduacion': alumno.posible_graduacion,
          'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-         'nacionalidad': alumno.nacionalidad, 'fecha_actual': current_date})
+         'nacionalidad': alumno.nacionalidad,
+         'fecha_actual': current_date,
+         'fechas_de_periodo': alumno.fechas_de_periodo,
+         'nombre_materias_inscritas': alumno.nombre_materias_inscritas,
+         'periodo_de_vacaciones': alumno.periodo_de_vacaciones,
+         'promedio_acumulado': alumno.promedio_acumulado,
+         'promedio_semestre_anterior': alumno.promedio_semestre_anterior,
+         'total_de_materias_de_carrera': alumno.total_de_materias_de_carrera})
 
     return html
