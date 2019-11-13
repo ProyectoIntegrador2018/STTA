@@ -78,7 +78,7 @@ export default class API {
     } else {
       //API.bodySiteRef.current.history.push(to);
       //document.getElementById("site_loader").hidden = false;
-      window.location.href = "/login";
+      window.location.href = "/";
     }
   }
 
@@ -92,21 +92,6 @@ export default class API {
   }
 
   static logout() {
-    if (localStorage.getItem('token') != null) {
-      API.call("logout/", {}, (response) => {
-        //console.log(response);
-        Notifications.openNotificationWithIcon('success', "Sesión cerrada con éxito", "");
-      });
-      localStorage.removeItem('token');
-      API.redirectTo('/login');
-    } else {
-      localStorage.removeItem('token');
-      //API.cookies.remove('token');
-      API.redirectTo('/login');
-    }
-  }
-
-  static logoutUser() {
     if (localStorage.getItem('token') != null) {
       API.call("logout/", {}, (response) => {
         //console.log(response);
