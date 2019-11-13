@@ -161,15 +161,15 @@ def carta_html_to_string(carta, alumno, admin):
     # Send parameters student data to letter
     html = loader.render_to_string(
         carta.nombre,
-        {'nombre': alumno.nombre, 
+        {'nombre': alumno.nombre,
          'matricula': alumno.matricula,
-         'siglas_carrera': alumno.siglas_carrera, 
+         'siglas_carrera': alumno.siglas_carrera,
          'carrera': alumno.carrera,
          'semestre': alumno.semestre,
          'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
          'posible_graduacion': alumno.posible_graduacion,
          'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-         'nacionalidad': alumno.nacionalidad, 
+         'nacionalidad': alumno.nacionalidad,
          'fecha_actual': current_date,
          'fechas_de_periodo': alumno.fechas_de_periodo,
          'nombre_materias_inscritas': alumno.nombre_materias_inscritas,
