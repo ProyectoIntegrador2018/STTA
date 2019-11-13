@@ -36,8 +36,13 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                         <Input />
                         )}
                     </Form.Item>
-
-
+                    <Form.Item label="Contraseña" type="password">
+                        {getFieldDecorator('contrasena', {
+                        rules: [{ required: true, message: 'Por favor introduce la contraseña del administrador' }],
+                        })(
+                        <Input />
+                        )}
+                    </Form.Item>
                 </Form>
             </Modal>
         )}
@@ -113,7 +118,7 @@ export default class Administradores extends Component {
 
             this.setState({ loading: true });
             form.resetFields();
-            API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo}, (response) => {
+            API.call('agregar_administrador/', {nombre: values.nombre, email: values.correo, password: values.contrasena}, (response) => {
                 this.setState({ visible: false  });
                 this.setState({ loading: false  });
                 this.refreshData();
@@ -135,8 +140,8 @@ export default class Administradores extends Component {
                 <h1><Icon type="user" /> Administradores</h1>
                 <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteAdmin} rowSelection={permitirBorrar}
                 columns={[
-                  { title: 'Nombre del administrador',key: 'nombre',},
-                  { title: 'Email',key: 'email',},
+                  { title: 'Nombre del administrador', key: 'nombre',},
+                  { title: 'Email', key: 'email',},
                   { title: 'Último login', key: 'last_login', render: (text, record) => (<div style={{textAlign:'center'}}><div>{moment(text).format('DD-MMM-YYYY')}</div></div>)}
                 ]}/>
                 <CollectionCreateForm wrappedComponentRef={this.saveFormRef} visible={this.state.visible} loading={this.state.loading} onCancel={this.handleCancel} onCreate={this.handleCreate}/>

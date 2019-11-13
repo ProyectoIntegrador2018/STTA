@@ -23,6 +23,7 @@ import DashboardView from "./views/DashboardView";
 import CartasSolicitadasView from "./views/CartasSolicitadasView";
 import CartaSolicitar from "./views/CartaSolicitar";
 import FormatoCartas from "./views/FormatoCartas"
+import EditarCarta from './views/EditarCarta';
 import EditarFormatoCartas from "./views/EditarFormatoCartas"
 import FormatoSubir from "./views/FormatoSubir"
 import AdminBaseDatos from "./views/AdminBaseDatos"
@@ -45,7 +46,7 @@ class App extends Component {
     return (
       <Router className="App" ref={API.bodySiteRef}>
         <div>
-          <Route exact path="/" component={this.LoginUserView} />
+          <Route exact path="/" component={this.LoginView} />
           <Route exact path="/dashboard" component={this.DashboardView} />
           <Route exact path="/procesos" component={this.ProcesosView} />
           <Route exact path="/proceso/nuevo" component={this.ProcesoNuevoView} />
@@ -56,12 +57,12 @@ class App extends Component {
           <Route exact path="/documentos" component={this.DocumentosView} />
           <Route exact path="/documentos/subir" component={this.DocumentosSubirView} />
           <Route exact path="/restaurar/:uid/:token" component={this.Restaurar} />
-          <Route exact path="/login" component={this.LoginView} />
           <Route exact path="/registro" component={this.RegisterView} />
           <Route exact path="/tramite" component={this.StudentView} />
           <Route exact path="/tramite/:id" component={this.AlumnosAdminTramiteView} />
           <Route exact path="/cartasSolicitadas" component={this.CartasSolicitadasView} />
           <Route exact path="/cartas" component={this.CartaSolicitarView} />
+          <Route exact path="/cartas/editar/:carta_id/:student_id" component={this.EditarCartaView} />
           <Route exact path="/formatoCartas" component={this.FormatoCartasView} />
           <Route exact path="/formatoCartas/editar/:id" component={this.EditarFormatoCartasView} />
           <Route exact path="/formatoCartas/subir" component={this.FormatoSubirView} />
@@ -204,6 +205,14 @@ class App extends Component {
     return (
       <AppLayout view={"9"} type={"basic"}>
         <CartaSolicitar />
+      </AppLayout>
+    );
+  };
+
+  EditarCartaView = (props) => {
+    return (
+      <AppLayout view={"9"} type={"basic"} {...props}>
+        <EditarCarta {...props} />
       </AppLayout>
     );
   };

@@ -13,10 +13,10 @@ def registro_administradores(request):
     Args:
     request: API request.
     """
-    args = verify_post_params(request, ['email', 'nombre'])
+    args = verify_post_params(request, ['email', 'nombre', 'password'])
     try:
         user = Usuario.objects.create_admin(email=args['email'],
-                                            password=12345678,
+                                            password=args['password'],
                                             nombre=args['nombre'])
     except IntegrityError as e:
         raise exceptions.PermissionDenied(detail="Email ya registrado")
