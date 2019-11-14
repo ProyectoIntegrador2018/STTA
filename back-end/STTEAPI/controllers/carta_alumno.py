@@ -195,6 +195,7 @@ def carta_html_to_string(carta, alumno, admin):
          'promedio_semestre_anterior': alumno.promedio_semestre_anterior,
          'total_de_materias_de_carrera': alumno.total_de_materias_de_carrera,
          'lugar_en_ranking': alumno.lugar_en_ranking,
-         'total_alumnos_en_la_generacion': alumno.total_alumnos_en_la_generacion})
+         'total_alumnos_en_la_generacion':
+         alumno.total_alumnos_en_la_generacion})
 
     return html
