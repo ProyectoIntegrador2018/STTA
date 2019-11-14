@@ -81,28 +81,77 @@ export default class CartaSolicitar extends Component {
 
   render() {
     let cartasItems = this.state.cartas.map((carta) => <Select.Option key={carta.id}>{carta.nombre_carta}</Select.Option>);
+
     let alumnosItems = this.state.alumnos.map((alumno) => <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>);
+
     return (
       <div>
-        <Button style={{ float: 'right' }} onClick={this.printLetter} type="secondary" icon="printer">Imprimir</Button>
-        <Button style={{ float: 'right', 'marginRight': '10px' }} onClick={this.editarCarta} type="secondary" icon="edit">Editar</Button>
+        <Button style={{ float: 'right' }}
+          onClick={this.printLetter}
+          type="secondary"
+          icon="printer">
+          Imprimir
+        </Button>
+        <Button style={{ float: 'right', 'marginRight': '10px' }}
+          onClick={this.editarCarta}
+          type="secondary"
+          icon="edit">
+          Editar
+        </Button>
         <h1><Icon type="solution" /> Cartas y Constancias</h1>
+
         <br></br>
         <p>Las constancias académicas (cartas oficiales) incluyen el nombre completo y su número de matrícula y de acuerdo al tipo de documento que se solicite, especificará la información correspondiente</p>
+
         {/* Cartas select */}
-        <div style={{ maxWidth: "550px", margin: "0 auto" }}> <Select defaultValue="Seleccionar carta o constancia" onChange={(value) => { this.setState({ idCarta: value }); }} autosize={false} style={{ width: "100%" }}>{cartasItems}</Select></div>
+        <div style={{ maxWidth: "550px", margin: "0 auto" }}>
+          <Select defaultValue="Seleccionar carta o constancia"
+            onChange={(value) => { this.setState({ idCarta: value }); }}
+            autosize={false}
+            style={{ width: "100%" }}>
+            {cartasItems}
+          </Select>
+        </div>
+
         <br></br>
+
         {/* Alumnos select */}
-        <div style={{ maxWidth: "550px", margin: "0 auto" }}><Select defaultValue="Seleccionar alumno" showSearch filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} optionFilterProp="children" onChange={(value) => {this.setState({ idAlumno: value });}} autosize={false} style={{ width: "100%" }}> {alumnosItems}</Select></div>
+        <div style={{ maxWidth: "550px", margin: "0 auto" }}>
+          <Select defaultValue="Seleccionar alumno"
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            optionFilterProp="children"
+            onChange={(value) => {
+              this.setState({ idAlumno: value });
+            }}
+            autosize={false}
+            style={{ width: "100%" }}>
+            {alumnosItems}
+          </Select>
+        </div>
+
         <br></br>
+
         <table width="100%">
-          <thead><tr style={{ backgroundColor: "#D3D3D3" }}><th id="TituloCarta" colspan="2">{this.state.selectedOption}</th></tr></thead>
+          <thead>
+            <tr style={{ backgroundColor: "#D3D3D3" }}><th id="TituloCarta" colSpan="2">{this.state.selectedOption}</th></tr>
+          </thead>
           <br></br>
-          <tr><th width="200px">Descripción: </th><td id="descInfo">Carta donde especifica que el alumno se encuentra inscrito en cierto periodo incluyendo el listado de materias inscritas, así como el promedio acumulado y el promedio del semestre anterior.</td></tr>
+          <tr>
+            <th width="200px">Descripción: </th>
+            <td id="descInfo">Carta donde especifica que el alumno se encuentra inscrito en cierto periodo incluyendo el listado de materias inscritas, así como el promedio acumulado y el promedio del semestre anterior.</td>
+          </tr>
           <br></br>
-          <tr><th>Requisitos: </th><td id="reqInfo">Ser alumno inscrito en el periodo académico vigente en Campus Monterrey</td></tr>
+          <tr>
+            <th>Requisitos: </th>
+            <td id="reqInfo">Ser alumno inscrito en el periodo académico vigente en Campus Monterrey</td>
+          </tr>
         </table>
+
       </div>
+
     );
   }
 }
