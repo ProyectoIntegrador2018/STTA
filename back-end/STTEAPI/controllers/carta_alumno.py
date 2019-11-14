@@ -188,6 +188,7 @@ def carta_html_to_string(carta, alumno, admin):
          'nacionalidad': alumno.nacionalidad,
          'fecha_actual': current_date,
          'fechas_de_periodo': alumno.fechas_de_periodo,
+         'materias_aprobadas': alumno.materias_aprobadas,
          'nombre_materias_inscritas': alumno.nombre_materias_inscritas,
          'periodo_de_vacaciones': alumno.periodo_de_vacaciones,
          'promedio_acumulado': alumno.promedio_acumulado,
