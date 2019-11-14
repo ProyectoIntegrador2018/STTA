@@ -93,7 +93,7 @@ export default class CartaSolicitar extends Component {
         <div style={{ maxWidth: "550px", margin: "0 auto" }}> <Select defaultValue="Seleccionar carta o constancia" onChange={(value) => { this.setState({ idCarta: value }); }} autosize={false} style={{ width: "100%" }}>{cartasItems}</Select></div>
         <br></br>
         {/* Alumnos select */}
-        <div style={{ maxWidth: "550px", margin: "0 auto" }}><Select defaultValue="Seleccionar alumno" showSearch filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} optionFilterProp="children" onChange={(value) => {this.setState({ idAlumno: value });}} autosize={false} style={{ width: "100%" }}> {alumnosItems}</Select></div>
+        <div style={{ maxWidth: "550px", margin: "0 auto" }}><Select defaultValue="Seleccionar alumno" showSearch filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} optionFilterProp="children" onChange={(value) => {this.setState({ idAlumno: value });}} autosize={false} style={{ width: "100%" }}>{alumnosItems}</Select></div>
         <br></br>
         <table width="100%">
           <thead><tr style={{ backgroundColor: "#D3D3D3" }}><th id="TituloCarta" colspan="2">{this.state.selectedOption}</th></tr></thead>
