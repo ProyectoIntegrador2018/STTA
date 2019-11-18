@@ -80,13 +80,9 @@ export default class CartaSolicitar extends Component {
   }
 
   render() {
-    let cartasItems = this.state.cartas.map((carta) =>
-      <Select.Option key={carta.id}>{carta.nombre_carta}</Select.Option>
-    );
+    let cartasItems = this.state.cartas.map((carta) => <Select.Option key={carta.id}>{carta.nombre_carta}</Select.Option>);
 
-    let alumnosItems = this.state.alumnos.map((alumno) =>
-      <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>
-    );
+    let alumnosItems = this.state.alumnos.map((alumno) => <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>);
 
     return (
       <div>
@@ -140,7 +136,7 @@ export default class CartaSolicitar extends Component {
 
         <table width="100%">
           <thead>
-            <tr style={{ backgroundColor: "#D3D3D3" }}><th id="TituloCarta" colspan="2">{this.state.selectedOption}</th></tr>
+            <tr style={{ backgroundColor: "#D3D3D3" }}><th id="TituloCarta" colSpan="2">{this.state.selectedOption}</th></tr>
           </thead>
           <br></br>
           <tr>
