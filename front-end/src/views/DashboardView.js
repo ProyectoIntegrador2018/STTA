@@ -31,7 +31,7 @@ class DashboardView extends Component {
             success:(response) => {
                 let cartas = {};
                 for (let i in response){
-                    cartas[response[i].id] = {x: response[i].nombre_carta, y: 0};
+                    cartas[response[i].id] = {x: response[i].descripcion, y: 0};
                 }
                 this.setState({cartas: cartas});
                 this.getStats();
