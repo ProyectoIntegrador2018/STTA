@@ -38,7 +38,7 @@ export default class EditarFormatoCartas extends Component {
         <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item>
             <Input
-              placeholder="Descripción"
+              placeholder="Nombre"
               onChange={event =>
                 this.handleChange(event.target.value)
               }

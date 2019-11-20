@@ -124,7 +124,7 @@ def get_students_letters(request):
     """
     del request
     carta = CartaAlumno.objects.select_related('carta', 'alumno').values(
-        'id', 'alumno__matricula', 'alumno__nombre', 'carta__nombre',
+        'id', 'alumno__matricula', 'alumno__nombre', 'carta__descripcion',
         'fecha_creacion')
     carta = [dict(c) for c in carta]
     return JsonResponse(carta, safe=False)
@@ -134,9 +134,10 @@ def get_students_letters(request):
 @permission_classes((IsAuthenticated, EsAdmin))
 def get_student_letter_stats(request, month):
     del request
-    query = ("SELECT c.id, c.nombre, Count(ca.carta) as num_cartas "
+    query = ("SELECT c.id, c.nombre, c.descripcion, "
+             "Count(ca.carta) as num_cartas "
              "FROM Carta c LEFT JOIN CartaAlumno ca ON c.id = ca.carta {0} "
-             "GROUP BY c.id, c.nombre "
+             "GROUP BY c.id, c.nombre, c.descripcion "
              "ORDER BY num_cartas;")
 
     where = 'WHERE YEAR(ca.fecha_creacion) = YEAR(NOW()) '
@@ -157,16 +158,7 @@ def eliminar_carta(request):
     Args:
     request: API request.
     """
-
-    def _eliminar_con_alumno_carta(model, p):
-        # TODO utilize fecha_creacion.
-        docs = model.objects.filter(
-            alumno=p['alumno'],
-            carta=p['carta'])
-        docs.delete()
-
-    return eliminar_datos(request, CartaAlumno, 'documentos',
-                          _eliminar_con_alumno_carta)
+    return eliminar_datos(request, CartaAlumno, 'documentos')
 
 
 def carta_html_to_string(carta, alumno, admin):

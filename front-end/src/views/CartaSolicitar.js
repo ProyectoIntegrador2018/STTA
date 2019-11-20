@@ -80,7 +80,7 @@ export default class CartaSolicitar extends Component {
   }
 
   render() {
-    let cartasItems = this.state.cartas.map((carta) => <Select.Option key={carta.id}>{carta.nombre_carta}</Select.Option>);
+    let cartasItems = this.state.cartas.map((carta) => <Select.Option key={carta.id}>{carta.descripcion}</Select.Option>);
 
     let alumnosItems = this.state.alumnos.map((alumno) => <Select.Option key={alumno.id} title={alumno.nombre}>{alumno.matricula}</Select.Option>);
 

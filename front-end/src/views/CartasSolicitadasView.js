@@ -80,7 +80,7 @@ export default class Documentos extends Component {
 
                 }, {
                     title: 'Tipo de carta',
-                    key: 'carta__nombre',
+                    key: 'carta__descripcion',
                 }
               ]}/>
               </div>
