@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Login from './views/Login';
-import LoginUser from './views/Login-User';
 import "antd/dist/antd.css";
 import "ant-design-pro/dist/ant-design-pro.css";
 import './App.css';
@@ -77,9 +76,6 @@ class App extends Component {
   };
   LoginView = () => {
     return (<Login />);
-  };
-  LoginUserView = () => {
-    return (<LoginUser />);
   };
   RegisterView = () => {
     return (<Register />);
