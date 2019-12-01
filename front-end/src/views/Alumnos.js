@@ -5,18 +5,13 @@ import {
 import DataTable from "../components/DataTable";
 import API from "../tools/API";
 import moment from 'moment';
+import { setState } from '../tools/common';
 
 export default class Alumnos extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            data:[],
-            data2:[],
-            loading:true,
-            record:{},
-            cols:[],
-        }
+        this.state = setState();
     }
 
     refreshData = () => {
