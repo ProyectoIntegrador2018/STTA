@@ -12,7 +12,6 @@ import Restablecer from './views/Restablecer';
 import Register from './views/Registro';
 import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
-import AppLayoutUser from './components/AppLayoutUser';
 import Tramite from './views/Tramite';
 import Estudiante from './views/Estudiante';
 import Administradores from './views/Administradores';
@@ -80,13 +79,6 @@ class App extends Component {
   RegisterView = () => {
     return (<Register />);
   };
-  StudentView = () => {
-    return (
-      <AppLayoutUser type={"basic"}>
-        <Estudiante />
-      </AppLayoutUser>
-    )
-  };
 
   DashboardView = () => {
     return (
@@ -100,13 +92,6 @@ class App extends Component {
       <AppLayout view={"1"} type={"basic"}>
         <Administradores />
       </AppLayout>
-    );
-  };
-  AlumnosTramiteView = ({ match }) => {
-    return (
-      <AppLayoutUser type={"basic"}>
-        <Tramite id={match.params.id} />
-      </AppLayoutUser>
     );
   };
   AlumnosAdminTramiteView = ({ match }) => {
