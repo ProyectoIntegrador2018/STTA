@@ -5,6 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
+import { setState } from '../tools/common';
 import moment from 'moment';
 
 const Panel = Collapse.Panel;
@@ -18,13 +19,7 @@ export default class FormatoCartas extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      data2: [],
-      loading: true,
-      record: {},
-      cols: [],
-    }
+    this.state = setState();
   }
 
   refreshData = () => {

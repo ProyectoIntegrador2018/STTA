@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Login from './views/Login';
-import LoginUser from './views/Login-User';
 import "antd/dist/antd.css";
 import "ant-design-pro/dist/ant-design-pro.css";
 import './App.css';
@@ -13,7 +12,6 @@ import Restablecer from './views/Restablecer';
 import Register from './views/Registro';
 import API from "./tools/API";
 import ProcesoNuevo from "./views/ProcesoNuevo";
-import AppLayoutUser from './components/AppLayoutUser';
 import Tramite from './views/Tramite';
 import Estudiante from './views/Estudiante';
 import Administradores from './views/Administradores';
@@ -78,18 +76,8 @@ class App extends Component {
   LoginView = () => {
     return (<Login />);
   };
-  LoginUserView = () => {
-    return (<LoginUser />);
-  };
   RegisterView = () => {
     return (<Register />);
-  };
-  StudentView = () => {
-    return (
-      <AppLayoutUser type={"basic"}>
-        <Estudiante />
-      </AppLayoutUser>
-    )
   };
 
   DashboardView = () => {
@@ -104,13 +92,6 @@ class App extends Component {
       <AppLayout view={"1"} type={"basic"}>
         <Administradores />
       </AppLayout>
-    );
-  };
-  AlumnosTramiteView = ({ match }) => {
-    return (
-      <AppLayoutUser type={"basic"}>
-        <Tramite id={match.params.id} />
-      </AppLayoutUser>
     );
   };
   AlumnosAdminTramiteView = ({ match }) => {

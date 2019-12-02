@@ -7,5 +7,15 @@ function toFileBlob(response) {
     //Open the URL on new Window
     window.open(fileURL);
   }
+
+function setState(){
+  return {
+    data:[],
+    data2:[],
+    loading:true,
+    record:{},
+    cols:[]
+  }
+}
   
-  export { toFileBlob };
+  export { toFileBlob,  setState};
