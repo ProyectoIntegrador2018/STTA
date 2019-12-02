@@ -127,13 +127,9 @@ export default class CartaSolicitar extends Component {
         <div style={{ maxWidth: "550px", margin: "0 auto" }}>
           <Select defaultValue="Seleccionar carta o constancia"
             showSearch
-            filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             optionFilterProp="children"
-            onChange={(value) => {
-               this.setState({ idCarta: value }); 
-              }}
+            onChange={(value) => {this.setState({ idCarta: value }); }}
             autosize={false}
             style={{ width: "100%" }}>
             {cartasItems}
