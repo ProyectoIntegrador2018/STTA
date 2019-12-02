@@ -57,7 +57,7 @@ def get_letters(request):
     query = ("SELECT a.id, a.nombre as nombre_carta, "
              "a.descripcion, a.fecha_creacion, b.nombre "
              "FROM Carta a LEFT JOIN Administrador b "
-             "on a.administrador = b.id")
+             "on a.administrador = b.id ORDER BY a.descripcion")
     return run_db_query(query)
 
 

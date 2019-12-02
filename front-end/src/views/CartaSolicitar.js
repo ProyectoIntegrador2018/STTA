@@ -75,6 +75,20 @@ export default class CartaSolicitar extends Component {
       });
   };
 
+  previewLetter = () => {
+    const axios = require('axios');
+    axios(API.apiLocal + 'preview_carta/' + this.state.idAlumno + "/" + this.state.idCarta + "/" + localStorage.getItem('id'), {
+      method: 'GET',
+      responseType: 'blob' //Force to receive data in a Blob Format
+    })
+      .then(response => {
+        toFileBlob(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   editarCarta = () => {
     window.location.href = '/cartas/editar/' + this.state.idCarta + '/' + this.state.idAlumno
   }
@@ -90,7 +104,13 @@ export default class CartaSolicitar extends Component {
           onClick={this.printLetter}
           type="secondary"
           icon="printer">
-          Imprimir
+          Solicitar
+        </Button>
+        <Button style={{ float: 'right', 'marginRight': '10px' }}
+          onClick={this.previewLetter}
+          type="secondary"
+          icon="eye">
+          Vista Previa
         </Button>
         <Button style={{ float: 'right', 'marginRight': '10px' }}
           onClick={this.editarCarta}

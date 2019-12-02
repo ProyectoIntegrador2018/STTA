@@ -43,6 +43,32 @@ def get_student_letter(request, alumno, carta, admin):
     response['Content-Disposition'] = 'filename=output.pdf'
     return response
 
+# CREATE
+@api_view(["GET"])
+# @permission_classes((IsAuthenticated, EsAdmin))
+def preview_letter(request, alumno, carta, admin):
+    """Get a student letter.
+
+    Args:
+    request: API request.
+    id_alumno: Student ID.
+    id_carta: Letter ID.
+    """
+    del request
+    # Get letter by id_carta
+    carta = Carta.objects.get(id=carta)
+    # Get student by id_student
+    alumno = Alumno.objects.get(id=alumno)
+    admin = Administrador.objects.get(id=admin)
+
+    html = carta_html_to_string(carta, alumno, admin)
+    # Create response
+    pdf_file = HTML(string=html).write_pdf()
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    # Response: inline to open pdf reader on browser | attachment to download .
+    response['Content-Disposition'] = 'filename=output.pdf'
+    return response
+
 
 @api_view(["POST"])
 # @permission_classes((IsAuthenticated, EsAdmin))
