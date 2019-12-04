@@ -1,6 +1,6 @@
 # Despliegue del proyecto
 
-El proyecto será desplegado en un servidor EC2 de ASW, con Apache. Los pasos para el despliegue son los siguientes.
+El proyecto será desplegado en un servidor EC2 de AWS, con Apache. Los pasos para el despliegue son los siguientes.
 
 ## Conexión al AWS
 
