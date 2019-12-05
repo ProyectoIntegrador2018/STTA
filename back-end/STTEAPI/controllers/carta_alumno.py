@@ -197,29 +197,13 @@ def carta_html_to_string(carta, alumno, admin):
         carta.nombre,
         {'nombre': alumno.nombre,
          'matricula': alumno.matricula,
-<<<<<<< HEAD
-         'siglas_carrera': alumno.siglas_carrera, 
-=======
-<<<<<<< HEAD
          'siglas_carrera': alumno.siglas_carrera,
-=======
-         'siglas_carrera': alumno.siglas_carrera, 
->>>>>>> Fix 3 more cards
->>>>>>> f341860f3d69d771fc0c6a050116d0a2e810730b
          'carrera': alumno.carrera,
          'semestre': alumno.semestre,
          'periodo_de_aceptacion': alumno.periodo_de_aceptacion,
          'posible_graduacion': alumno.posible_graduacion,
          'fecha_de_nacimiento': alumno.fecha_de_nacimiento,
-<<<<<<< HEAD
-         'nacionalidad': alumno.nacionalidad, 
-=======
-<<<<<<< HEAD
          'nacionalidad': alumno.nacionalidad,
-=======
-         'nacionalidad': alumno.nacionalidad, 
->>>>>>> Fix 3 more cards
->>>>>>> f341860f3d69d771fc0c6a050116d0a2e810730b
          'fecha_actual': current_date,
          'fechas_de_periodo': alumno.fechas_de_periodo,
          'materias_aprobadas': alumno.materias_aprobadas,
