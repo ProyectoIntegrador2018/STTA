@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Collapse, Spin } from 'antd';
-import Charts from 'ant-design-pro/lib/Charts';
 import { Pie } from 'ant-design-pro/lib/Charts';
-import moment from 'moment';
+import { Table } from 'antd';
 import '../App.css';
 import "antd/dist/antd.css";
 import API from "../tools/API";
@@ -10,6 +9,16 @@ import Select from "antd/lib/select";
 
 const Panel = Collapse.Panel;
 
+const columns = [
+    {
+      dataIndex: 'x',
+      key: '1',
+    },
+    {
+      dataIndex: 'y',
+      key: '2',
+    },
+  ];
 
 class DashboardView extends Component {
 
@@ -31,7 +40,7 @@ class DashboardView extends Component {
             success:(response) => {
                 let cartas = {};
                 for (let i in response){
-                    cartas[response[i].id] = {x: response[i].nombre_carta, y: 0};
+                    cartas[response[i].id] = {x: response[i].descripcion, y: 0};
                 }
                 this.setState({cartas: cartas});
                 this.getStats();
@@ -78,12 +87,12 @@ class DashboardView extends Component {
                             <Select.Option value="12">Diciembre</Select.Option>
                         </Select>
                         <h2>{'Cartas'} </h2><h4><br/>Duración promedio en días:<br/>{this.state.prom ? this.state.prom : ""}</h4>
-                        <Pie hasLegend title={"Cartas"} subTitle="Total"
-                            total={() => (<Spin spinning={this.state.loading}><span dangerouslySetInnerHTML={{ __html: ((this.state.data).reduce((pre, now) => pre + now.y, 0))}}/></Spin>)}
-                            data={this.state.data}
-                            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: (val) }} />}
-                                height={294}
-                            />
+                        <Pie title={"Cartas"} subTitle="Total" tooltip
+                    total={() => (<Spin spinning={this.state.loading}><span dangerouslySetInnerHTML={{ __html: ((this.state.data).reduce((pre, now) => pre + now.y, 0))}}/></Spin>)}
+                    data={this.state.data}
+                    height={294}
+                    />
+                    <Table dataSource={this.state.data} columns={columns} />;
                     </Panel>
                 </Collapse>
             </div>

@@ -4,6 +4,7 @@ import {
 } from 'antd';
 import DataTable from "../components/DataTable";
 import API from "../tools/API";
+import { setState } from '../tools/common';
 import moment from 'moment';
 
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
@@ -53,13 +54,7 @@ export default class Administradores extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            data:[],
-            data2:[],
-            loading:true,
-            record:{},
-            cols:[],
-        }
+        this.state = setState();
     }
 
     state = {

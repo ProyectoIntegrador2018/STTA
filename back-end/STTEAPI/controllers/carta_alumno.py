@@ -43,6 +43,32 @@ def get_student_letter(request, alumno, carta, admin):
     response['Content-Disposition'] = 'filename=output.pdf'
     return response
 
+# CREATE
+@api_view(["GET"])
+# @permission_classes((IsAuthenticated, EsAdmin))
+def preview_letter(request, alumno, carta, admin):
+    """Get a student letter.
+
+    Args:
+    request: API request.
+    id_alumno: Student ID.
+    id_carta: Letter ID.
+    """
+    del request
+    # Get letter by id_carta
+    carta = Carta.objects.get(id=carta)
+    # Get student by id_student
+    alumno = Alumno.objects.get(id=alumno)
+    admin = Administrador.objects.get(id=admin)
+
+    html = carta_html_to_string(carta, alumno, admin)
+    # Create response
+    pdf_file = HTML(string=html).write_pdf()
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    # Response: inline to open pdf reader on browser | attachment to download .
+    response['Content-Disposition'] = 'filename=output.pdf'
+    return response
+
 
 @api_view(["POST"])
 # @permission_classes((IsAuthenticated, EsAdmin))
@@ -124,7 +150,7 @@ def get_students_letters(request):
     """
     del request
     carta = CartaAlumno.objects.select_related('carta', 'alumno').values(
-        'id', 'alumno__matricula', 'alumno__nombre', 'carta__nombre',
+        'id', 'alumno__matricula', 'alumno__nombre', 'carta__descripcion',
         'fecha_creacion')
     carta = [dict(c) for c in carta]
     return JsonResponse(carta, safe=False)
@@ -134,9 +160,10 @@ def get_students_letters(request):
 @permission_classes((IsAuthenticated, EsAdmin))
 def get_student_letter_stats(request, month):
     del request
-    query = ("SELECT c.id, c.nombre, Count(ca.carta) as num_cartas "
+    query = ("SELECT c.id, c.nombre, c.descripcion, "
+             "Count(ca.carta) as num_cartas "
              "FROM Carta c LEFT JOIN CartaAlumno ca ON c.id = ca.carta {0} "
-             "GROUP BY c.id, c.nombre "
+             "GROUP BY c.id, c.nombre, c.descripcion "
              "ORDER BY num_cartas;")
 
     where = 'WHERE YEAR(ca.fecha_creacion) = YEAR(NOW()) '
@@ -157,16 +184,7 @@ def eliminar_carta(request):
     Args:
     request: API request.
     """
-
-    def _eliminar_con_alumno_carta(model, p):
-        # TODO utilize fecha_creacion.
-        docs = model.objects.filter(
-            alumno=p['alumno'],
-            carta=p['carta'])
-        docs.delete()
-
-    return eliminar_datos(request, CartaAlumno, 'documentos',
-                          _eliminar_con_alumno_carta)
+    return eliminar_datos(request, CartaAlumno, 'documentos')
 
 
 def carta_html_to_string(carta, alumno, admin):
@@ -193,6 +211,9 @@ def carta_html_to_string(carta, alumno, admin):
          'periodo_de_vacaciones': alumno.periodo_de_vacaciones,
          'promedio_acumulado': alumno.promedio_acumulado,
          'promedio_semestre_anterior': alumno.promedio_semestre_anterior,
-         'total_de_materias_de_carrera': alumno.total_de_materias_de_carrera})
+         'total_de_materias_de_carrera': alumno.total_de_materias_de_carrera,
+         'lugar_en_ranking': alumno.lugar_en_ranking,
+         'total_alumnos_en_la_generacion':
+         alumno.total_alumnos_en_la_generacion})
 
     return html

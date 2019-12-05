@@ -53,7 +53,7 @@ export default class Documentos extends Component {
         return (
             <div>
             <h2>Carta nueva</h2>
-            <Form.Item label="Descripción de la carta: ">
+            <Form.Item label="Nombre de la carta: ">
                 <Input type={'text'} onChange={(e) => this.handleSelect(e.target.value)}/>
             </Form.Item>
 

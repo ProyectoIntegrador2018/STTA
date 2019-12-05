@@ -5,6 +5,7 @@ import {
 import DataTable from "../components/DataTable";
 import { Link } from 'react-router-dom'
 import API from "../tools/API";
+import { setState } from '../tools/common';
 import moment from 'moment';
 
 const Panel = Collapse.Panel;
@@ -18,13 +19,7 @@ export default class FormatoCartas extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      data2: [],
-      loading: true,
-      record: {},
-      cols: [],
-    }
+    this.state = setState();
   }
 
   refreshData = () => {
@@ -71,7 +66,7 @@ export default class FormatoCartas extends Component {
         {botonsubir}
         <h1><Icon type="file-text" /> Formato de Cartas</h1>
         <Collapse defaultActiveKey={['0']} onChange={callback}>
-          <Panel header="Instrucciones" key="1"> <p>{"Si quiere saber mas sobre como crear una carta presione este link copie este link en su navegador : https://docs.google.com/document/d/15ReAuFoavQNVQSqVvKKkB6zbbe79Tt57OqfHdfQ5eeQ/edit?usp=sharing"}</p> </Panel>
+          <Panel header="Instrucciones" key="1"> <p>{"Si quiere saber más sobre como crear una carta presione el siguiente botón:"}</p> <Button key="instructions" icon="question-circle" href="https://docs.google.com/document/d/15ReAuFoavQNVQSqVvKKkB6zbbe79Tt57OqfHdfQ5eeQ/edit?usp=sharing">Aprender Más</Button> </Panel>
         </Collapse>
         <DataTable loading={this.state.loading} data={this.state.data} deleteFunc={this.deleteFiles} editFunc={this.editFiles} canEdit={true} rowSelection={permitirBorrar}
           columns={[

@@ -6,8 +6,8 @@ export default class API {
 
   static bodySiteRef = null;
   static cookies = new Cookies();
-  //static apiLocal = "https://api.tramitesescolares.com.mx/"
-  static apiLocal = "http://127.0.0.1:8000/"
+  static apiLocal = "https://api.tramitesescolares.com.mx/"
+  //static apiLocal = "http://127.0.0.1:8000/"
 
 
   static call(service, params = {}, responseFunc = (function (response) { }), errorFunc = (function (response) { }), wToken = true) {
