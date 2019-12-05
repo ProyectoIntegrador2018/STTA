@@ -4,18 +4,19 @@ from rest_framework.decorators import api_view, permission_classes
 from STTEAPI.controllers.utils import *
 from STTEAPI.settings.authentication import IsAuthenticated
 import os
+import datetime
 
 templateFolder = 'STTEAPI/templates/'
 
 
 # CREATE
-def handle_uploaded_file(uploadedFile):
+def handle_uploaded_file(uploadedFile, file_name):
     """Handles file upload.
 
     Args:
     uploadedFile: file.
     """
-    with open(templateFolder + uploadedFile.name, 'wb+') as destination:
+    with open(templateFolder + file_name, 'wb+') as destination:
         for chunk in uploadedFile.chunks():
             destination.write(chunk)
 
@@ -33,11 +34,14 @@ def create_letter_template(request):
 
     # Save file to templates
     uploadedFile = request.FILES['file']
-    handle_uploaded_file(uploadedFile)
+    uniq_filename = (str(datetime.datetime.now().date()) + '_' +
+                     str(datetime.datetime.now().time()).replace(':', '.') +
+                     '.html')
+    handle_uploaded_file(uploadedFile, uniq_filename)
     args = args.__dict__()
     admin = Administrador.objects.get(id=args['id_admin'])
     # Submit created letter data to db
-    Carta.objects.create(nombre=uploadedFile.name,
+    Carta.objects.create(nombre=uniq_filename,
                          descripcion=args['descripcion'],
                          administrador=admin)
 
