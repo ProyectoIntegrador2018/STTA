@@ -10,7 +10,7 @@
     "fetch-http-client": "^1.1.0",
     "node-sass": "^4.11.0",
     "package.json": "^2.0.1",
-    "papaparse": "^4.6.3",
+    "papaparse": "^5.2.0",
     "query-string": "^6.2.0",
     "react": "^16.3.1",
     "react-beforeunload": "^1.0.4",
